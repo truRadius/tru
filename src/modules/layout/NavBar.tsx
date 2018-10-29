@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -15,6 +16,7 @@ import {
   Badge,
   InputBase
 } from '@material-ui/core';
+
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import SearchIcon from '@material-ui/icons/Search';
@@ -22,36 +24,34 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
+import CreateGroupModal from '../home/CreateGroupModal';
 
 const logo = require('./logo.png');
 
-interface StateProps {
-}
+interface StateProps {}
 
-interface DispatchProps {
-}
+interface DispatchProps {}
 
-interface InternalState {
-}
+interface InternalState {}
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
-    width: '100%',
+    width: '100%'
   },
   grow: {
-    flexGrow: 1,
+    flexGrow: 1
   },
   menuButton: {
     marginLeft: -12,
-    marginRight: 20,
+    marginRight: 20
   },
   title: {
     marginLeft: -12,
     marginRight: 20,
     display: 'none',
     [theme.breakpoints.up('sm')]: {
-      display: 'block',
-    },
+      display: 'block'
+    }
   },
   search: {
     position: 'relative',
@@ -59,15 +59,15 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     borderRadius: 20,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
+      backgroundColor: fade(theme.palette.common.white, 0.25)
     },
     marginRight: theme.spacing.unit * 2,
     marginLeft: 0,
     width: '100%',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing.unit * 3,
-      width: 'auto',
-    },
+      width: 'auto'
+    }
   },
   searchIcon: {
     width: theme.spacing.unit * 6,
@@ -81,7 +81,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   },
   inputRoot: {
     color: '#686868',
-    width: '100%',
+    width: '100%'
   },
   inputInput: {
     paddingTop: theme.spacing.unit,
@@ -91,69 +91,79 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     transition: theme.transitions.create('width'),
     width: '100%',
     [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
+      width: 200
+    }
   },
   sectionDesktop: {
     display: 'none',
     [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
+      display: 'flex'
+    }
   },
   sectionMobile: {
     display: 'flex',
     [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
+      display: 'none'
+    }
   },
   icons: {
     color: '#686868'
   },
   container: {
-    width: '80%', 
-    margin: '0 auto',
+    width: '80%',
+    margin: '0 auto'
   }
 });
 
-type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
-  'root' |
-  'grow' |
-  'menuButton' |
-  'title' |
-  'search' |
-  'searchIcon' |
-  'inputRoot' |
-  'inputInput' |
-  'sectionDesktop' |
-  'sectionMobile' |
-  'icons' |
-  'container'
+type PropsWithStyles = StateProps &
+  DispatchProps &
+  WithTheme &
+  WithStyles<
+    | 'button'
+    | 'root'
+    | 'grow'
+    | 'menuButton'
+    | 'title'
+    | 'search'
+    | 'searchIcon'
+    | 'inputRoot'
+    | 'inputInput'
+    | 'sectionDesktop'
+    | 'sectionMobile'
+    | 'icons'
+    | 'container'
+    | 'paper'
   >;
 
 class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
+    open: false
   };
 
   // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
-  }
+  };
 
   handleMenuClose = () => {
     this.setState({ anchorEl: null });
     this.handleMobileMenuClose();
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
-  }
+  };
 
   handleMobileMenuClose = () => {
     this.setState({ mobileMoreAnchorEl: null });
-  }
+  };
+
+  handleOpenModal = () => {
+    this.setState({ open: true });
+  };
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
@@ -209,21 +219,17 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" style={{backgroundColor: 'white', boxShadow: 'none'}}>
+        <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
-              <InputBase
-                placeholder="Search…"
-                classes={{
-                  root: classes.inputRoot,
-                  input: classes.inputInput,
-                }}
-              />
+              <InputBase placeholder="Search…" classes={{ root: classes.inputRoot, input: classes.inputInput }} />
             </div>
+
+            <CreateGroupModal classes={classes} />
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               <IconButton color="inherit">
@@ -236,6 +242,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
                   <NotificationsIcon className={classes.icons} />
                 </Badge>
               </IconButton>
+
               <IconButton
                 aria-owns={isMenuOpen ? 'material-appbar' : undefined}
                 aria-haspopup="true"
@@ -260,5 +267,4 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
 }
 
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
-export const NavBar: React.ComponentType<StyledProps> =
-  withTheme()(withStyles(styles)(InternalNavBar));
+export const NavBar: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalNavBar));
