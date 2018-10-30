@@ -136,6 +136,10 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ cause: event.target.value });
   };
 
+  handleNameChange = (event: any) => {
+    this.setState({ groupName: event.target.value });
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -173,7 +177,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         fullWidth
                         label="Group Name"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('name')}
+                        value=""
+                        onChange={this.handleNameChange}
                         margin="normal"
                       />
                     </TableCell>
