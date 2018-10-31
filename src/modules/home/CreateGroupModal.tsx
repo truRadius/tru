@@ -24,6 +24,7 @@ import {
   Checkbox,
   Input
 } from '@material-ui/core';
+let zipcodes = require('zipcodes');
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
 
@@ -148,6 +149,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   render() {
+    console.log(zipcodes.lookup('33647'));
     const { classes } = this.props;
     return (
       <div>
