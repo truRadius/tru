@@ -1,4 +1,5 @@
-/* tslint:disable */
+/* tslint:disable */ //toavoid unnecessary semicolon errors
+
 import * as React from 'react';
 import {
   Modal,
@@ -32,28 +33,12 @@ interface DispatchProps {}
 
 interface InternalState {}
 
-const CustomTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: '#686868',
-    width: '100%',
-    color: '#fff',
-    fontSize: '2em'
-  },
-  body: {
-    fontSize: '1em',
-    width: '50%'
-  },
-  formControl: {
-    margin: theme.spacing.unit,
-    minWidth: 120,
-    maxWidth: 300
-  }
-}))(TableCell);
-
+// www.npmjs.com/package/zipcodes - to convert zipcode to city and state
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   paper: {
     position: 'absolute',
     width: '50%',
+    borderRadius: '5%',
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     textAlign: 'center',
@@ -63,12 +48,15 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     width: '60%'
   },
   textField: {
-    marginLeft: theme.spacing.unit * 2,
-    marginRight: theme.spacing.unit * 2,
-    textAlign: 'center'
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200
   },
   table: {
     minWidth: '100%'
+  },
+  tableCell: {
+    border: 'none'
   },
   row: {
     '&:nth-of-type(odd)': {
@@ -76,7 +64,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     }
   },
   label: {
-    textAlign: 'center'
+    textAlign: 'center',
+    fontSize: '2em'
   },
   submitBtn: {
     width: theme.spacing.unit,
@@ -88,7 +77,11 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   formControl: {
     margin: theme.spacing.unit,
     minWidth: 120,
-    maxWidth: 300
+    maxWidth: 400
+  },
+  orangeSpan: {
+    color: '#F17820',
+    fontSize: '1em'
   }
 });
 
@@ -96,11 +89,24 @@ type PropsWithStyles = StateProps &
   DispatchProps &
   WithTheme &
   WithStyles<
-    'button' | 'paper' | 'root' | 'textField' | 'table' | 'row' | 'label' | 'submitBtn' | 'menu' | 'formControl'
+    | 'button'
+    | 'paper'
+    | 'root'
+    | 'tableCell'
+    | 'textField'
+    | 'table'
+    | 'row'
+    | 'label'
+    | 'submitBtn'
+    | 'menu'
+    | 'formControl'
+    | 'personalizedModal'
+    | 'orangeSpan'
   >;
 
-const stateCode = [{ code: 'FL', id: 1 }, { code: 'CA', id: 2 }, { code: 'TN', id: 3 }];
-const causes = ['Feed homeless', 'Run for cancer'];
+// const stateCode = [{ code: 'FL', id: 1 }, { code: 'CA', id: 2 }, { code: 'TN', id: 3 }];
+const gender = ['Male', 'Female', 'Other'];
+const causes = ['Feed homeless', 'Run for cancer', 'Awarness'];
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -112,11 +118,12 @@ const MenuProps = {
   }
 };
 
+const cause: Array<string> = [];
 class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     open: false,
-    defaultState: 'FL',
-    cause: ['']
+    defaultState: '',
+    cause: cause
   };
   unique = 1;
 
@@ -144,38 +151,48 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     const { classes } = this.props;
     return (
       <div>
-        <Button
-          color="primary"
-          variant="extendedFab"
-          onClick={this.handleOpenModal}
-          aria-label="Delete"
-          className={classes.button}
-        >
-          Create Group
+        <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>
+          Register
         </Button>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.open}
           onClose={this.handleClose}
+          className={classes.personalizedModal}
         >
           <div className={classes.paper}>
             <form>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
-                    <CustomTableCell text-align="center">
-                      <label className={classes.label}>Create Group</label>
-                    </CustomTableCell>
+                    <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
+                      <label className={classes.label}>Register</label>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
+                      Sign up in order to enjoy <span className={classes.orangeSpan}>tru</span>
+                      Radius's full services.
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className={classes.tableCell}>
                       <TextField
-                        id="standard-groupName"
-                        fullWidth
-                        label="Group Name"
+                        id="standard-fname"
+                        label="First Name"
+                        className={classes.textField}
+                        value=""
+                        onChange={this.handleNameChange}
+                        margin="normal"
+                      />
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-lname"
+                        label="Last Name"
                         className={classes.textField}
                         value=""
                         onChange={this.handleNameChange}
@@ -184,55 +201,33 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className={classes.tableCell}>
                       <TextField
-                        id="standard-name"
-                        label="City"
-                        className={classes.textField}
-                        value="" // onChange={this.handleChange('name')}
-                        margin="normal"
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <TextField
-                        id="standard-select-currency"
+                        id="standard-select-gender"
                         select
-                        label="State"
+                        label="Gender"
                         className={classes.textField}
                         value={this.state.defaultState} // onChange={this.handleChange('currency')}
                         SelectProps={{ MenuProps: { className: classes.menu } }}
                         margin="normal"
                       >
-                        {stateCode.map(option => (
-                          <MenuItem key={option.id} value={option.code}>
-                            {option.code}
+                        {gender.map(g => (
+                          <MenuItem key={g} value={g}>
+                            {g}
                           </MenuItem>
                         ))}
                       </TextField>
                     </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
-                      <TextField
-                        id="standard-name"
-                        label="Zip Code"
-                        className={classes.textField}
-                        value="" // onChange={this.handleChange('city')}
-                        margin="normal"
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>
+                    <TableCell className={classes.tableCell}>
                       <FormControl className={classes.formControl}>
-                        <InputLabel htmlFor="select-multiple-checkbox">Select causes</InputLabel>
+                        <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
+                          Select causes
+                        </InputLabel>
                         <Select
                           multiple
                           value={this.state.cause}
                           onChange={this.handleCauseChange}
-                          input={<Input id="select-multiple-checkbox" />}
+                          input={<Input multiline id="select-multiple-checkbox" />}
                           renderValue={() => this.state.cause.join(', ')}
                           MenuProps={MenuProps}
                         >
@@ -247,24 +242,94 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>
+                    <TableCell className={classes.tableCell}>
                       <TextField
-                        id="standard-description"
-                        multiline
-                        fullWidth
-                        label="Description"
+                        id="standard-zipcode"
+                        label="Zipcode"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('name')}
+                        value="" // onChange={this.handleChange('city')}
+                        margin="normal"
+                      />
+                    </TableCell>
+                    {/* <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-select-state"
+                        select
+                        label="State"
+                        className={classes.textField}
+                        value={this.state.defaultState} // onChange={this.handleChange('currency')}
+                        SelectProps={{ MenuProps: { className: classes.menu } }}
+                        margin="normal"
+                      >
+                        {stateCode.map(state => (
+                          <MenuItem key={state.code} value={state.code}>
+                            {state.code}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </TableCell> */}
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-city"
+                        label="City"
+                        className={classes.textField}
+                        value="" // onChange={this.handleChange('city')}
                         margin="normal"
                       />
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <CustomTableCell>
-                      <Button color="primary" className={classes.button} type="submit" variant="extendedFab">
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-name"
+                        label="Phone Number"
+                        className={classes.textField}
+                        value="" // onChange={this.handleChange('city')}
+                        margin="normal"
+                      />
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-email"
+                        label="Email"
+                        className={classes.textField}
+                        value="" // onChange={this.handleChange('city')}
+                        margin="normal"
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-password"
+                        label="Create Password"
+                        className={classes.textField}
+                        value=""
+                        // onChange={this.handleChange('name')}
+                        margin="normal"
+                      />
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <TextField
+                        id="standard-password"
+                        label="Confirm Password"
+                        className={classes.textField}
+                        value=""
+                        // onChange={this.handleChange('name')}
+                        margin="normal"
+                      />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell className={classes.tableCell}>
+                      <Button color="primary" className={classes.button} type="cancel">
+                        Cancel
+                      </Button>
+                      <Button color="primary" className={classes.button} type="submit">
                         Submit
                       </Button>
-                    </CustomTableCell>
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
