@@ -119,12 +119,14 @@ const MenuProps = {
   }
 };
 
-const cause: Array<string> = [];
 class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
+  cause: Array<string> = [];
   state = {
     open: false,
     defaultState: '',
-    cause: cause
+    cause: this.cause,
+    zipcode: '',
+    city: ''
   };
   unique = 1;
 
@@ -146,6 +148,23 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleNameChange = (event: any) => {
     this.setState({ groupName: event.target.value });
+  };
+
+  handleZipcodeChange = (event: any) => {
+    const onlyNums = event.target.value.replace(/[^0-9]/g, '');
+    if (onlyNums.length < 5) {
+      this.setState({ zipcode: event.target.value });
+    } else if (onlyNums.length === 5) {
+      this.setState({ zipcode: event.target.value });
+      this.findCityState(onlyNums);
+    }
+  };
+
+  findCityState = (nums: number) => {
+    let city = zipcodes.lookup(nums).city;
+    let state = zipcodes.lookup(nums).state;
+    let cs = `${city}, ${state}`;
+    this.setState({ city: cs });
   };
 
   render() {
@@ -249,7 +268,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         id="standard-zipcode"
                         label="Zipcode"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('city')}
+                        value={this.state.zipcode}
+                        onChange={this.handleZipcodeChange}
                         margin="normal"
                       />
                     </TableCell>
@@ -275,7 +295,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         id="standard-city"
                         label="City"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('city')}
+                        value={this.state.city}
                         margin="normal"
                       />
                     </TableCell>
