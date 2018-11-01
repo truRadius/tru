@@ -151,11 +151,14 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   handleZipcodeChange = (event: any) => {
-    const onlyNums = event.target.value.replace(/[^0-9]/g, '');
+    // const reg = new RegExp('/[^0-9]');
+    const onlyNums = event.target.value.replace(/[^0-9]/, '');
+    // const onlyNums = reg.test(event.target.value) ? event.target.value : event.target.value.slice(0, -1);
+    console.log('Onlynums:', onlyNums);
     if (onlyNums.length < 5) {
-      this.setState({ zipcode: event.target.value });
+      this.setState({ zipcode: onlyNums });
     } else if (onlyNums.length === 5) {
-      this.setState({ zipcode: event.target.value });
+      this.setState({ zipcode: onlyNums });
       this.findCityState(onlyNums);
     }
   };
@@ -173,7 +176,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   render() {
-    console.log(zipcodes.lookup('33647'));
     const { classes } = this.props;
     return (
       <div>
