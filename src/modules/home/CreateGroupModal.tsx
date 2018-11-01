@@ -1,6 +1,7 @@
 /* tslint:disable */ //toavoid unnecessary semicolon errors
 
 import * as React from 'react';
+import classNames from 'classnames';
 import {
   Modal,
   withStyles,
@@ -22,8 +23,11 @@ import {
   InputLabel,
   ListItemText,
   Checkbox,
-  Input
+  Input,
+  InputAdornment,
+  IconButton
 } from '@material-ui/core';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 let zipcodes = require('zipcodes');
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import * as PropTypes from 'prop-types';
@@ -103,6 +107,7 @@ type PropsWithStyles = StateProps &
     | 'formControl'
     | 'personalizedModal'
     | 'orangeSpan'
+    | 'margin'
   >;
 
 // const stateCode = [{ code: 'FL', id: 1 }, { code: 'CA', id: 2 }, { code: 'TN', id: 3 }];
@@ -126,7 +131,12 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     defaultState: '',
     cause: this.cause,
     zipcode: '',
-    city: ''
+    city: '',
+    phoneNumber: '',
+    email: '',
+    password: '',
+    showPassword: false,
+    passCheck: ''
   };
   unique = 1;
 
@@ -175,6 +185,36 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     }
   };
 
+  handleNumberChange = (e: any) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/, '');
+    console.log('Here:', onlyNums);
+    if (onlyNums.length < 10) {
+      this.setState({ phoneNumber: onlyNums });
+    } else if (onlyNums.length === 10) {
+      const number = onlyNums.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      this.setState({ phoneNumber: number });
+    }
+  };
+
+  handleEmailChange = (event: any) => {
+    // /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    this.setState({ email: event.target.value });
+  };
+
+  handlePasswordChange = (event: any) => {
+    this.setState({ password: event.target.value });
+  };
+
+  handleClickShowPassword = () => {
+    this.setState({ showPassword: !this.state.showPassword });
+  };
+
+  handleCheckPassword = (e: any) => {
+    this.setState({ passCheck: e.target.value });
+    // if (e.target.value !== this.state.password) {
+    //   alert('password does not match');
+    // }
+  };
   render() {
     const { classes } = this.props;
     return (
@@ -280,25 +320,9 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         margin="normal"
                       />
                     </TableCell>
-                    {/* <TableCell className={classes.tableCell}>
-                      <TextField
-                        id="standard-select-state"
-                        select
-                        label="State"
-                        className={classes.textField}
-                        value={this.state.defaultState} // onChange={this.handleChange('currency')}
-                        SelectProps={{ MenuProps: { className: classes.menu } }}
-                        margin="normal"
-                      >
-                        {stateCode.map(state => (
-                          <MenuItem key={state.code} value={state.code}>
-                            {state.code}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </TableCell> */}
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        disabled
                         id="standard-city"
                         label="City"
                         className={classes.textField}
@@ -310,10 +334,11 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                   <TableRow>
                     <TableCell className={classes.tableCell}>
                       <TextField
-                        id="standard-name"
+                        id="standard-number"
                         label="Phone Number"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('city')}
+                        value={this.state.phoneNumber}
+                        onChange={this.handleNumberChange}
                         margin="normal"
                       />
                     </TableCell>
@@ -322,29 +347,42 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         id="standard-email"
                         label="Email"
                         className={classes.textField}
-                        value="" // onChange={this.handleChange('city')}
+                        value={this.state.email}
+                        onChange={this.handleEmailChange}
                         margin="normal"
                       />
                     </TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell className={classes.tableCell}>
-                      <TextField
-                        id="standard-password"
-                        label="Create Password"
-                        className={classes.textField}
-                        value=""
-                        // onChange={this.handleChange('name')}
-                        margin="normal"
-                      />
+                      <FormControl className={classNames(classes.margin, classes.textField)}>
+                        <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                        <Input
+                          id="adornment-password"
+                          type={this.state.showPassword ? 'text' : 'password'}
+                          value={this.state.password}
+                          onChange={this.handlePasswordChange}
+                          endAdornment={
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="Toggle password visibility"
+                                onClick={this.handleClickShowPassword}
+                              >
+                                {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          }
+                        />
+                      </FormControl>
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <TextField
                         id="standard-password"
+                        type="password"
                         label="Confirm Password"
                         className={classes.textField}
-                        value=""
-                        // onChange={this.handleChange('name')}
+                        value={this.state.passCheck}
+                        onChange={this.handleCheckPassword}
                         margin="normal"
                       />
                     </TableCell>
