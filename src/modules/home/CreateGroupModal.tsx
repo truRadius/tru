@@ -129,14 +129,20 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     open: false,
     defaultState: '',
+    firstName: '',
+    lastName: '',
+    gender: '',
     cause: this.cause,
     zipcode: '',
+    cs: '',
     city: '',
+    state: '',
     phoneNumber: '',
     email: '',
     password: '',
     showPassword: false,
-    passCheck: ''
+    passCheck: '',
+    errStack: []
   };
   unique = 1;
 
@@ -178,7 +184,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       let city = zipcodes.lookup(nums).city;
       let state = zipcodes.lookup(nums).state;
       let cs = `${city}, ${state}`;
-      this.setState({ city: cs });
+      this.setState({ cs: cs, city: city, state: state });
     } else {
       // this.setState({ city: 'undefined' });
       alert('Incorrect zipcode! Try again.');
@@ -197,7 +203,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   handleEmailChange = (event: any) => {
-    // /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
     this.setState({ email: event.target.value });
   };
 
@@ -211,6 +216,67 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleCheckPassword = (e: any) => {
     this.setState({ passCheck: e.target.value });
+  };
+
+  handleFirstName = (e: any) => {
+    this.setState({ firstName: e.target.value });
+  };
+  handleLastName = (e: any) => {
+    this.setState({ lastName: e.target.value });
+  };
+  handleGenderChange = (e: any) => {
+    this.setState({ gender: e.target.value });
+  };
+
+  errStack: Array<string> = [];
+  validateEmail = () => {
+    console.log('On blurr??');
+    let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let emailErr = 'Invalid Email';
+    if (reg.test(this.state.email) === false) {
+      this.errStack.push(emailErr);
+      this.setState({ errStack: this.errStack });
+    } else {
+      let index = this.errStack.indexOf(emailErr);
+      index >= 0 ? this.errStack.splice(index, 1) : '';
+      console.log(index);
+      this.setState({ errStack: this.errStack });
+    }
+  };
+
+  confirmPassword = () => {
+    let passErr = 'Password does not match';
+    if (this.state.password !== this.state.passCheck) {
+      this.errStack.push(passErr);
+      this.setState({ errStack: this.errStack });
+    } else {
+      let index = this.errStack.indexOf(passErr);
+      index >= 0 ? this.errStack.splice(index, 1) : '';
+      this.setState({ errStack: this.errStack });
+    }
+    console.log(this.errStack, this.state.errStack);
+  };
+
+  createUserObj = () => {
+    return new Promise((resolve, reject) => {
+      let userObj = {
+        fname: this.state.firstName,
+        lname: this.state.lastName,
+        gender: this.state.gender,
+        causes: this.state.cause,
+        zipcode: this.state.zipcode,
+        city: this.state.city,
+        state: this.state.state,
+        email: this.state.email,
+        password: this.state.password
+      };
+      resolve(userObj);
+    });
+  };
+  onFormSubmit = () => {
+    //validate email, confirm password and create object
+    // debugger;
+    console.log('here??');
   };
   render() {
     const { classes } = this.props;
@@ -237,8 +303,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                   </TableRow>
                   <TableRow>
                     <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
-                      Sign up in order to enjoy <span className={classes.orangeSpan}>tru</span>
-                      Radius's full services.
+                      Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
+                      Radius has to offer.
                     </TableCell>
                   </TableRow>
                 </TableHead>
@@ -246,21 +312,23 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                   <TableRow>
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        required
                         id="standard-fname"
                         label="First Name"
                         className={classes.textField}
-                        value=""
-                        onChange={this.handleNameChange}
+                        value={this.state.firstName}
+                        onChange={this.handleFirstName}
                         margin="normal"
                       />
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        required
                         id="standard-lname"
                         label="Last Name"
                         className={classes.textField}
-                        value=""
-                        onChange={this.handleNameChange}
+                        value={this.state.lastName}
+                        onChange={this.handleLastName}
                         margin="normal"
                       />
                     </TableCell>
@@ -272,7 +340,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         select
                         label="Gender"
                         className={classes.textField}
-                        value={this.state.defaultState} // onChange={this.handleChange('currency')}
+                        value={this.state.gender}
+                        onChange={this.handleGenderChange}
                         SelectProps={{ MenuProps: { className: classes.menu } }}
                         margin="normal"
                       >
@@ -289,6 +358,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                           Select causes
                         </InputLabel>
                         <Select
+                          required
                           multiple
                           value={this.state.cause}
                           onChange={this.handleCauseChange}
@@ -309,6 +379,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                   <TableRow>
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        required
                         id="standard-zipcode"
                         label="Zipcode"
                         className={classes.textField}
@@ -341,6 +412,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        required
+                        onBlur={this.validateEmail}
                         id="standard-email"
                         label="Email"
                         className={classes.textField}
@@ -355,6 +428,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       <FormControl className={classNames(classes.margin, classes.textField)}>
                         <InputLabel htmlFor="adornment-password">Password</InputLabel>
                         <Input
+                          required
                           id="adornment-password"
                           type={this.state.showPassword ? 'text' : 'password'}
                           value={this.state.password}
@@ -374,6 +448,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       <TextField
+                        required
+                        onBlur={this.confirmPassword}
                         id="standard-password"
                         type="password"
                         label="Confirm Password"
@@ -390,9 +466,14 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       <Button color="primary" className={classes.button} type="cancel">
                         Cancel
                       </Button>
-                      <Button color="primary" className={classes.button} type="submit">
+                      <Button color="primary" className={classes.button} type="button" onClick={this.onFormSubmit}>
                         Submit
                       </Button>
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell colSpan={2}>
+                      <label className={classes.orangeSpan}>{this.state.errStack.join(',')}</label>
                     </TableCell>
                   </TableRow>
                 </TableBody>
