@@ -161,10 +161,15 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   findCityState = (nums: number) => {
-    let city = zipcodes.lookup(nums).city;
-    let state = zipcodes.lookup(nums).state;
-    let cs = `${city}, ${state}`;
-    this.setState({ city: cs });
+    if (zipcodes.lookup(nums) !== undefined) {
+      let city = zipcodes.lookup(nums).city;
+      let state = zipcodes.lookup(nums).state;
+      let cs = `${city}, ${state}`;
+      this.setState({ city: cs });
+    } else {
+      // this.setState({ city: 'undefined' });
+      alert('Incorrect zipcode! Try again.');
+    }
   };
 
   render() {
