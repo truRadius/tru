@@ -211,9 +211,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleCheckPassword = (e: any) => {
     this.setState({ passCheck: e.target.value });
-    // if (e.target.value !== this.state.password) {
-    //   alert('password does not match');
-    // }
   };
   render() {
     const { classes } = this.props;
