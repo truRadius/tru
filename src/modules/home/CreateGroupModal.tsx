@@ -1,7 +1,7 @@
 /* tslint:disable */ //toavoid 'unnecessary-semicolon' errors
 
 import * as React from 'react';
-import classNames from 'classnames';
+// import classNames from 'classnames';
 import {
   Modal,
   withStyles,
@@ -12,20 +12,17 @@ import {
   WithTheme,
   WithStyles,
   TextField,
-  Table,
-  TableHead,
-  TableRow,
-  TableBody,
-  TableCell,
   MenuItem,
-  FormControl,
-  Select,
+  // FormControl,
   InputLabel,
-  ListItemText,
-  Checkbox,
   Input,
+  Checkbox,
+  ListItemText,
   InputAdornment,
-  IconButton
+  IconButton,
+  Select,
+  Grid,
+  Paper
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 let zipcodes = require('zipcodes');
@@ -40,17 +37,26 @@ interface InternalState {}
 
 // www.npmjs.com/package/zipcodes - to convert zipcode to city and state
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
-  paper: {
+  paperModal: {
     position: 'absolute',
     width: '50%',
+    backgroundColor: 'none',
     borderRadius: '5%',
-    backgroundColor: theme.palette.background.paper,
-    boxShadow: theme.shadows[5],
+    // boxShadow: theme.shadows[5],
     textAlign: 'center',
     margin: '5% 30%'
   },
+  paper: {
+    textAlign: 'center',
+    color: '#2E4C63',
+    boxShadow: 'none',
+    borderRadius: 0,
+    backgroundColor: 'transparent'
+  },
   root: {
-    width: '60%'
+    flexGrow: 1,
+    backgroundColor: '#E8E8E8',
+    borderRadius: '5%'
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -63,11 +69,6 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   tableCell: {
     border: 'none'
   },
-  row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default
-    }
-  },
   label: {
     textAlign: 'center',
     fontSize: '2em'
@@ -75,6 +76,9 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   submitBtn: {
     width: theme.spacing.unit,
     marginLeft: theme.spacing.unit * 20
+  },
+  wrapText: {
+    whiteSpace: 'normal'
   },
   menu: {
     width: 200
@@ -87,6 +91,14 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   orangeSpan: {
     color: '#F17820',
     fontSize: '1em'
+  },
+  errorSpan: {
+    color: 'red',
+    fontSize: '1em'
+  },
+  formDiv: {
+    width: '100%',
+    backgroundColor: 'yellow'
   }
 });
 
@@ -96,18 +108,22 @@ type PropsWithStyles = StateProps &
   WithStyles<
     | 'button'
     | 'paper'
+    | 'paperModal'
     | 'root'
     | 'tableCell'
     | 'textField'
     | 'table'
-    | 'row'
     | 'label'
     | 'submitBtn'
+    | 'wrapText'
     | 'menu'
     | 'formControl'
     | 'personalizedModal'
     | 'orangeSpan'
+    | 'errorSpan'
     | 'margin'
+    | 'formDiv'
+    | 'bgColorModal'
   >;
 
 const gender = ['Male', 'Female', 'Other'];
@@ -154,16 +170,12 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ open: true });
   };
 
-  handleClose = () => {
+  handleCloseModal = () => {
     this.setState({ open: false });
   };
 
   handleCauseChange = (event: any) => {
     this.setState({ cause: event.target.value });
-  };
-
-  handleNameChange = (event: any) => {
-    this.setState({ groupName: event.target.value });
   };
 
   handleZipcodeChange = (event: any) => {
@@ -211,10 +223,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ showPassword: !this.state.showPassword });
   };
 
-  handleCheckPassword = (e: any) => {
-    this.setState({ passCheck: e.target.value });
-  };
-
   handleFirstName = (e: any) => {
     this.setState({ firstName: e.target.value });
   };
@@ -254,18 +262,15 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       resolve(userObj);
     });
   };
+
   onFormSubmit = () => {
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
-        localStorage.setItem('UserObj', JSON.stringify(data));
+        localStorage.setItem('UserObj', JSON.stringify(data)); //TODO: change it to actual database once ready
       });
     }
-  };
-
-  componentDidMount = () => {
-    this.setState({ errStack: this.state.errStack });
   };
 
   render() {
@@ -279,193 +284,366 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.open}
-          onClose={this.handleClose}
-          className={classes.personalizedModal}
+          onClose={this.handleCloseModal}
+          className={classes.paperModal}
         >
-          <div className={classes.paper}>
-            <form onSubmit={this.onFormSubmit}>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
-                      <label className={classes.label}>Register</label>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
-                      Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
-                      Radius has to offer.
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        required
-                        id="standard-fname"
-                        label="First Name"
-                        className={classes.textField}
-                        value={this.state.firstName}
-                        onChange={this.handleFirstName}
-                        margin="normal"
-                      />
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        required
-                        id="standard-lname"
-                        label="Last Name"
-                        className={classes.textField}
-                        value={this.state.lastName}
-                        onChange={this.handleLastName}
-                        margin="normal"
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        id="standard-select-gender"
-                        select
-                        label="Gender"
-                        className={classes.textField}
-                        value={this.state.gender}
-                        onChange={this.handleGenderChange}
-                        SelectProps={{ MenuProps: { className: classes.menu } }}
-                        margin="normal"
-                      >
-                        {gender.map(g => (
-                          <MenuItem key={g} value={g}>
-                            {g}
-                          </MenuItem>
-                        ))}
-                      </TextField>
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <FormControl className={classes.formControl}>
-                        <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
-                          Select causes
-                        </InputLabel>
-                        <Select
+          <div className={classes.root}>
+            <Grid container spacing={16}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
+                  Radius has to offer.
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    required
+                    id="standard-fname"
+                    label="First Name"
+                    className={classes.textField}
+                    value={this.state.firstName}
+                    onChange={this.handleFirstName}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    required
+                    id="standard-lname"
+                    label="Last Name"
+                    className={classes.textField}
+                    value={this.state.lastName}
+                    onChange={this.handleLastName}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    id="standard-select-gender"
+                    select
+                    label="Gender"
+                    className={classes.textField}
+                    value={this.state.gender}
+                    onChange={this.handleGenderChange}
+                    SelectProps={{ MenuProps: { className: classes.menu } }}
+                    margin="normal"
+                  >
+                    {gender.map(g => (
+                      <MenuItem key={g} value={g}>
+                        {g}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  {/* <FormControl className={classes.formControl}> */}
+                  <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
+                    Select causes
+                  </InputLabel>
+                  <Select
+                    required
+                    multiple
+                    value={this.state.cause}
+                    className={classes.wrapText}
+                    onChange={this.handleCauseChange}
+                    input={<Input multiline id="select-multiple-checkbox" />}
+                    renderValue={() => this.state.cause.join(', ')}
+                    MenuProps={MenuProps}
+                  >
+                    {causes.map(c => (
+                      <MenuItem key={this.unique++} value={c}>
+                        <Checkbox checked={this.state.cause.indexOf(c) > -1} />
+                        <ListItemText primary={c} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {/* </FormControl> */}
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    required
+                    id="standard-zipcode"
+                    label="Zipcode"
+                    className={classes.textField}
+                    value={this.state.zipcode}
+                    onChange={this.handleZipcodeChange}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    disabled
+                    id="standard-city"
+                    label="City"
+                    className={classes.textField}
+                    value={this.state.city}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    disabled
+                    id="standard-city"
+                    label="City"
+                    className={classes.textField}
+                    value={this.state.state}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    id="standard-number"
+                    label="Phone Number"
+                    className={classes.textField}
+                    value={this.state.phoneNumber}
+                    onChange={this.handleNumberChange}
+                    margin="normal"
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <TextField
+                    required
+                    onBlur={this.validateEmail}
+                    id="standard-email"
+                    label="Email"
+                    className={classes.textField}
+                    value={this.state.email}
+                    onChange={this.handleEmailChange}
+                    margin="normal"
+                    helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
+                  />
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  {/* <FormControl className={classNames(classes.margin, classes.textField)}> */}
+                  <InputLabel className={classes.textField} htmlFor="adornment-password">
+                    Password
+                  </InputLabel>
+                  <Input
+                    required
+                    id="adornment-password"
+                    type={this.state.showPassword ? 'text' : 'password'}
+                    value={this.state.password}
+                    onChange={this.handlePasswordChange}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
+                          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                  {/* </FormControl> */}
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <Button color="primary" className={classes.button} type="cancel">
+                    Cancel
+                  </Button>
+                </Paper>
+              </Grid>
+              <Grid item xs={6}>
+                <Paper className={classes.paper}>
+                  <Button color="primary" className={classes.button} type="submit">
+                    Submit
+                  </Button>
+                </Paper>
+              </Grid>
+            </Grid>
+          </div>
+          {/* <div className={classes.paper}>
+            <div className={classes.formDiv}>
+              <form onSubmit={this.onFormSubmit}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
+                        <label className={classes.label}>Register</label>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
+                        Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
+                        Radius has to offer.
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
                           required
-                          multiple
-                          value={this.state.cause}
-                          onChange={this.handleCauseChange}
-                          input={<Input multiline id="select-multiple-checkbox" />}
-                          renderValue={() => this.state.cause.join(', ')}
-                          MenuProps={MenuProps}
+                          id="standard-fname"
+                          label="First Name"
+                          className={classes.textField}
+                          value={this.state.firstName}
+                          onChange={this.handleFirstName}
+                          margin="normal"
+                        />
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
+                          required
+                          id="standard-lname"
+                          label="Last Name"
+                          className={classes.textField}
+                          value={this.state.lastName}
+                          onChange={this.handleLastName}
+                          margin="normal"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
+                          id="standard-select-gender"
+                          select
+                          label="Gender"
+                          className={classes.textField}
+                          value={this.state.gender}
+                          onChange={this.handleGenderChange}
+                          SelectProps={{ MenuProps: { className: classes.menu } }}
+                          margin="normal"
                         >
-                          {causes.map(c => (
-                            <MenuItem key={this.unique++} value={c}>
-                              <Checkbox checked={this.state.cause.indexOf(c) > -1} />
-                              <ListItemText primary={c} />
+                          {gender.map(g => (
+                            <MenuItem key={g} value={g}>
+                              {g}
                             </MenuItem>
                           ))}
-                        </Select>
-                      </FormControl>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        required
-                        id="standard-zipcode"
-                        label="Zipcode"
-                        className={classes.textField}
-                        value={this.state.zipcode}
-                        onChange={this.handleZipcodeChange}
-                        margin="normal"
-                      />
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        disabled
-                        id="standard-city"
-                        label="City"
-                        className={classes.textField}
-                        value={this.state.cs}
-                        margin="normal"
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        id="standard-number"
-                        label="Phone Number"
-                        className={classes.textField}
-                        value={this.state.phoneNumber}
-                        onChange={this.handleNumberChange}
-                        margin="normal"
-                      />
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <TextField
-                        required
-                        onBlur={this.validateEmail}
-                        id="standard-email"
-                        label="Email"
-                        className={classes.textField}
-                        value={this.state.email}
-                        onChange={this.handleEmailChange}
-                        margin="normal"
-                        helperText={<span className={classes.orangeSpan}>{this.state.errStack}</span>}
-                      />
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>
-                      <FormControl className={classNames(classes.margin, classes.textField)}>
-                        <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                        <Input
+                        </TextField>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <FormControl className={classes.formControl}>
+                          <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
+                            Select causes
+                          </InputLabel>
+                          <Select
+                            required
+                            multiple
+                            value={this.state.cause}
+                            className={classes.wrapText}
+                            onChange={this.handleCauseChange}
+                            input={<Input multiline id="select-multiple-checkbox" />}
+                            renderValue={() => this.state.cause.join(', ')}
+                            MenuProps={MenuProps}
+                          >
+                            {causes.map(c => (
+                              <MenuItem key={this.unique++} value={c}>
+                                <Checkbox checked={this.state.cause.indexOf(c) > -1} />
+                                <ListItemText primary={c} />
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
                           required
-                          id="adornment-password"
-                          type={this.state.showPassword ? 'text' : 'password'}
-                          value={this.state.password}
-                          onChange={this.handlePasswordChange}
-                          endAdornment={
-                            <InputAdornment position="end">
-                              <IconButton
-                                aria-label="Toggle password visibility"
-                                onClick={this.handleClickShowPassword}
-                              >
-                                {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                              </IconButton>
-                            </InputAdornment>
-                          }
+                          id="standard-zipcode"
+                          label="Zipcode"
+                          className={classes.textField}
+                          value={this.state.zipcode}
+                          onChange={this.handleZipcodeChange}
+                          margin="normal"
                         />
-                      </FormControl>
-                    </TableCell>
-                    {/* <TableCell className={classes.tableCell}>
-                      <TextField
-                        required
-                        onBlur={this.confirmPassword}
-                        id="standard-password"
-                        type="password"
-                        label="Confirm Password"
-                        className={classes.textField}
-                        value={this.state.passCheck}
-                        onChange={this.handleCheckPassword}
-                        margin="normal"
-                      />
-                    </TableCell> */}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell />
-                    <TableCell className={classes.tableCell}>
-                      <Button color="primary" className={classes.button} type="cancel">
-                        Cancel
-                      </Button>
-                      <Button color="primary" className={classes.button} type="submit">
-                        Submit
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </form>
-          </div>
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
+                          disabled
+                          id="standard-city"
+                          label="City"
+                          className={classes.textField}
+                          value={this.state.cs}
+                          margin="normal"
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
+                          id="standard-number"
+                          label="Phone Number"
+                          className={classes.textField}
+                          value={this.state.phoneNumber}
+                          onChange={this.handleNumberChange}
+                          margin="normal"
+                        />
+                      </TableCell>
+                      <TableCell className={classes.tableCell}>
+                        <TextField
+                          required
+                          onBlur={this.validateEmail}
+                          id="standard-email"
+                          label="Email"
+                          className={classes.textField}
+                          value={this.state.email}
+                          onChange={this.handleEmailChange}
+                          margin="normal"
+                          helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
+                        />
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>
+                        <FormControl className={classNames(classes.margin, classes.textField)}>
+                          <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                          <Input
+                            required
+                            id="adornment-password"
+                            type={this.state.showPassword ? 'text' : 'password'}
+                            value={this.state.password}
+                            onChange={this.handlePasswordChange}
+                            endAdornment={
+                              <InputAdornment position="end">
+                                <IconButton
+                                  aria-label="Toggle password visibility"
+                                  onClick={this.handleClickShowPassword}
+                                >
+                                  {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                              </InputAdornment>
+                            }
+                          />
+                        </FormControl>
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell />
+                      <TableCell className={classes.tableCell}>
+                        <Button color="primary" className={classes.button} type="cancel">
+                          Cancel
+                        </Button>
+                        <Button color="primary" className={classes.button} type="submit">
+                          Submit
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </form>
+            </div>
+          </div> */}
         </Modal>
       </div>
     );
