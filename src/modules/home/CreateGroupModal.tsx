@@ -276,6 +276,27 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     }
   };
 
+  resetForm = () => {
+    this.handleCloseModal();
+    this.setState({
+      firstName: '',
+      lastName: '',
+      gender: '',
+      cause: this.cause,
+      zipcode: '',
+      cs: '',
+      city: '',
+      state: '',
+      phoneNumber: '',
+      email: '',
+      password: '',
+      showPassword: false,
+      passCheck: '',
+      errStack: '',
+      unformattedPhoneNumber: ''
+    });
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -459,7 +480,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
-                    <Button color="primary" className={classes.button} type="cancel">
+                    <Button color="primary" className={classes.button} type="button" onClick={this.resetForm}>
                       Cancel
                     </Button>
                   </Paper>
