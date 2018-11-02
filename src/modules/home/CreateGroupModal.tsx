@@ -124,6 +124,12 @@ const MenuProps = {
   }
 };
 
+// interface StateProps {
+//   validateEmail: any;
+//   confirmPassword: any;
+//   errStack: Array<string>;
+// }
+
 class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   cause: Array<string> = [];
   state = {
@@ -142,7 +148,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     password: '',
     showPassword: false,
     passCheck: '',
-    errStack: []
+    errStack: ''
   };
   unique = 1;
 
@@ -228,34 +234,42 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ gender: e.target.value });
   };
 
-  errStack: Array<string> = [];
+  // validateEmail = () => {
+  //   this.props.validateEmail(this.state.email);
+  // };
+
+  // confirmPassword = () => {
+  //   this.props.confirmPassword(this.state.password, this.state.passCheck);
+  // };
+
+  errStack = '';
   validateEmail = () => {
-    console.log('On blurr??');
+    console.log('Email checked');
     let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let emailErr = 'Invalid Email';
+    // let emailErr = 'Invalid Email';
     if (reg.test(this.state.email) === false) {
-      this.errStack.push(emailErr);
+      this.errStack = 'Invalid Email';
       this.setState({ errStack: this.errStack });
     } else {
-      let index = this.errStack.indexOf(emailErr);
-      index >= 0 ? this.errStack.splice(index, 1) : '';
-      console.log(index);
+      this.errStack = '';
       this.setState({ errStack: this.errStack });
     }
   };
 
-  confirmPassword = () => {
-    let passErr = 'Password does not match';
-    if (this.state.password !== this.state.passCheck) {
-      this.errStack.push(passErr);
-      this.setState({ errStack: this.errStack });
-    } else {
-      let index = this.errStack.indexOf(passErr);
-      index >= 0 ? this.errStack.splice(index, 1) : '';
-      this.setState({ errStack: this.errStack });
-    }
-    console.log(this.errStack, this.state.errStack);
-  };
+  // confirmPassword = () => {
+  //   console.log('Password checked');
+  //   let passErr = 'Password does not match';
+  //   debugger;
+  //   let index = this.errStack.indexOf(passErr);
+  //   if (this.state.password != this.state.passCheck) {
+  //     if (index === -1) {
+  //       this.errStack.push(passErr);
+  //       this.setState({ errStack: this.errStack });
+  //     }
+  //   } else {
+  //     this.setState({ errStack: index >= 0 ? this.errStack.splice(index, 1) : this.errStack });
+  //   }
+  // };
 
   createUserObj = () => {
     return new Promise((resolve, reject) => {
@@ -274,12 +288,22 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     });
   };
   onFormSubmit = () => {
-    //validate email, confirm password and create object
-    // debugger;
-    console.log('here??');
+    if (this.state.errStack.length > 0) {
+      this.setState({ errStack: this.state.errStack });
+    } else {
+      this.createUserObj().then(data => {
+        alert(data);
+      });
+    }
   };
+
+  componentDidMount = () => {
+    this.setState({ errStack: this.state.errStack });
+  };
+
   render() {
     const { classes } = this.props;
+    console.log(this.state.errStack);
     return (
       <div>
         <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>
@@ -293,7 +317,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
           className={classes.personalizedModal}
         >
           <div className={classes.paper}>
-            <form>
+            <form onSubmit={this.onFormSubmit}>
               <Table className={classes.table}>
                 <TableHead>
                   <TableRow>
@@ -394,7 +418,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         id="standard-city"
                         label="City"
                         className={classes.textField}
-                        value={this.state.city}
+                        value={this.state.cs}
                         margin="normal"
                       />
                     </TableCell>
@@ -420,6 +444,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         value={this.state.email}
                         onChange={this.handleEmailChange}
                         margin="normal"
+                        helperText={this.state.errStack}
                       />
                     </TableCell>
                   </TableRow>
@@ -446,7 +471,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         />
                       </FormControl>
                     </TableCell>
-                    <TableCell className={classes.tableCell}>
+                    {/* <TableCell className={classes.tableCell}>
                       <TextField
                         required
                         onBlur={this.confirmPassword}
@@ -458,7 +483,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         onChange={this.handleCheckPassword}
                         margin="normal"
                       />
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                   <TableRow>
                     <TableCell />
@@ -469,11 +494,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       <Button color="primary" className={classes.button} type="button" onClick={this.onFormSubmit}>
                         Submit
                       </Button>
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell colSpan={2}>
-                      <label className={classes.orangeSpan}>{this.state.errStack.join(',')}</label>
                     </TableCell>
                   </TableRow>
                 </TableBody>
