@@ -78,6 +78,9 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     marginLeft: theme.spacing.unit * 20
   },
   wrapText: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
     whiteSpace: 'normal'
   },
   menu: {
@@ -288,187 +291,188 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
           className={classes.paperModal}
         >
           <div className={classes.root}>
-            <Grid container spacing={16}>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
-                  Radius has to offer.
-                </Paper>
+            <form onSubmit={this.onFormSubmit}>
+              <Grid container spacing={16}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
+                    Radius has to offer.
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      required
+                      id="standard-fname"
+                      label="First Name"
+                      className={classes.textField}
+                      value={this.state.firstName}
+                      onChange={this.handleFirstName}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      required
+                      id="standard-lname"
+                      label="Last Name"
+                      className={classes.textField}
+                      value={this.state.lastName}
+                      onChange={this.handleLastName}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="standard-select-gender"
+                      select
+                      label="Gender"
+                      className={classes.textField}
+                      value={this.state.gender}
+                      onChange={this.handleGenderChange}
+                      SelectProps={{ MenuProps: { className: classes.menu } }}
+                      margin="normal"
+                    >
+                      {gender.map(g => (
+                        <MenuItem key={g} value={g}>
+                          {g}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    {/* <FormControl className={classes.formControl}> */}
+                    <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
+                      Select causes
+                    </InputLabel>
+                    <Select
+                      required
+                      multiple
+                      value={this.state.cause}
+                      // className={classes.wrapText}
+                      onChange={this.handleCauseChange}
+                      input={<Input multiline className={classes.wrapText} id="select-multiple-checkbox" />}
+                      renderValue={() => this.state.cause.join(', ')}
+                      MenuProps={MenuProps}
+                    >
+                      {causes.map(c => (
+                        <MenuItem key={this.unique++} value={c}>
+                          <Checkbox checked={this.state.cause.indexOf(c) > -1} />
+                          <ListItemText primary={c} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {/* </FormControl> */}
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      required
+                      id="standard-zipcode"
+                      label="Zipcode"
+                      className={classes.textField}
+                      value={this.state.zipcode}
+                      onChange={this.handleZipcodeChange}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      disabled
+                      id="standard-city"
+                      label="City"
+                      className={classes.textField}
+                      value={this.state.city}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      disabled
+                      id="standard-state"
+                      label="State"
+                      className={classes.textField}
+                      value={this.state.state}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      id="standard-number"
+                      label="Phone Number"
+                      className={classes.textField}
+                      value={this.state.phoneNumber}
+                      onChange={this.handleNumberChange}
+                      margin="normal"
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <TextField
+                      required
+                      onBlur={this.validateEmail}
+                      id="standard-email"
+                      label="Email"
+                      className={classes.textField}
+                      value={this.state.email}
+                      onChange={this.handleEmailChange}
+                      margin="normal"
+                      helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    {/* <FormControl className={classNames(classes.margin, classes.textField)}> */}
+                    <InputLabel className={classes.textField} htmlFor="adornment-password">
+                      Password
+                    </InputLabel>
+                    <Input
+                      required
+                      id="adornment-password"
+                      type={this.state.showPassword ? 'text' : 'password'}
+                      value={this.state.password}
+                      onChange={this.handlePasswordChange}
+                      endAdornment={
+                        <InputAdornment position="end">
+                          <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
+                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <Button color="primary" className={classes.button} type="cancel">
+                      Cancel
+                    </Button>
+                  </Paper>
+                </Grid>
+                <Grid item xs={6}>
+                  <Paper className={classes.paper}>
+                    <Button color="primary" className={classes.button} type="submit">
+                      Submit
+                    </Button>
+                  </Paper>
+                </Grid>
               </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    required
-                    id="standard-fname"
-                    label="First Name"
-                    className={classes.textField}
-                    value={this.state.firstName}
-                    onChange={this.handleFirstName}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    required
-                    id="standard-lname"
-                    label="Last Name"
-                    className={classes.textField}
-                    value={this.state.lastName}
-                    onChange={this.handleLastName}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    id="standard-select-gender"
-                    select
-                    label="Gender"
-                    className={classes.textField}
-                    value={this.state.gender}
-                    onChange={this.handleGenderChange}
-                    SelectProps={{ MenuProps: { className: classes.menu } }}
-                    margin="normal"
-                  >
-                    {gender.map(g => (
-                      <MenuItem key={g} value={g}>
-                        {g}
-                      </MenuItem>
-                    ))}
-                  </TextField>
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  {/* <FormControl className={classes.formControl}> */}
-                  <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
-                    Select causes
-                  </InputLabel>
-                  <Select
-                    required
-                    multiple
-                    value={this.state.cause}
-                    className={classes.wrapText}
-                    onChange={this.handleCauseChange}
-                    input={<Input multiline id="select-multiple-checkbox" />}
-                    renderValue={() => this.state.cause.join(', ')}
-                    MenuProps={MenuProps}
-                  >
-                    {causes.map(c => (
-                      <MenuItem key={this.unique++} value={c}>
-                        <Checkbox checked={this.state.cause.indexOf(c) > -1} />
-                        <ListItemText primary={c} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  {/* </FormControl> */}
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    required
-                    id="standard-zipcode"
-                    label="Zipcode"
-                    className={classes.textField}
-                    value={this.state.zipcode}
-                    onChange={this.handleZipcodeChange}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    disabled
-                    id="standard-city"
-                    label="City"
-                    className={classes.textField}
-                    value={this.state.city}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    disabled
-                    id="standard-city"
-                    label="City"
-                    className={classes.textField}
-                    value={this.state.state}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    id="standard-number"
-                    label="Phone Number"
-                    className={classes.textField}
-                    value={this.state.phoneNumber}
-                    onChange={this.handleNumberChange}
-                    margin="normal"
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <TextField
-                    required
-                    onBlur={this.validateEmail}
-                    id="standard-email"
-                    label="Email"
-                    className={classes.textField}
-                    value={this.state.email}
-                    onChange={this.handleEmailChange}
-                    margin="normal"
-                    helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
-                  />
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  {/* <FormControl className={classNames(classes.margin, classes.textField)}> */}
-                  <InputLabel className={classes.textField} htmlFor="adornment-password">
-                    Password
-                  </InputLabel>
-                  <Input
-                    required
-                    id="adornment-password"
-                    type={this.state.showPassword ? 'text' : 'password'}
-                    value={this.state.password}
-                    onChange={this.handlePasswordChange}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
-                          {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                  {/* </FormControl> */}
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <Button color="primary" className={classes.button} type="cancel">
-                    Cancel
-                  </Button>
-                </Paper>
-              </Grid>
-              <Grid item xs={6}>
-                <Paper className={classes.paper}>
-                  <Button color="primary" className={classes.button} type="submit">
-                    Submit
-                  </Button>
-                </Paper>
-              </Grid>
-            </Grid>
+            </form>
           </div>
           {/* <div className={classes.paper}>
             <div className={classes.formDiv}>
