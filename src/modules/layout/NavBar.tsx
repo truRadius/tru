@@ -24,7 +24,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import CreateGroupModal from '../home/CreateGroupModal';
+import CreateUserModal from '../home/CreateUserModal';
 
 const logo = require('./logo.png');
 
@@ -230,7 +230,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
               <InputBase placeholder="Search…" classes={{ root: classes.inputRoot, input: classes.inputInput }} />
             </div>
 
-            <CreateGroupModal classes={classes} />
+            <CreateUserModal classes={classes} />
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               <IconButton color="inherit">

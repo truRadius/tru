@@ -1,7 +1,6 @@
 /* tslint:disable */ //toavoid 'unnecessary-semicolon' errors
 
 import * as React from 'react';
-// import classNames from 'classnames';
 import {
   Modal,
   withStyles,
@@ -13,7 +12,6 @@ import {
   WithStyles,
   TextField,
   MenuItem,
-  // FormControl,
   InputLabel,
   Input,
   Checkbox,
@@ -42,7 +40,6 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     width: '50%',
     backgroundColor: 'none',
     borderRadius: '5%',
-    // boxShadow: theme.shadows[5],
     textAlign: 'center',
     margin: '5% 30%'
   },
@@ -368,7 +365,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
-                    {/* <FormControl className={classes.formControl}> */}
                     <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
                       Select causes
                     </InputLabel>
@@ -376,7 +372,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       required
                       multiple
                       value={this.state.cause}
-                      // className={classes.wrapText}
                       onChange={this.handleCauseChange}
                       input={<Input multiline className={classes.wrapText} id="select-multiple-checkbox" />}
                       renderValue={() => this.state.cause.join(', ')}
@@ -458,7 +453,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
-                    {/* <FormControl className={classNames(classes.margin, classes.textField)}> */}
                     <InputLabel className={classes.textField} htmlFor="adornment-password">
                       Password
                     </InputLabel>
@@ -495,180 +489,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
               </Grid>
             </form>
           </div>
-          {/* <div className={classes.paper}>
-            <div className={classes.formDiv}>
-              <form onSubmit={this.onFormSubmit}>
-                <Table className={classes.table}>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
-                        <label className={classes.label}>Register</label>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className={classes.tableCell} text-align="center" colSpan={2}>
-                        Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
-                        Radius has to offer.
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          required
-                          id="standard-fname"
-                          label="First Name"
-                          className={classes.textField}
-                          value={this.state.firstName}
-                          onChange={this.handleFirstName}
-                          margin="normal"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          required
-                          id="standard-lname"
-                          label="Last Name"
-                          className={classes.textField}
-                          value={this.state.lastName}
-                          onChange={this.handleLastName}
-                          margin="normal"
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          id="standard-select-gender"
-                          select
-                          label="Gender"
-                          className={classes.textField}
-                          value={this.state.gender}
-                          onChange={this.handleGenderChange}
-                          SelectProps={{ MenuProps: { className: classes.menu } }}
-                          margin="normal"
-                        >
-                          {gender.map(g => (
-                            <MenuItem key={g} value={g}>
-                              {g}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <FormControl className={classes.formControl}>
-                          <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
-                            Select causes
-                          </InputLabel>
-                          <Select
-                            required
-                            multiple
-                            value={this.state.cause}
-                            className={classes.wrapText}
-                            onChange={this.handleCauseChange}
-                            input={<Input multiline id="select-multiple-checkbox" />}
-                            renderValue={() => this.state.cause.join(', ')}
-                            MenuProps={MenuProps}
-                          >
-                            {causes.map(c => (
-                              <MenuItem key={this.unique++} value={c}>
-                                <Checkbox checked={this.state.cause.indexOf(c) > -1} />
-                                <ListItemText primary={c} />
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          required
-                          id="standard-zipcode"
-                          label="Zipcode"
-                          className={classes.textField}
-                          value={this.state.zipcode}
-                          onChange={this.handleZipcodeChange}
-                          margin="normal"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          disabled
-                          id="standard-city"
-                          label="City"
-                          className={classes.textField}
-                          value={this.state.cs}
-                          margin="normal"
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          id="standard-number"
-                          label="Phone Number"
-                          className={classes.textField}
-                          value={this.state.phoneNumber}
-                          onChange={this.handleNumberChange}
-                          margin="normal"
-                        />
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>
-                        <TextField
-                          required
-                          onBlur={this.validateEmail}
-                          id="standard-email"
-                          label="Email"
-                          className={classes.textField}
-                          value={this.state.email}
-                          onChange={this.handleEmailChange}
-                          margin="normal"
-                          helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
-                        />
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell className={classes.tableCell}>
-                        <FormControl className={classNames(classes.margin, classes.textField)}>
-                          <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                          <Input
-                            required
-                            id="adornment-password"
-                            type={this.state.showPassword ? 'text' : 'password'}
-                            value={this.state.password}
-                            onChange={this.handlePasswordChange}
-                            endAdornment={
-                              <InputAdornment position="end">
-                                <IconButton
-                                  aria-label="Toggle password visibility"
-                                  onClick={this.handleClickShowPassword}
-                                >
-                                  {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                                </IconButton>
-                              </InputAdornment>
-                            }
-                          />
-                        </FormControl>
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell />
-                      <TableCell className={classes.tableCell}>
-                        <Button color="primary" className={classes.button} type="cancel">
-                          Cancel
-                        </Button>
-                        <Button color="primary" className={classes.button} type="submit">
-                          Submit
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </form>
-            </div>
-          </div> */}
         </Modal>
       </div>
     );
