@@ -1,4 +1,4 @@
-/* tslint:disable */ //toavoid unnecessary semicolon errors
+/* tslint:disable */ //toavoid 'unnecessary-semicolon' errors
 
 import * as React from 'react';
 import classNames from 'classnames';
@@ -110,7 +110,6 @@ type PropsWithStyles = StateProps &
     | 'margin'
   >;
 
-// const stateCode = [{ code: 'FL', id: 1 }, { code: 'CA', id: 2 }, { code: 'TN', id: 3 }];
 const gender = ['Male', 'Female', 'Other'];
 const causes = ['Feed homeless', 'Run for cancer', 'Awarness'];
 const ITEM_HEIGHT = 48;
@@ -123,12 +122,6 @@ const MenuProps = {
     }
   }
 };
-
-// interface StateProps {
-//   validateEmail: any;
-//   confirmPassword: any;
-//   errStack: Array<string>;
-// }
 
 class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   cause: Array<string> = [];
@@ -173,9 +166,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   handleZipcodeChange = (event: any) => {
-    // const reg = new RegExp('/[^0-9]');
     const onlyNums = event.target.value.replace(/[^0-9]/, '');
-    // const onlyNums = reg.test(event.target.value) ? event.target.value : event.target.value.slice(0, -1);
     console.log('Onlynums:', onlyNums);
     if (onlyNums.length < 5) {
       this.setState({ zipcode: onlyNums });
@@ -192,7 +183,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       let cs = `${city}, ${state}`;
       this.setState({ cs: cs, city: city, state: state });
     } else {
-      // this.setState({ city: 'undefined' });
       alert('Incorrect zipcode! Try again.');
     }
   };
@@ -234,19 +224,9 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ gender: e.target.value });
   };
 
-  // validateEmail = () => {
-  //   this.props.validateEmail(this.state.email);
-  // };
-
-  // confirmPassword = () => {
-  //   this.props.confirmPassword(this.state.password, this.state.passCheck);
-  // };
-
   errStack = '';
   validateEmail = () => {
-    console.log('Email checked');
     let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    // let emailErr = 'Invalid Email';
     if (reg.test(this.state.email) === false) {
       this.errStack = 'Invalid Email';
       this.setState({ errStack: this.errStack });
@@ -255,21 +235,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ errStack: this.errStack });
     }
   };
-
-  // confirmPassword = () => {
-  //   console.log('Password checked');
-  //   let passErr = 'Password does not match';
-  //   debugger;
-  //   let index = this.errStack.indexOf(passErr);
-  //   if (this.state.password != this.state.passCheck) {
-  //     if (index === -1) {
-  //       this.errStack.push(passErr);
-  //       this.setState({ errStack: this.errStack });
-  //     }
-  //   } else {
-  //     this.setState({ errStack: index >= 0 ? this.errStack.splice(index, 1) : this.errStack });
-  //   }
-  // };
 
   createUserObj = () => {
     return new Promise((resolve, reject) => {
@@ -303,7 +268,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   render() {
     const { classes } = this.props;
-    console.log(this.state.errStack);
     return (
       <div>
         <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>

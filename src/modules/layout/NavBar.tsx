@@ -135,12 +135,6 @@ type PropsWithStyles = StateProps &
     | 'paper'
   >;
 
-// interface StateProps {
-//   validateEmail: any;
-//   confirmPassword: any;
-//   errStack: Array<string>;
-// }
-
 class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     anchorEl: null,
