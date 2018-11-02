@@ -259,7 +259,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
-        console.log(data);
+        localStorage.setItem('UserObj', JSON.stringify(data));
       });
     }
   };
@@ -457,7 +457,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       <Button color="primary" className={classes.button} type="cancel">
                         Cancel
                       </Button>
-                      <Button color="primary" className={classes.button} type="button" onClick={this.onFormSubmit}>
+                      <Button color="primary" className={classes.button} type="submit">
                         Submit
                       </Button>
                     </TableCell>
