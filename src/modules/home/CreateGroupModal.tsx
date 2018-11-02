@@ -141,7 +141,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     password: '',
     showPassword: false,
     passCheck: '',
-    errStack: ''
+    errStack: '',
+    unformattedPhoneNumber: ''
   };
   unique = 1;
 
@@ -189,10 +190,10 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleNumberChange = (e: any) => {
     const onlyNums = e.target.value.replace(/[^0-9]/, '');
-    console.log('Here:', onlyNums);
     if (onlyNums.length < 10) {
       this.setState({ phoneNumber: onlyNums });
     } else if (onlyNums.length === 10) {
+      this.setState({ unformattedPhoneNumber: onlyNums });
       const number = onlyNums.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
       this.setState({ phoneNumber: number });
     }
@@ -247,7 +248,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
         city: this.state.city,
         state: this.state.state,
         email: this.state.email,
-        password: this.state.password
+        password: this.state.password,
+        phoneNumber: this.state.unformattedPhoneNumber
       };
       resolve(userObj);
     });
@@ -257,7 +259,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
-        alert(data);
+        console.log(data);
       });
     }
   };
@@ -408,7 +410,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         value={this.state.email}
                         onChange={this.handleEmailChange}
                         margin="normal"
-                        helperText={this.state.errStack}
+                        helperText={<span className={classes.orangeSpan}>{this.state.errStack}</span>}
                       />
                     </TableCell>
                   </TableRow>
