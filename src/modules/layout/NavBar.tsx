@@ -19,7 +19,7 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import Login from './Login';
+import Login from './login';
 
 const logo = require('./logo.png');
 
