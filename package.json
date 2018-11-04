@@ -22,7 +22,8 @@
     "router5": "6.4.2",
     "tslint": "5.11.0",
     "tslint-config-prettier": "^1.10.0",
-    "tslint-react": "3.6.0"
+    "tslint-react": "3.6.0",
+    "zipcodes": "^8.0.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",
