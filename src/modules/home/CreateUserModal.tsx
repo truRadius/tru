@@ -100,31 +100,34 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
-  'button' |
-  'paper' |
-  'paperModal' |
-  'root' |
-  'tableCell' |
-  'table' |
-  'label' |
-  'submitBtn' |
-  'wrapText' |
-  'menu' |
-  'formControl' |
-  'personalizedModal' |
-  'orangeSpan' |
-  'errorSpan' |
-  'margin' |
-  'formDiv' |
-  'bgColorModal'
+type PropsWithStyles = StateProps &
+  DispatchProps &
+  WithTheme &
+  WithStyles<
+    | 'button'
+    | 'paper'
+    | 'paperModal'
+    | 'root'
+    | 'tableCell'
+    | 'table'
+    | 'label'
+    | 'submitBtn'
+    | 'wrapText'
+    | 'menu'
+    | 'formControl'
+    | 'personalizedModal'
+    | 'orangeSpan'
+    | 'errorSpan'
+    | 'margin'
+    | 'formDiv'
+    | 'bgColorModal'
   >;
 
 const gender = ['Male', 'Female', 'Other'];
 const causes = [
-  'Animal Welfare', 
-  'Arts and Culture', 
-  'Children', 
+  'Animal Welfare',
+  'Arts and Culture',
+  'Children',
   'Civil Rights and Social Action',
   'Disaster and Humanitarian Relief',
   'Economic Empowerment',
@@ -368,9 +371,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                 </Grid>
                 <Grid item xs={6}>
                   <FormControl style={{ width: '100%', marginTop: 16 }}>
-                    <InputLabel htmlFor="select-multiple-checkbox">
-                      Select causes
-                    </InputLabel>
+                    <InputLabel htmlFor="select-multiple-checkbox">Select causes</InputLabel>
                     <Select
                       autoWidth
                       required
@@ -446,9 +447,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                 </Grid>
                 <Grid item xs={6}>
                   <FormControl style={{ width: '100%', marginTop: 16 }}>
-                    <InputLabel htmlFor="adornment-password">
-                      Password
-                    </InputLabel>
+                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
                     <Input
                       fullWidth
                       required
@@ -490,5 +489,5 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 }
 
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
-export const CreateGroupModal: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(CreateModal));
-export default CreateGroupModal;
+export const CreateUserModal: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(CreateModal));
+export default CreateUserModal;

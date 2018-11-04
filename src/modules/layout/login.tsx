@@ -57,11 +57,26 @@ class Login extends React.PureComponent<PropsWithStyles, InternalState> {
     password: ''
   };
 
+  signIn = () => {
+    let signInCreds = {
+      email: this.state.email,
+      password: this.state.password
+    };
+    alert(`${signInCreds.email} ${signInCreds.password}`);
+    //TODO: Alert should be replaced by functionality to check from database if the information matches.
+  };
+
+  handleEmail = (e: any) => {
+    this.setState({ email: e.target.value });
+  };
+  handlePassword = (e: any) => {
+    this.setState({ password: e.target.value });
+  };
   render() {
     const { classes } = this.props;
     return (
       <div>
-        <form>
+        <form onSubmit={this.signIn}>
           <Grid container spacing={24}>
             <Grid container spacing={16}>
               <Grid item xs={6}>
@@ -69,8 +84,9 @@ class Login extends React.PureComponent<PropsWithStyles, InternalState> {
                   <TextField
                     id="standard-email"
                     label="Email or Mobile Number"
-                    // className={classes.textField}
-                    value={this.state.email} // onChange={this.handleLastName}
+                    className={classes.textField}
+                    value={this.state.email}
+                    onChange={this.handleEmail}
                     margin="normal"
                     helperText="forgot password?"
                   />
@@ -82,8 +98,9 @@ class Login extends React.PureComponent<PropsWithStyles, InternalState> {
                     id="standard-password"
                     label="Password"
                     type="password"
-                    // className={classes.textField}
-                    value={this.state.password} // onChange={this.handleLastName}
+                    className={classes.textField}
+                    value={this.state.password}
+                    onChange={this.handlePassword}
                     margin="normal"
                   />
                 </Paper>
