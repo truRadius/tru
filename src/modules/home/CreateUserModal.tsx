@@ -20,7 +20,9 @@ import {
   IconButton,
   Select,
   Grid,
-  Paper
+  Paper,
+  FormControl,
+  Typography
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 let zipcodes = require('zipcodes');
@@ -53,12 +55,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
     flexGrow: 1,
     backgroundColor: '#E8E8E8',
-    borderRadius: '5%'
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 200
+    borderRadius: 10,
+    padding: '0 20px'
   },
   table: {
     minWidth: '100%'
@@ -77,7 +75,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   wrapText: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    width: 200,
+    width: '100%',
     whiteSpace: 'normal'
   },
   menu: {
@@ -102,32 +100,43 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps &
-  DispatchProps &
-  WithTheme &
-  WithStyles<
-    | 'button'
-    | 'paper'
-    | 'paperModal'
-    | 'root'
-    | 'tableCell'
-    | 'textField'
-    | 'table'
-    | 'label'
-    | 'submitBtn'
-    | 'wrapText'
-    | 'menu'
-    | 'formControl'
-    | 'personalizedModal'
-    | 'orangeSpan'
-    | 'errorSpan'
-    | 'margin'
-    | 'formDiv'
-    | 'bgColorModal'
+type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
+  'button' |
+  'paper' |
+  'paperModal' |
+  'root' |
+  'tableCell' |
+  'table' |
+  'label' |
+  'submitBtn' |
+  'wrapText' |
+  'menu' |
+  'formControl' |
+  'personalizedModal' |
+  'orangeSpan' |
+  'errorSpan' |
+  'margin' |
+  'formDiv' |
+  'bgColorModal'
   >;
 
 const gender = ['Male', 'Female', 'Other'];
-const causes = ['Feed homeless', 'Run for cancer', 'Awarness'];
+const causes = [
+  'Animal Welfare', 
+  'Arts and Culture', 
+  'Children', 
+  'Civil Rights and Social Action',
+  'Disaster and Humanitarian Relief',
+  'Economic Empowerment',
+  'Education',
+  'Environment',
+  'Health',
+  'Human Rights',
+  'Politics',
+  'Poverty Alleviation',
+  'Science and Technology',
+  'Social Services'
+];
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -312,68 +321,63 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
             <form onSubmit={this.onFormSubmit}>
               <Grid container spacing={16}>
                 <Grid item xs={12}>
-                  <Paper className={classes.paper}>
+                  <Typography variant="h6" className={classes.paper}>
                     Sign up to enjoy what <span className={classes.orangeSpan}>tru</span>
                     Radius has to offer.
-                  </Paper>
+                  </Typography>
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      required
-                      id="standard-fname"
-                      label="First Name"
-                      className={classes.textField}
-                      value={this.state.firstName}
-                      onChange={this.handleFirstName}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    required
+                    id="standard-fname"
+                    label="First Name"
+                    value={this.state.firstName}
+                    onChange={this.handleFirstName}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      required
-                      id="standard-lname"
-                      label="Last Name"
-                      className={classes.textField}
-                      value={this.state.lastName}
-                      onChange={this.handleLastName}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    required
+                    id="standard-lname"
+                    label="Last Name"
+                    value={this.state.lastName}
+                    onChange={this.handleLastName}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      id="standard-select-gender"
-                      select
-                      label="Gender"
-                      className={classes.textField}
-                      value={this.state.gender}
-                      onChange={this.handleGenderChange}
-                      SelectProps={{ MenuProps: { className: classes.menu } }}
-                      margin="normal"
-                    >
-                      {gender.map(g => (
-                        <MenuItem key={g} value={g}>
-                          {g}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    id="standard-select-gender"
+                    select
+                    label="Gender"
+                    value={this.state.gender}
+                    onChange={this.handleGenderChange}
+                    SelectProps={{ MenuProps: { className: classes.menu } }}
+                    margin="normal"
+                  >
+                    {gender.map(g => (
+                      <MenuItem key={g} value={g}>
+                        {g}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <InputLabel className={classes.textField} htmlFor="select-multiple-checkbox">
+                  <FormControl style={{ width: '100%', marginTop: 16 }}>
+                    <InputLabel htmlFor="select-multiple-checkbox">
                       Select causes
                     </InputLabel>
                     <Select
+                      autoWidth
                       required
                       multiple
                       value={this.state.cause}
                       onChange={this.handleCauseChange}
-                      input={<Input multiline className={classes.wrapText} id="select-multiple-checkbox" />}
+                      input={<Input multiline id="select-multiple-checkbox" />}
                       renderValue={() => this.state.cause.join(', ')}
                       MenuProps={MenuProps}
                     >
@@ -384,79 +388,69 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         </MenuItem>
                       ))}
                     </Select>
-                    {/* </FormControl> */}
-                  </Paper>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      required
-                      id="standard-zipcode"
-                      label="Zipcode"
-                      className={classes.textField}
-                      value={this.state.zipcode}
-                      onChange={this.handleZipcodeChange}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    required
+                    id="standard-zipcode"
+                    label="Zipcode"
+                    value={this.state.zipcode}
+                    onChange={this.handleZipcodeChange}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      disabled
-                      id="standard-city"
-                      label="City"
-                      className={classes.textField}
-                      value={this.state.city}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    disabled
+                    id="standard-city"
+                    label="City"
+                    value={this.state.city}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      disabled
-                      id="standard-state"
-                      label="State"
-                      className={classes.textField}
-                      value={this.state.state}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    disabled
+                    id="standard-state"
+                    label="State"
+                    value={this.state.state}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      id="standard-number"
-                      label="Phone Number"
-                      className={classes.textField}
-                      value={this.state.phoneNumber}
-                      onChange={this.handleNumberChange}
-                      margin="normal"
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    id="standard-number"
+                    label="Phone Number"
+                    value={this.state.phoneNumber}
+                    onChange={this.handleNumberChange}
+                    margin="normal"
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <TextField
-                      required
-                      onBlur={this.validateEmail}
-                      id="standard-email"
-                      label="Email"
-                      className={classes.textField}
-                      value={this.state.email}
-                      onChange={this.handleEmailChange}
-                      margin="normal"
-                      helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
-                    />
-                  </Paper>
+                  <TextField
+                    fullWidth
+                    required
+                    onBlur={this.validateEmail}
+                    id="standard-email"
+                    label="Email"
+                    value={this.state.email}
+                    onChange={this.handleEmailChange}
+                    margin="normal"
+                    helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
+                  />
                 </Grid>
                 <Grid item xs={6}>
-                  <Paper className={classes.paper}>
-                    <InputLabel className={classes.textField} htmlFor="adornment-password">
+                  <FormControl style={{ width: '100%', marginTop: 16 }}>
+                    <InputLabel htmlFor="adornment-password">
                       Password
                     </InputLabel>
                     <Input
+                      fullWidth
                       required
                       id="adornment-password"
                       type={this.state.showPassword ? 'text' : 'password'}
@@ -470,7 +464,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                         </InputAdornment>
                       }
                     />
-                  </Paper>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
