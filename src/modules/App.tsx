@@ -1,23 +1,18 @@
+/* tslint:disable */ //toavoid unnecessary semicolon errors
+
 import * as React from 'react';
-import {
-  StyledComponentProps,
-  withTheme,
-} from '@material-ui/core';
+import { StyledComponentProps, withTheme } from '@material-ui/core';
 import Main from './layout/Main';
 import { NavBar } from './layout/NavBar';
 import { Footer } from './layout/Footer';
 
-interface StateProps {
-}
-interface DispatchProps {
-}
-interface InternalState {
-}
+interface StateProps {}
+interface DispatchProps {}
+interface InternalState {}
 class InternalApp extends React.PureComponent<InternalState> {
-  state = {
-  };
-  render() {
+  state = {};
 
+  render() {
     return (
       <div>
         <nav>
@@ -34,5 +29,4 @@ class InternalApp extends React.PureComponent<InternalState> {
   }
 }
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
-export const App: React.ComponentType<StyledProps> =
-  withTheme()(InternalApp);
+export const App: React.ComponentType<StyledProps> = withTheme()(InternalApp);
