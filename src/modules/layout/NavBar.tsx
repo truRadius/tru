@@ -13,18 +13,12 @@ import {
   Menu,
   MenuItem,
   IconButton
-  // Badge,
-  // InputBase
 } from '@material-ui/core';
 
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-// import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-// import MailIcon from '@material-ui/icons/Mail';
-// import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-// import CreateUserModal from '../home/CreateUserModal';
 import Login from './Login';
 
 const logo = require('./logo.png');
@@ -144,7 +138,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     errStack: []
   };
 
-  // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -154,7 +147,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     this.handleMobileMenuClose();
   };
 
-  // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
   };
@@ -209,18 +201,8 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
           <Toolbar className={classes.container}>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
             <Login classes={classes} />
-            {/* <CreateUserModal classes={classes} /> */}
             <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <IconButton
-                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle className={classes.icons} />
-              </IconButton>
-            </div>
+            <div className={classes.sectionDesktop} />
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
                 <MoreIcon className={classes.icons} />
