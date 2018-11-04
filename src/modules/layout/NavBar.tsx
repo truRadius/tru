@@ -24,7 +24,8 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 // import MailIcon from '@material-ui/icons/Mail';
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import CreateUserModal from '../home/CreateUserModal';
+// import CreateUserModal from '../home/CreateUserModal';
+import Login from './Login';
 
 const logo = require('./logo.png');
 
@@ -207,8 +208,8 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
         <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
-
-            <CreateUserModal classes={classes} />
+            <Login classes={classes} />
+            {/* <CreateUserModal classes={classes} /> */}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               <IconButton
