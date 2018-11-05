@@ -21,7 +21,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
 
-const logo = require('./logo.png');
+const logo = require('../logo.png');
 
 interface StateProps {}
 
@@ -135,7 +135,15 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     anchorEl: null,
     mobileMoreAnchorEl: null,
     open: false,
-    errStack: []
+    errStack: [],
+    loggedIn: false
+  };
+
+  componentDidMount = () => {
+    //TODO: Replace this login with actual logic to check if user is logged in
+    if (localStorage.getItem('UserObj')) {
+      this.setState({ loggedIn: true });
+    }
   };
 
   handleProfileMenuOpen = (event: any) => {
@@ -200,7 +208,15 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
         <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
-            <Login classes={classes} />
+            {this.state.loggedIn ? (
+              <div>
+                <IconButton color="inherit">
+                  <AccountCircle />
+                </IconButton>
+              </div>
+            ) : (
+              <Login classes={classes} />
+            )}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop} />
             <div className={classes.sectionMobile}>
