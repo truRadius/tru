@@ -20,7 +20,7 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
-// import { Link } from 'react-router5';
+import { Link } from 'react-router-dom';
 
 const logo = require('../logo.png');
 
@@ -211,9 +211,11 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
             {this.state.loggedIn ? (
               <div>
-                <IconButton color="inherit">
-                  <AccountCircle />
-                </IconButton>
+                <Link to="/profile">
+                  <IconButton color="inherit">
+                    <AccountCircle />
+                  </IconButton>
+                </Link>
               </div>
             ) : (
               <Login classes={classes} />

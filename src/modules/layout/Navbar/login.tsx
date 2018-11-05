@@ -1,7 +1,6 @@
 /* tslint:disable */
 
 import * as React from 'react';
-// import { routeNode } from 'react-router5';
 import {
   StyledComponentProps,
   Theme,
