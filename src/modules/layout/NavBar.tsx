@@ -1,4 +1,3 @@
-/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -138,26 +137,28 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     errStack: []
   };
 
+  // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
-  };
+  }
 
   handleMenuClose = () => {
     this.setState({ anchorEl: null });
     this.handleMobileMenuClose();
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
-  };
+  }
 
   handleMobileMenuClose = () => {
     this.setState({ mobileMoreAnchorEl: null });
-  };
+  }
 
   handleOpenModal = () => {
     this.setState({ open: true });
-  };
+  }
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
