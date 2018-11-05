@@ -15,13 +15,13 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
 
 type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<'root'>;
 
-class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
+class ViewProfile extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {};
 
   render() {
-    return <div>Home</div>;
+    return <div>Profile</div>;
   }
 }
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
-export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
-export default Home;
+export const Profile: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(ViewProfile));
+export default Profile;
