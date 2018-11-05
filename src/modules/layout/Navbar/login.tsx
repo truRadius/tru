@@ -15,7 +15,7 @@ import {
   Grid
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import CreateUserModal from '../home/CreateUserModal';
+import CreateUserModal from './CreateUserModal';
 
 interface StateProps {}
 

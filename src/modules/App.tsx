@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { StyledComponentProps, withTheme } from '@material-ui/core';
 import Main from './layout/Main';
-import { NavBar } from './layout/NavBar';
+import { NavBar } from './layout/Navbar/NavBar';
 import { Footer } from './layout/Footer';
 
 interface StateProps {}
