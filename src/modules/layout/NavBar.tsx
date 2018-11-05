@@ -12,19 +12,14 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  IconButton,
-  Badge,
-  InputBase
+  IconButton
 } from '@material-ui/core';
 
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
-import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
 import MoreIcon from '@material-ui/icons/MoreVert';
-import CreateUserModal from '../home/CreateUserModal';
+import Login from './login';
 
 const logo = require('./logo.png');
 
@@ -143,7 +138,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     errStack: []
   };
 
-  // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -153,7 +147,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     this.handleMobileMenuClose();
   };
 
-  // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
   };
@@ -193,22 +186,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
         open={isMobileMenuOpen}
         onClose={this.handleMobileMenuClose}
       >
-        <MenuItem>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="primary">
-              <MailIcon />
-            </Badge>
-          </IconButton>
-          <p>Messages</p>
-        </MenuItem>
-        <MenuItem>
-          <IconButton color="inherit">
-            <Badge badgeContent={11} color="primary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <p>Notifications</p>
-        </MenuItem>
         <MenuItem onClick={this.handleProfileMenuOpen}>
           <IconButton color="inherit">
             <AccountCircle />
@@ -223,36 +200,9 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
         <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
             <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
-            <div className={classes.search}>
-              <div className={classes.searchIcon}>
-                <SearchIcon />
-              </div>
-              <InputBase placeholder="Search…" classes={{ root: classes.inputRoot, input: classes.inputInput }} />
-            </div>
-
-            <CreateUserModal classes={classes} />
+            <Login classes={classes} />
             <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
-              <IconButton color="inherit">
-                <Badge badgeContent={4} color="primary">
-                  <MailIcon className={classes.icons} />
-                </Badge>
-              </IconButton>
-              <IconButton color="inherit">
-                <Badge badgeContent={17} color="primary">
-                  <NotificationsIcon className={classes.icons} />
-                </Badge>
-              </IconButton>
-
-              <IconButton
-                aria-owns={isMenuOpen ? 'material-appbar' : undefined}
-                aria-haspopup="true"
-                onClick={this.handleProfileMenuOpen}
-                color="inherit"
-              >
-                <AccountCircle className={classes.icons} />
-              </IconButton>
-            </div>
+            <div className={classes.sectionDesktop} />
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
                 <MoreIcon className={classes.icons} />
