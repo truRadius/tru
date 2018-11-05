@@ -53,7 +53,7 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
     const { classes } = this.props;
 
     return (
-      <div style={{width: '100%', backgroundColor: '#686868'}}>
+      <div style={{width: '100%', backgroundColor: '#2E4C63'}}>
         <Grid container style={{width: '80%', margin: '0 auto', paddingTop: 40}}>
           <Grid item sm={4}>
             <Typography className={classes.typography}>
@@ -75,12 +75,6 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
             <List component="nav">
               <ListItem button>
                 <ListItemText disableTypography className={classes.listText} primary="Events" />
-              </ListItem>
-              <ListItem button>
-                <ListItemText disableTypography className={classes.listText} primary="Groups" />
-              </ListItem>
-              <ListItem button>
-                <ListItemText disableTypography className={classes.listText} primary="People" />
               </ListItem>
               <ListItem button>
                 <ListItemText disableTypography className={classes.listText} primary="Organizations" />
