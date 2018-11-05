@@ -2,9 +2,10 @@
 
 import * as React from 'react';
 import { StyledComponentProps, withTheme } from '@material-ui/core';
-import Main from './layout/Main';
+// import Main from './layout/Main';
 import { NavBar } from './layout/NavBar';
 import { Footer } from './layout/Footer';
+import { LandingPage } from './pages/LandingPage';
 
 interface StateProps {}
 interface DispatchProps {}
@@ -19,7 +20,8 @@ class InternalApp extends React.PureComponent<InternalState> {
           <NavBar />
         </nav>
         <main>
-          <Main />
+          {/* <Main /> */}
+          <LandingPage />
         </main>
         <footer>
           <Footer />
