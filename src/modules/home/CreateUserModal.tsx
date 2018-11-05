@@ -1,5 +1,3 @@
-/* tslint:disable */ //toavoid 'unnecessary-semicolon' errors
-
 import * as React from 'react';
 import {
   Modal,
@@ -56,7 +54,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     flexGrow: 1,
     backgroundColor: '#E8E8E8',
     borderRadius: 10,
-    padding: '0 20px'
+    padding: '0 20px',
+    maxWidth: 600,
   },
   table: {
     minWidth: '100%'
@@ -180,18 +179,21 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleOpenModal = () => {
     this.setState({ open: true });
-  };
+  }
 
   handleCloseModal = () => {
     this.setState({ open: false });
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleCauseChange = (event: any) => {
     this.setState({ cause: event.target.value });
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleZipcodeChange = (event: any) => {
     const onlyNums = event.target.value.replace(/[^0-9]/, '');
+    // tslint:disable-next-line:no-console
     console.log('Onlynums:', onlyNums);
     if (onlyNums.length < 5) {
       this.setState({ zipcode: onlyNums });
@@ -199,7 +201,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ zipcode: onlyNums });
       this.findCityState(onlyNums);
     }
-  };
+  }
 
   findCityState = (nums: number) => {
     if (zipcodes.lookup(nums) !== undefined) {
@@ -210,40 +212,46 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     } else {
       alert('Incorrect zipcode! Try again.');
     }
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleNumberChange = (e: any) => {
     const onlyNums = e.target.value.replace(/[^0-9]/, '');
     if (onlyNums.length < 10) {
       this.setState({ phoneNumber: onlyNums });
     } else if (onlyNums.length === 10) {
       this.setState({ unformattedPhoneNumber: onlyNums });
-      const number = onlyNums.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
-      this.setState({ phoneNumber: number });
+      const num = onlyNums.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+      this.setState({ phoneNumber: num });
     }
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleEmailChange = (event: any) => {
     this.setState({ email: event.target.value });
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handlePasswordChange = (event: any) => {
     this.setState({ password: event.target.value });
-  };
+  }
 
   handleClickShowPassword = () => {
     this.setState({ showPassword: !this.state.showPassword });
-  };
+  }
 
+  // tslint:disable-next-line:no-any
   handleFirstName = (e: any) => {
     this.setState({ firstName: e.target.value });
-  };
+  }
+  // tslint:disable-next-line:no-any
   handleLastName = (e: any) => {
     this.setState({ lastName: e.target.value });
-  };
+  }
+  // tslint:disable-next-line:no-any
   handleGenderChange = (e: any) => {
     this.setState({ gender: e.target.value });
-  };
+  }
 
   errStack = '';
   validateEmail = () => {
@@ -255,7 +263,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.errStack = '';
       this.setState({ errStack: this.errStack });
     }
-  };
+  }
 
   createUserObj = () => {
     return new Promise((resolve, reject) => {
@@ -273,17 +281,17 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       };
       resolve(userObj);
     });
-  };
+  }
 
   onFormSubmit = () => {
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
-        localStorage.setItem('UserObj', JSON.stringify(data)); //TODO: change it to actual database once ready
+        localStorage.setItem('UserObj', JSON.stringify(data)); // TODO: change it to actual database once ready
       });
     }
-  };
+  }
 
   resetForm = () => {
     this.handleCloseModal();
@@ -304,12 +312,12 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       errStack: '',
       unformattedPhoneNumber: ''
     });
-  };
+  }
 
   render() {
     const { classes } = this.props;
     return (
-      <div>
+      <>
         <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>
           Register
         </Button>
@@ -483,7 +491,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
             </form>
           </div>
         </Modal>
-      </div>
+      </>
     );
   }
 }
