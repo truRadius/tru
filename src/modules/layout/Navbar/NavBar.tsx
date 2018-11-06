@@ -1,4 +1,5 @@
-/* tslint:disable */
+/* tslint:disable */ //toavoid unnecessary semicolon errors
+
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -147,6 +148,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     }
   };
 
+  // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
   };
@@ -156,6 +158,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
     this.handleMobileMenuClose();
   };
 
+  // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
   };
