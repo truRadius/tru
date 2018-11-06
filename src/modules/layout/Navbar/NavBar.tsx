@@ -208,9 +208,12 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
       <div className={classes.root}>
         <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
-            <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
+            <Link to="/">
+              <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
+            </Link>
             {this.state.loggedIn ? (
               <div>
+                {/* TODO: This will eventually change to profile/:id for particular user */}
                 <Link to="/profile">
                   <IconButton color="inherit">
                     <AccountCircle />

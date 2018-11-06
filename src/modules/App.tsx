@@ -12,6 +12,7 @@ import { Profile } from './Profile/ViewUserProfile';
 interface StateProps {}
 interface DispatchProps {}
 interface InternalState {}
+
 class InternalApp extends React.PureComponent<InternalState> {
   state = {};
 
@@ -24,6 +25,7 @@ class InternalApp extends React.PureComponent<InternalState> {
           </nav>
           <main>
             <Route exact path="/" render={() => <Home />} />
+            {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
             <Route exact path="/profile" render={() => <Profile />} />
           </main>
           <footer>
