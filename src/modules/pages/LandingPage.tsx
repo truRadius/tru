@@ -7,7 +7,19 @@ import {
     withTheme,
     WithTheme,
     Typography,
-    Grid
+    Grid,
+    FormControl,
+    TextField,
+    InputBase,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button,
+    Input,
+    Checkbox,
+    ListItemText,
+    MuiThemeProvider, 
+    createMuiTheme,
   } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
@@ -21,6 +33,38 @@ interface DispatchProps {
 
 interface InternalState {
 }
+
+const distance = [10, 25, 50, 100];
+const causes = [
+  'Animal Welfare',
+  'Arts and Culture',
+  'Children',
+  'Civil Rights and Social Action',
+  'Disaster and Humanitarian Relief',
+  'Economic Empowerment',
+  'Education',
+  'Environment',
+  'Health',
+  'Human Rights',
+  'Politics',
+  'Poverty Alleviation',
+  'Science and Technology',
+  'Social Services'
+];
+const category = [
+  'Events',
+  'Organizations',
+];
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
@@ -42,18 +86,59 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     fontFamily: 'arial rounded MT', 
     textAlign: 'center',
     padding: '20px 0'
+  },
+  inputInput: {
+    paddingTop: 4,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: 4,
+    paddingLeft: 20,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    border: '1px solid #2E4C63',
+    borderRadius: 40,
+    backgroundColor: 'white'
+
+  },
+  formControl: {
+    minWidth: 120,
+    width: '100%',
+  },
+  gridItem: {
+    padding: 8
   }
+});
+
+const themeAlt = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#2E4C63'
+    },
+  },
 });
 
 type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
   'root' |
   'about' |
-  'quote'
+  'quote' |
+  'inputInput' |
+  'formControl' |
+  'gridItem'
   >;
 
 class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalState> {
+  cause: Array<string> = [];
   state = {
+    search: undefined,
+    zipCode: undefined,
+    distance: 10,
+    cause: this.cause,
+    category: 'Events',
   };
+
+  // tslint:disable-next-line:no-any
+  handleChange = (name: string) => (event: any) => {
+    this.setState({ [name]: event.target.value });
+  }
 
   render() {
     const { classes } = this.props;
@@ -85,6 +170,116 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
             </Grid>
           </Grid>
         </div>
+        <form style={{ width: '80%', margin: '20px auto 40px', maxWidth: 10000 }}>
+          <Grid container justify="center" alignItems="center">
+            <Grid item style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
+              <Typography variant="h4" color="secondary" className={classes.quote}>Try it!</Typography>
+              <Typography variant="h5" color="secondary" className={classes.quote} style={{ fontFamily: 'roboto' }}>
+                Use the form below to find organizations or events that support your cause.
+              </Typography>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid item md={12} container alignItems="center">
+              <Grid item md={5} className={classes.gridItem}>
+                <MuiThemeProvider theme={themeAlt}>
+                <FormControl className={classes.formControl}>
+                  <InputBase
+                    fullWidth
+                    placeholder="Search"
+                    classes={{
+                      input: classes.inputInput,
+                    }}
+                  />
+                </FormControl>
+                </MuiThemeProvider>
+              </Grid>
+              <Grid item md={5} className={classes.gridItem}>
+                <MuiThemeProvider theme={themeAlt}>
+                <FormControl className={classes.formControl}>
+                  <TextField
+                    fullWidth
+                    label="Zip Code"
+                    value={this.state.zipCode}
+                    onChange={this.handleChange('zipCode')}
+                  />
+                </FormControl>
+                </MuiThemeProvider>
+              </Grid>
+              <Grid item md={2} className={classes.gridItem}>
+                <MuiThemeProvider theme={themeAlt}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="distance">Distance</InputLabel>
+                  <Select
+                    fullWidth
+                    value={this.state.distance}
+                    onChange={this.handleChange('distance')}
+                    inputProps={{
+                      name: 'distance',
+                      id: 'distance',
+                    }}
+                  >
+                    {distance.map(d => (
+                      <MenuItem key={d} value={d}>
+                        {d} Miles
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                </MuiThemeProvider>
+              </Grid>
+            </Grid>
+            <Grid item md={12} container alignItems="center">
+              <Grid item md={5} className={classes.gridItem}>
+                <MuiThemeProvider theme={themeAlt}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="causes">Causes</InputLabel>
+                  <Select
+                    multiple
+                    input={<Input id="causes" />}
+                    value={this.state.cause}
+                    onChange={this.handleChange('cause')}
+                    MenuProps={MenuProps}
+                  >
+                    {causes.map(cause => (
+                      <MenuItem key={cause} value={cause}>
+                        <Checkbox checked={this.state.cause.indexOf(cause) > -1} />
+                        <ListItemText primary={cause} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                </MuiThemeProvider>
+              </Grid>
+              <Grid item md={5} className={classes.gridItem}>
+                <MuiThemeProvider theme={themeAlt}>
+                <FormControl className={classes.formControl}>
+                  <InputLabel htmlFor="category">Category</InputLabel>
+                  <Select
+                    value={this.state.category}
+                    onChange={this.handleChange('category')}
+                    inputProps={{
+                      name: 'category',
+                      id: 'category',
+                    }}
+                  >
+                    {category.map(c => (
+                      <MenuItem key={c} value={c}>
+                        {c}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                </MuiThemeProvider>
+              </Grid>
+              <Grid item md={2} className={classes.gridItem}>
+                <Button color="primary" variant="contained" style={{ color: 'white' }}>
+                  Search
+                </Button>
+              </Grid>
+            </Grid>
+          </Grid>
+        </form>
       </>
     );
   }
