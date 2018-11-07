@@ -9,7 +9,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Profile } from './Profile/ViewUserProfile';
 // import { NavBar } from './layout/NavBar';
 import { Footer } from './layout/Footer';
-import { LandingPage } from './pages/LandingPage';
+import { LandingPage } from './LandingPage/LandingPage';
 
 interface StateProps {}
 interface DispatchProps {}
