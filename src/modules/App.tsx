@@ -2,14 +2,12 @@
 
 import * as React from 'react';
 import { StyledComponentProps, withTheme } from '@material-ui/core';
-// import Main from './layout/Main';
 import { NavBar } from './layout/Navbar/NavBar';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-// import { Footer } from './layout/Footer';
 import { Profile } from './Profile/ViewUserProfile';
-// import { NavBar } from './layout/NavBar';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
+import { Home } from './home/Home';
 
 interface StateProps {}
 interface DispatchProps {}
@@ -34,7 +32,11 @@ class InternalApp extends React.PureComponent<InternalState> {
             <NavBar isLoggedIn={this.isLoggedIn} loggedIn={this.state.loggedIn} />
           </nav>
           <main>
-            <Route exact path="/" render={() => <LandingPage />} />
+            {this.state.loggedIn ? (
+              <Route exact path="/home" render={() => <Home />} />
+            ) : (
+              <Route exact path="/" render={() => <LandingPage />} />
+            )}
             {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
             <Route exact path="/profile" render={() => <Profile />} />
           </main>
