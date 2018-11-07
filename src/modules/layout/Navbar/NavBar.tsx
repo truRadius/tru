@@ -143,11 +143,14 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
 
   componentDidMount = () => {
     //TODO: Replace this login with actual logic to check if user is logged in
+    this.isLoggedIn();
+  };
+
+  isLoggedIn = () => {
     if (localStorage.getItem('UserObj')) {
       this.setState({ loggedIn: true });
     }
   };
-
   // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -224,7 +227,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
                 </Link>
               </div>
             ) : (
-              <Login classes={classes} />
+              <Login classes={classes} isLoggedIn={this.isLoggedIn} />
             )}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop} />
