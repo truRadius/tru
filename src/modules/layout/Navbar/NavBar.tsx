@@ -132,25 +132,24 @@ type PropsWithStyles = StateProps &
     | 'paper'
   >;
 
+interface StateProps {
+  isLoggedIn: any;
+  loggedIn: boolean;
+}
 class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     open: false,
     errStack: [],
-    loggedIn: false
+    loggedIn: this.props.loggedIn
   };
 
   componentDidMount = () => {
     //TODO: Replace this login with actual logic to check if user is logged in
-    this.isLoggedIn();
+    this.props.isLoggedIn();
   };
 
-  isLoggedIn = () => {
-    if (localStorage.getItem('UserObj')) {
-      this.setState({ loggedIn: true });
-    }
-  };
   // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
@@ -217,7 +216,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <Link to="/">
               <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
             </Link>
-            {this.state.loggedIn ? (
+            {this.props.loggedIn ? (
               <div>
                 {/* TODO: This will eventually change to profile/:id for particular user */}
                 <Link to="/profile">
@@ -227,7 +226,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
                 </Link>
               </div>
             ) : (
-              <Login classes={classes} isLoggedIn={this.isLoggedIn} />
+              <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
             )}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop} />

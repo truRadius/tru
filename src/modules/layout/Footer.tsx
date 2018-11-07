@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -14,19 +15,16 @@ import {
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 
-interface StateProps {
-}
+interface StateProps {}
 
-interface DispatchProps {
-}
+interface DispatchProps {}
 
-interface InternalState {
-}
+interface InternalState {}
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   typography: {
     color: 'white',
@@ -38,40 +36,37 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
-  'root' |
-  'typography' |
-  'listText'
-  >;
-
+type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<'root' | 'typography' | 'listText'>;
+interface StateProps {
+  isLoggedIn: any;
+}
 // tslint:disable-next-line:no-any
 class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
-  state = {
-  };
+  state = {};
 
+  logOut = () => {
+    localStorage.removeItem('UserObj');
+    this.props.isLoggedIn();
+  };
   render() {
     const { classes } = this.props;
 
     return (
-      <div style={{width: '100%', backgroundColor: '#2E4C63'}}>
-        <Grid container style={{width: '80%', margin: '0 auto', paddingTop: 40}}>
+      <div style={{ width: '100%', backgroundColor: '#2E4C63' }}>
+        <Grid container style={{ width: '80%', margin: '0 auto', paddingTop: 40 }}>
           <Grid item sm={4}>
-            <Typography className={classes.typography}>
-              Your Account
-            </Typography>
+            <Typography className={classes.typography}>Your Account</Typography>
             <List component="nav">
               <ListItem button>
                 <ListItemText disableTypography className={classes.listText} primary="View" />
               </ListItem>
               <ListItem button>
-                <ListItemText disableTypography className={classes.listText} primary="Log Out" />
+                <ListItemText disableTypography onClick={this.logOut} className={classes.listText} primary="Log Out" />
               </ListItem>
             </List>
           </Grid>
           <Grid item sm={4}>
-            <Typography className={classes.typography}>
-              Discover
-            </Typography>
+            <Typography className={classes.typography}>Discover</Typography>
             <List component="nav">
               <ListItem button>
                 <ListItemText disableTypography className={classes.listText} primary="Events" />
@@ -82,9 +77,7 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
             </List>
           </Grid>
           <Grid item sm={4}>
-            <Typography className={classes.typography}>
-              truRadius
-            </Typography>
+            <Typography className={classes.typography}>truRadius</Typography>
             <List component="nav">
               <ListItem button>
                 <ListItemText disableTypography className={classes.listText} primary="About" />
@@ -95,9 +88,9 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
             </List>
           </Grid>
         </Grid>
-        <div style={{backgroundColor: 'white', width: '100%'}}>
-          <div style={{width: '80%', margin: '0 auto', padding: '20px 0'}}>
-            <Typography color="secondary" style={{fontWeight: 'bold'}}>
+        <div style={{ backgroundColor: 'white', width: '100%' }}>
+          <div style={{ width: '80%', margin: '0 auto', padding: '20px 0' }}>
+            <Typography color="secondary" style={{ fontWeight: 'bold' }}>
               truRadius, Copyright 2018
             </Typography>
           </div>
@@ -108,5 +101,4 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
 }
 
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
-export const Footer: React.ComponentType<StyledProps> =
-withTheme()(withStyles(styles)(InternalFooter));
+export const Footer: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalFooter));
