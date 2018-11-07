@@ -38,7 +38,9 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
 });
 
 type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<'root' | 'textField' | 'paddingTop'>;
-
+interface StateProps {
+  isLoggedIn: any;
+}
 class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     email: '',
@@ -59,12 +61,12 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
 
   signIn = () => {
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
-      let signInCreds = {
-        email: this.state.email,
-        password: this.state.password
-      };
-      localStorage.setItem('userObj', this.state.email);
-      alert(`${signInCreds.email} ${signInCreds.password}`);
+      // let signInCreds = {
+      //   email: this.state.email,
+      //   password: this.state.password
+      // };
+      localStorage.setItem('UserObj', this.state.email);
+      this.props.isLoggedIn();
       // TODO: Alert should be replaced by functionality to check from database if the information matches.
     }
   };
