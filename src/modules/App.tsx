@@ -33,7 +33,7 @@ class InternalApp extends React.PureComponent<InternalState> {
           </nav>
           <main>
             {this.state.loggedIn ? (
-              <Route exact path="/home" render={() => <Home />} />
+              <Route exact path="/" render={() => <Home />} />
             ) : (
               <Route exact path="/" render={() => <LandingPage />} />
             )}
