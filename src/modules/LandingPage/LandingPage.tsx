@@ -24,6 +24,7 @@ import {
   createMuiTheme
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
+let zipcodes = require('zipcodes');
 
 const heroImage = require('./hero-image-6.jpg');
 
@@ -123,14 +124,32 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
     zipCode: undefined,
     distance: 10,
     cause: this.cause,
-    category: 'Events'
+    category: 'Events',
+    zipcodeErr: ''
   };
-
+  unique = 1;
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
     this.setState({ [name]: event.target.value });
   };
 
+  handleZipcodeChange = (event: any) => {
+    const onlyNums = event.target.value.replace(/[^0-9]/, '');
+    if (onlyNums.length < 5) {
+      this.setState({ zipCode: onlyNums });
+    } else if (onlyNums.length === 5) {
+      this.setState({ zipCode: onlyNums });
+    }
+  };
+
+  validateZipcode = (e: any) => {
+    if (zipcodes.lookup(this.state.zipCode) === undefined) {
+      this.setState({ zipcodeErr: 'Not a valid zipcode' });
+      e.target.focus();
+    } else {
+      this.setState({ zipcodeErr: '' });
+    }
+  };
   render() {
     const { classes } = this.props;
 
@@ -205,10 +224,13 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
                 <MuiThemeProvider theme={themeAlt}>
                   <FormControl className={classes.formControl}>
                     <TextField
+                      id="zipcode"
                       fullWidth
                       label="Zip Code"
                       value={this.state.zipCode}
-                      onChange={this.handleChange('zipCode')}
+                      onBlur={this.validateZipcode}
+                      onChange={this.handleZipcodeChange}
+                      helperText={this.state.zipcodeErr}
                     />
                   </FormControl>
                 </MuiThemeProvider>
@@ -243,15 +265,16 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
                     <InputLabel htmlFor="causes">Causes</InputLabel>
                     <Select
                       multiple
-                      input={<Input id="causes" />}
                       value={this.state.cause}
                       onChange={this.handleChange('cause')}
+                      input={<Input multiline id="select-multiple-checkbox" />}
+                      renderValue={() => this.state.cause.join(', ')}
                       MenuProps={MenuProps}
                     >
-                      {causes.map(cause => (
-                        <MenuItem key={cause} value={cause}>
-                          <Checkbox checked={this.state.cause.indexOf(cause) > -1} />
-                          <ListItemText primary={cause} />
+                      {causes.map(c => (
+                        <MenuItem key={this.unique++} value={c}>
+                          <Checkbox checked={this.state.cause.indexOf(c) > -1} />
+                          <ListItemText primary={c} />
                         </MenuItem>
                       ))}
                     </Select>
