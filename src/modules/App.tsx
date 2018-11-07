@@ -16,14 +16,22 @@ interface DispatchProps {}
 interface InternalState {}
 
 class InternalApp extends React.PureComponent<InternalState> {
-  state = {};
+  state = {
+    loggedIn: false
+  };
+
+  isLoggedIn = () => {
+    if (localStorage.getItem('UserObj')) {
+      this.setState({ loggedIn: true });
+    } else this.setState({ loggedIn: false });
+  };
 
   render() {
     return (
       <Router>
         <div>
           <nav>
-            <NavBar />
+            <NavBar isLoggedIn={this.isLoggedIn} loggedIn={this.state.loggedIn} />
           </nav>
           <main>
             <Route exact path="/" render={() => <LandingPage />} />
@@ -31,7 +39,7 @@ class InternalApp extends React.PureComponent<InternalState> {
             <Route exact path="/profile" render={() => <Profile />} />
           </main>
           <footer>
-            <Footer />
+            <Footer isLoggedIn={this.isLoggedIn} />
           </footer>
         </div>
       </Router>
