@@ -1,3 +1,5 @@
+/* tslint:disable */
+
 import * as React from 'react';
 import {
   Modal,
@@ -55,7 +57,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     backgroundColor: '#E8E8E8',
     borderRadius: 10,
     padding: '0 20px',
-    maxWidth: 600,
+    maxWidth: 600
   },
   table: {
     minWidth: '100%'
@@ -179,16 +181,11 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   handleOpenModal = () => {
     this.setState({ open: true });
-  }
+  };
 
   handleCloseModal = () => {
     this.setState({ open: false });
-  }
-
-  // tslint:disable-next-line:no-any
-  handleCauseChange = (event: any) => {
-    this.setState({ cause: event.target.value });
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleZipcodeChange = (event: any) => {
@@ -201,7 +198,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ zipcode: onlyNums });
       this.findCityState(onlyNums);
     }
-  }
+  };
 
   findCityState = (nums: number) => {
     if (zipcodes.lookup(nums) !== undefined) {
@@ -212,7 +209,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     } else {
       alert('Incorrect zipcode! Try again.');
     }
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleNumberChange = (e: any) => {
@@ -224,34 +221,16 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       const num = onlyNums.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
       this.setState({ phoneNumber: num });
     }
-  }
-
-  // tslint:disable-next-line:no-any
-  handleEmailChange = (event: any) => {
-    this.setState({ email: event.target.value });
-  }
-
-  // tslint:disable-next-line:no-any
-  handlePasswordChange = (event: any) => {
-    this.setState({ password: event.target.value });
-  }
+  };
 
   handleClickShowPassword = () => {
     this.setState({ showPassword: !this.state.showPassword });
-  }
+  };
 
   // tslint:disable-next-line:no-any
-  handleFirstName = (e: any) => {
-    this.setState({ firstName: e.target.value });
-  }
-  // tslint:disable-next-line:no-any
-  handleLastName = (e: any) => {
-    this.setState({ lastName: e.target.value });
-  }
-  // tslint:disable-next-line:no-any
-  handleGenderChange = (e: any) => {
-    this.setState({ gender: e.target.value });
-  }
+  handleChange = (name: string) => (event: any) => {
+    this.setState({ [name]: event.target.value });
+  };
 
   errStack = '';
   validateEmail = () => {
@@ -263,7 +242,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.errStack = '';
       this.setState({ errStack: this.errStack });
     }
-  }
+  };
 
   createUserObj = () => {
     return new Promise((resolve, reject) => {
@@ -281,7 +260,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       };
       resolve(userObj);
     });
-  }
+  };
 
   onFormSubmit = () => {
     if (this.state.errStack.length > 0) {
@@ -291,7 +270,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
         localStorage.setItem('UserObj', JSON.stringify(data)); // TODO: change it to actual database once ready
       });
     }
-  }
+  };
 
   resetForm = () => {
     this.handleCloseModal();
@@ -312,7 +291,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       errStack: '',
       unformattedPhoneNumber: ''
     });
-  }
+  };
 
   render() {
     const { classes } = this.props;
@@ -344,7 +323,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     id="standard-fname"
                     label="First Name"
                     value={this.state.firstName}
-                    onChange={this.handleFirstName}
+                    onChange={this.handleChange('firstName')}
                     margin="normal"
                   />
                 </Grid>
@@ -355,7 +334,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     id="standard-lname"
                     label="Last Name"
                     value={this.state.lastName}
-                    onChange={this.handleLastName}
+                    onChange={this.handleChange('lastName')}
                     margin="normal"
                   />
                 </Grid>
@@ -366,7 +345,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     select
                     label="Gender"
                     value={this.state.gender}
-                    onChange={this.handleGenderChange}
+                    onChange={this.handleChange('gender')}
                     SelectProps={{ MenuProps: { className: classes.menu } }}
                     margin="normal"
                   >
@@ -385,7 +364,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       required
                       multiple
                       value={this.state.cause}
-                      onChange={this.handleCauseChange}
+                      onChange={this.handleChange('cause')}
                       input={<Input multiline id="select-multiple-checkbox" />}
                       renderValue={() => this.state.cause.join(', ')}
                       MenuProps={MenuProps}
@@ -448,7 +427,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     id="standard-email"
                     label="Email"
                     value={this.state.email}
-                    onChange={this.handleEmailChange}
+                    onChange={this.handleChange('email')}
                     margin="normal"
                     helperText={<span className={classes.errorSpan}>{this.state.errStack}</span>}
                   />
@@ -462,7 +441,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       id="adornment-password"
                       type={this.state.showPassword ? 'text' : 'password'}
                       value={this.state.password}
-                      onChange={this.handlePasswordChange}
+                      onChange={this.handleChange('password')}
                       endAdornment={
                         <InputAdornment position="end">
                           <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
