@@ -1,3 +1,5 @@
+/* tslint:disable */ //toavoid unnecessary semicolon errors
+
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -19,8 +21,9 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
+import { Link } from 'react-router-dom';
 
-const logo = require('./logo.png');
+const logo = require('../logo.png');
 
 interface StateProps {}
 
@@ -129,36 +132,46 @@ type PropsWithStyles = StateProps &
     | 'paper'
   >;
 
+interface StateProps {
+  isLoggedIn: any;
+  loggedIn: boolean;
+}
 class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     open: false,
-    errStack: []
+    errStack: [],
+    loggedIn: this.props.loggedIn
+  };
+
+  componentDidMount = () => {
+    //TODO: Replace this login with actual logic to check if user is logged in
+    this.props.isLoggedIn();
   };
 
   // tslint:disable-next-line:no-any
   handleProfileMenuOpen = (event: any) => {
     this.setState({ anchorEl: event.currentTarget });
-  }
+  };
 
   handleMenuClose = () => {
     this.setState({ anchorEl: null });
     this.handleMobileMenuClose();
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleMobileMenuOpen = (event: any) => {
     this.setState({ mobileMoreAnchorEl: event.currentTarget });
-  }
+  };
 
   handleMobileMenuClose = () => {
     this.setState({ mobileMoreAnchorEl: null });
-  }
+  };
 
   handleOpenModal = () => {
     this.setState({ open: true });
-  }
+  };
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
@@ -200,8 +213,21 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
       <div className={classes.root}>
         <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
-            <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
-            <Login classes={classes} />
+            <Link to="/">
+              <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
+            </Link>
+            {this.props.loggedIn ? (
+              <div>
+                {/* TODO: This will eventually change to profile/:id for particular user */}
+                <Link to="/profile">
+                  <IconButton color="inherit">
+                    <AccountCircle />
+                  </IconButton>
+                </Link>
+              </div>
+            ) : (
+              <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
+            )}
             <div className={classes.grow} />
             <div className={classes.sectionDesktop} />
             <div className={classes.sectionMobile}>
