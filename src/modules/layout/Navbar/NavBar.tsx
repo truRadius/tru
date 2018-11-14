@@ -220,7 +220,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
               <div>
                 {/* TODO: This will eventually change to profile/:id for particular user */}
                 <Link to="/profile">
-                  <IconButton color="inherit">
+                  <IconButton color="primary">
                     <AccountCircle />
                   </IconButton>
                 </Link>
