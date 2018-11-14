@@ -97,7 +97,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   },
   formControl: {
     minWidth: 120,
-    width: '100%'
+    width: '100%',
+    maxWidth: 1000
   },
   gridItem: {
     padding: 8
@@ -171,7 +172,7 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
             </Grid>
           </Grid>
         </div>
-        <div style={{ backgroundColor: 'white', padding: '20px 0' }}>
+        <div style={{ backgroundColor: 'white', padding: '40px 0' }}>
           <Grid container justify="center" alignItems="center">
             <Grid item style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
               <Typography variant="h4" color="secondary" className={classes.quote}>
@@ -194,7 +195,7 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
             </Grid>
           </Grid>
         </div>
-        <form style={{ width: '80%', margin: '20px auto 40px', maxWidth: 10000 }}>
+        <form style={{ width: '80%', margin: '40px auto 60px', maxWidth: 1000 }}>
           <Grid container justify="center" alignItems="center">
             <Grid item style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
               <Typography variant="h4" color="secondary" className={classes.quote}>
