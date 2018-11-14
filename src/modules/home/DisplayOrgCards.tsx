@@ -19,8 +19,9 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
-import { faFacebookF, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-library.add(faGlobe, faFacebookF, faTwitter, faLinkedin);
+import * as Brands from '@fortawesome/free-brands-svg-icons';
+// import { faFacebookF, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+library.add(faGlobe);
 const logo = require('./dummy-logo.jpg');
 
 interface StateProps {}
@@ -74,16 +75,16 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
                       <Grid sm>
                         <Grid container alignContent="center" justify="flex-start" direction="row">
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon="facebook-f" />
+                            <FontAwesomeIcon icon={Brands.faFacebookF} />
                           </Grid>
                           <Grid sm={1}>
                             <FontAwesomeIcon icon="globe" />
                           </Grid>
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon="linkedin" />
+                            <FontAwesomeIcon icon={Brands.faTwitter} />
                           </Grid>
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon="twitter" />
+                            <FontAwesomeIcon icon={Brands.faLinkedin} />
                           </Grid>
                         </Grid>
                       </Grid>
