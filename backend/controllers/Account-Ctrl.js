@@ -3,7 +3,8 @@
 const { dbGetOneAccount } = require('../models/Account');
 
 module.exports.getSingleAccount = (req, res, next) => {
-  dbGetOneAccount(res)
+  let id = req.params.id;
+  dbGetOneAccount(res, id)
     .then(account => {
       res.status(200).json(account);
     })
