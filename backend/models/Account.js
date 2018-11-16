@@ -3,7 +3,7 @@
 let sql = require('mssql');
 // config for your database
 let { config } = require('../config.json');
-module.exports.dbGetOneAccount = res => {
+module.exports.dbGetOneAccount = (res, id) => {
   return new Promise((resolve, reject) => {
     sql.connect(
       config,
@@ -14,7 +14,7 @@ module.exports.dbGetOneAccount = res => {
         var request = new sql.Request();
 
         // query to the database and get the data
-        request.query('select * from Account where Account_ID = 1', function(err, recordset) {
+        request.query(`select * from Account where Account_ID = ${id}`, function(err, recordset) {
           if (err) console.log(err);
 
           // send data as a response
