@@ -46,10 +46,19 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center',
     backgroundSize: 'cover'
+  },
+  socialIcons: {
+    color: '#2E4C63'
   }
 });
 
-type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<'root' | 'card' | 'button' | 'logo'>;
+type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
+  'root' | 
+  'card' | 
+  'button' | 
+  'logo' |
+  'socialIcons'
+>;
 
 class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalState> {
   state: {};
@@ -69,29 +78,29 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
                   <Grid sm className={classes.logo} />
                   <Grid sm>
                     <Grid container alignContent="center" justify="space-evenly" direction="column">
-                      <Grid sm style={{ fontSize: '2em' }}>
+                      <Grid sm style={{ fontSize: '2em', color: '#2E4C63', fontFamily: 'arial rounded MT' }}>
                         Name here
                       </Grid>
                       <Grid sm>
                         <Grid container alignContent="center" justify="flex-start" direction="row">
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon={Brands.faFacebookF} />
+                            <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faFacebookF} />
                           </Grid>
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon="globe" />
+                            <FontAwesomeIcon className={classes.socialIcons} icon="globe" />
                           </Grid>
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon={Brands.faTwitter} />
+                            <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
                           </Grid>
                           <Grid sm={1}>
-                            <FontAwesomeIcon icon={Brands.faLinkedin} />
+                            <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
                           </Grid>
                         </Grid>
                       </Grid>
                       <Grid sm>200 Followers</Grid>
                       <Grid sm justify="flex-start">
                         <Button variant="extendedFab" color="primary" type="button" onClick={this.followOrganization}>
-                          Follow
+                          <span style={{ color: 'white' }}>Follow</span>
                         </Button>
                       </Grid>
                     </Grid>
