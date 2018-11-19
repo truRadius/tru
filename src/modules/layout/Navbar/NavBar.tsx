@@ -108,7 +108,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   },
   container: {
     width: '80%',
-    margin: '0 auto'
+    margin: '0 auto',
+    maxWidth: 1000
   }
 });
 

@@ -53,7 +53,7 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
 
     return (
       <div style={{ width: '100%', backgroundColor: '#2E4C63' }}>
-        <Grid container style={{ width: '80%', margin: '0 auto', paddingTop: 40 }}>
+        <Grid container style={{ width: '80%', margin: '0 auto', paddingTop: 40, maxWidth: 1000 }}>
           <Grid item sm={4}>
             <Typography className={classes.typography}>Your Account</Typography>
             <List component="nav">
@@ -89,7 +89,7 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
           </Grid>
         </Grid>
         <div style={{ backgroundColor: 'white', width: '100%' }}>
-          <div style={{ width: '80%', margin: '0 auto', padding: '20px 0' }}>
+          <div style={{ width: '80%', margin: '0 auto', padding: '20px 0', maxWidth: 1000 }}>
             <Typography color="secondary" style={{ fontWeight: 'bold' }}>
               truRadius, Copyright 2018
             </Typography>
