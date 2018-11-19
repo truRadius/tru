@@ -37,10 +37,10 @@ module.exports.dbPostOneAccount = UserObj => {
         let request = new sql.Request();
         //insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO) values('Anna','Banana','a.banana@gmail.com','33647', 'abc123','personal','Female','Tampa','FL', 'active','1231547879');
         request.query(
-          `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO) values(
+          `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO, AccountCreated) values(
             '${UserObj.FName}','${UserObj.LName}','${UserObj.Email}','${UserObj.Zip}','${UserObj.Password}',
-            '${UserObj.Account_Type}','${UserObj.Gender}','${UserObj.City}','${UserObj.State}','Active',
-            '${UserObj.PhoneNO}')`,
+            '${UserObj.Account_Type}','${UserObj.Gender}','${UserObj.City}','${UserObj.State}','active',
+            '${UserObj.PhoneNO}', SYSDATETIME())`,
           (err, data) => {
             if (err) {
               console.log(err);
