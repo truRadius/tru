@@ -20,5 +20,5 @@
     "noUnusedLocals": true,
     "typeRoots": ["./node_modules/@types", "./@Types"]
   },
-  "exclude": ["node_modules", "build", "scripts", "acceptance-tests", "webpack", "jest", "src/setupTests.ts"]
+  "exclude": ["node_modules", "build", "scripts", "acceptance-tests", "webpack", "jest", "src/setupTests.ts", "backend"]
 }
