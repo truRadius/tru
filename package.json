@@ -33,6 +33,7 @@
     "redux-logger": "3.0.6",
     "redux-router5": "6.0.3",
     "router5": "6.4.2",
+    "tslib": "^1.9.3",
     "tslint": "5.11.0",
     "tslint-config-prettier": "^1.10.0",
     "tslint-react": "3.6.0",
