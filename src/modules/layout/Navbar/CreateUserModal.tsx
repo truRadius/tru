@@ -264,14 +264,14 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   onFormSubmit = (e: any) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
         axios.post('http://localhost:8000/api/account', data).then(response => {
-          console.log(response);
-          //Perform action based on response
+          alert(response);
+          this.resetForm();
         });
       });
     }
