@@ -45,7 +45,7 @@ class InternalEventCards extends React.PureComponent<PropsWithStyles, InternalSt
             <Grid container alignContent="center" justify="space-evenly" direction="row" spacing={24}>
               <Grid sm={2} style={{ margin: '16px' }}>
                 <Grid container alignContent="center" justify="flex-start" direction="column">
-                  <Grid sm style={{ color: 'red', fontSize: '3.4em' }}>
+                  <Grid sm style={{ color: '#F17820', fontSize: '3.4em' }}>
                     29
                   </Grid>
                   <Grid sm style={{ fontSize: '2em' }}>
