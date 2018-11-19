@@ -1,11 +1,26 @@
 {
-  "name": "truradius-frontend",
-  "version": "0.1.0",
-  "private": true,
-  "engines": {
-    "node": "8.11.1",
-    "npm": "5.6.0"
+  "name": "tru",
+  "version": "1.0.0",
+  "description": "This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).",
+  "main": "index.js",
+  "scripts": {
+    "start": "react-scripts-ts start",
+    "start-db": "nodemon backend/server.js",
+    "build": "react-scripts-ts build",
+    "test": "react-scripts-ts test --env=jsdom",
+    "eject": "react-scripts-ts eject"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/truRadius/tru.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/truRadius/tru/issues"
+  },
+  "homepage": "https://github.com/truRadius/tru#readme",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.8",
     "@fortawesome/free-brands-svg-icons": "^5.5.0",
@@ -17,35 +32,24 @@
     "@types/react-redux": "^6.0.9",
     "@types/react-router-dom": "^4.3.1",
     "@types/redux-logger": "^3.0.6",
-    "classnames": "2.2.6",
+    "axios": "^0.18.0",
+    "classnames": "^2.2.6",
     "dotenv": "^6.1.0",
-    "dotenv-expand": "4.2.0",
+    "dotenv-expand": "^4.2.0",
     "express": "^4.16.4",
-    "kleur": "^3.0.0",
     "mssql": "^4.2.3",
-    "react": "^16.5.2",
+    "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-redux": "5.0.7",
+    "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
-    "react-router5": "6.3.0",
     "react-scripts": "^2.1.1",
-    "react-scripts-ts": "^4.0.8",
-    "redux": "4.0.0",
-    "redux-logger": "3.0.6",
-    "redux-router5": "6.0.3",
-    "router5": "6.4.2",
-    "tslib": "^1.9.3",
-    "tslint": "5.11.0",
-    "tslint-config-prettier": "^1.10.0",
-    "tslint-react": "3.6.0",
+    "react-scripts-ts": "^3.1.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.16.0",
+    "tslint-react": "^3.6.0",
     "zipcodes": "^8.0.0"
-  },
-  "scripts": {
-    "start": "react-scripts-ts start",
-    "start-db": "nodemon backend/server.js",
-    "build": "react-scripts-ts build",
-    "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.6",

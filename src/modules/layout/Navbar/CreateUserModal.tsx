@@ -1,6 +1,7 @@
 /* tslint:disable */
 
 import * as React from 'react';
+import axios from 'axios';
 import {
   Modal,
   withStyles,
@@ -191,7 +192,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   handleZipcodeChange = (event: any) => {
     const onlyNums = event.target.value.replace(/[^0-9]/, '');
     // tslint:disable-next-line:no-console
-    console.log('Onlynums:', onlyNums);
     if (onlyNums.length < 5) {
       this.setState({ zipcode: onlyNums });
     } else if (onlyNums.length === 5) {
@@ -247,30 +247,34 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   createUserObj = () => {
     return new Promise((resolve, reject) => {
       let userObj = {
-        fname: this.state.firstName,
-        lname: this.state.lastName,
-        gender: this.state.gender,
-        causes: this.state.cause,
-        zipcode: this.state.zipcode,
-        city: this.state.city,
-        state: this.state.state,
-        email: this.state.email,
-        password: this.state.password,
-        phoneNumber: this.state.unformattedPhoneNumber
+        FName: this.state.firstName,
+        LName: this.state.lastName,
+        Gender: this.state.gender,
+        Zip: this.state.zipcode,
+        City: this.state.city,
+        State: this.state.state,
+        Email: this.state.email,
+        Password: this.state.password,
+        PhoneNO: this.state.unformattedPhoneNumber,
+        AccountCreated: Date.now(),
+        Account_Type: 'Personal'
       };
       resolve(userObj);
     });
   };
 
-  onFormSubmit = () => {
+  onFormSubmit = (e: any) => {
+    e.preventDefault();
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
+    } else {
+      this.createUserObj().then(data => {
+        axios.post('http://localhost:8000/api/account', data).then(response => {
+          console.log(response);
+          //Perform action based on response
+        });
+      });
     }
-    //  else {
-    //   this.createUserObj().then(data => {
-    //     localStorage.setItem('UserObj', JSON.stringify(data)); //
-    //   });
-    // }
   };
 
   resetForm = () => {
@@ -309,7 +313,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
           className={classes.paperModal}
         >
           <div className={classes.root}>
-            <form method="post" action="/api/account" onSubmit={this.onFormSubmit}>
+            <form onSubmit={this.onFormSubmit}>
               <Grid container spacing={16}>
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.paper}>
