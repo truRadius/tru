@@ -265,11 +265,12 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   onFormSubmit = () => {
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
-    } else {
-      this.createUserObj().then(data => {
-        localStorage.setItem('UserObj', JSON.stringify(data)); // TODO: change it to actual database once ready
-      });
     }
+    //  else {
+    //   this.createUserObj().then(data => {
+    //     localStorage.setItem('UserObj', JSON.stringify(data)); //
+    //   });
+    // }
   };
 
   resetForm = () => {
@@ -308,7 +309,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
           className={classes.paperModal}
         >
           <div className={classes.root}>
-            <form onSubmit={this.onFormSubmit}>
+            <form method="post" action="/api/account" onSubmit={this.onFormSubmit}>
               <Grid container spacing={16}>
                 <Grid item xs={12}>
                   <Typography variant="h6" className={classes.paper}>
