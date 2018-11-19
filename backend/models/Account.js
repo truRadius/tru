@@ -11,7 +11,7 @@ module.exports.dbGetOneAccount = (res, id) => {
         if (err) console.log(err);
 
         // create Request object
-        var request = new sql.Request();
+        let request = new sql.Request();
 
         // query to the database and get the data
         request.query(`select * from Account where Account_ID = ${id}`, function(err, recordset) {
@@ -20,6 +20,23 @@ module.exports.dbGetOneAccount = (res, id) => {
           // send data as a response
           res.json(recordset);
         });
+      }
+    );
+  });
+};
+
+module.exports.dbPostOneAccount = UserObj => {
+  console.log(UserObj);
+  return new Promise((resolve, reject) => {
+    sql.connect(
+      config,
+      function(err) {
+        if (err) console.log(err);
+        let request = new sql.Request();
+        //insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO) values('Anna','Banana','a.banana@gmail.com','33647', 'abc123','personal','Female','Tampa','FL', 'active','1231547879');
+        request.query(
+          `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO, AccountCreated) values(${UserObj});`
+        );
       }
     );
   });
