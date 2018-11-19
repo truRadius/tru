@@ -2,11 +2,18 @@
 
 // Config
 require('dotenv').config();
+let cors = require('cors');
 let port = process.env.PORT || 8000;
 
 // Require third party modules
 let express = require('express');
 let app = express();
+app.use(cors());
+app.use(function(req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 const bodyParser = require('body-parser');
 
 // Require routes

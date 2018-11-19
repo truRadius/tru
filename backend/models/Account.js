@@ -5,6 +5,7 @@ let sql = require('mssql');
 let { config } = require('../config.json');
 module.exports.dbGetOneAccount = (res, id) => {
   return new Promise((resolve, reject) => {
+    sql.close();
     sql.connect(
       config,
       function(err) {
