@@ -7,5 +7,20 @@
        "main": "#2E4C63"
      }
    },
+  "typography": {
+    "useNextVariants": true,
+    "h1": {
+      "fontFamily": "arial rounded MT"
+    },
+    "h2": {
+      "fontFamily": "arial rounded MT"
+    },
+    "h3": {
+      "fontFamily": "arial rounded MT"
+    },
+    "h4": {
+      "fontFamily": "arial rounded MT"
+    }
+  },
    "themeName": "Default Theme"
  }
