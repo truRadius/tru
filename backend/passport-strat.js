@@ -20,7 +20,6 @@ const RegistrationStrategy = new Strategy(
     passReqToCallback: true
   },
   (req, email, password, done) => {
-    console.log('Registration Strategy:', email, password);
     const generateHash = password => {
       return bCrypt.hashSync(password, bCrypt.genSaltSync(10));
     };
@@ -47,7 +46,13 @@ const RegistrationStrategy = new Strategy(
               Email: email,
               Password: userPassword,
               FName: req.body.FName,
-              LName: req.body.LName
+              LName: req.body.LName,
+              Zip: req.body.Zip,
+              Account_Type: req.body.Account_Type,
+              Gender: req.body.Gender,
+              City: req.body.City,
+              State: req.body.State,
+              PhoneNO: req.body.PhoneNO
             };
 
             sql.close();
