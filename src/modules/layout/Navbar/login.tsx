@@ -1,6 +1,7 @@
 /* tslint:disable */
 
 import * as React from 'react';
+import axios from 'axios';
 import {
   StyledComponentProps,
   Theme,
@@ -61,12 +62,13 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
 
   signIn = () => {
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
-      // let signInCreds = {
-      //   email: this.state.email,
-      //   password: this.state.password
-      // };
-      localStorage.setItem('UserObj', this.state.email);
-      this.props.isLoggedIn();
+      axios
+        .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })
+        .then(response => {
+          alert(response);
+          localStorage.setItem('UserObj', this.state.email);
+          this.props.isLoggedIn();
+        });
       // TODO: Alert should be replaced by functionality to check from database if the information matches.
     }
   };
@@ -87,7 +89,8 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
           <Grid container alignItems="center" justify="flex-end" spacing={24}>
             <Grid item>
               <TextField
-                id="standard-email"
+                id="username"
+                name="username"
                 label="Email or Mobile Number"
                 className={classes.textField}
                 value={this.state.email}
@@ -97,7 +100,8 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
                 helperText={this.state.err}
               />
               <TextField
-                id="standard-password"
+                id="password"
+                name="password"
                 label="Password"
                 type="password"
                 className={classes.textField}

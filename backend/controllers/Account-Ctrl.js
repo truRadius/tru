@@ -14,9 +14,8 @@ module.exports.getSingleAccount = (req, res, next) => {
 };
 
 module.exports.postAccount = (req, res, next) => {
-  dbPostOneAccount(req.body)
+  dbPostOneAccount(req, res, next)
     .then(data => {
-      console.log('Data Entered', data);
       res.status(200);
     })
     .catch(err => {

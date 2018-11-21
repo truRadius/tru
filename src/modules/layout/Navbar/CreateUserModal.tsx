@@ -429,7 +429,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     fullWidth
                     required
                     onBlur={this.validateEmail}
-                    id="standard-email"
+                    id="email"
+                    name="email"
                     label="Email"
                     value={this.state.email}
                     onChange={this.handleChange('email')}
@@ -443,7 +444,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     <Input
                       fullWidth
                       required
-                      id="adornment-password"
+                      id="password"
+                      name="password"
                       type={this.state.showPassword ? 'text' : 'password'}
                       value={this.state.password}
                       onChange={this.handleChange('password')}
