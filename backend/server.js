@@ -4,24 +4,39 @@
 require('dotenv').config();
 let cors = require('cors');
 let port = process.env.PORT || 8000;
-
+let passport = require('passport');
+var session = require('express-session');
+let bodyParser = require('body-parser');
+const flash = require('express-flash');
+const expressValidator = require('express-validator');
 // Require third party modules
 let express = require('express');
 let app = express();
+let routes = require('./routes/');
+let { secret } = require('./config');
 app.use(cors());
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   next();
 });
-const bodyParser = require('body-parser');
 
-// Require routes
-let routes = require('./routes/');
-
+app.use(session(secret));
+require('./passport-strat.js');
+app.use(passport.initialize());
+app.use(passport.session());
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  // console.log('res.locals.session', res.locals.session);
+  next();
+});
 // Setup bodyparser and route middleware
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(flash());
+
+app.use(expressValidator());
+
 app.use('/api', routes);
 
 // Middleware to deal with missed routes

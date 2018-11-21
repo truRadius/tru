@@ -3,7 +3,8 @@
 const { Router } = require('express');
 const router = Router();
 
-router.use(require('./account'));
-router.use(require('./signin'));
+const { signIn } = require('../controllers/SignIn-Ctrl');
+
+router.post('/signin', signIn);
 
 module.exports = router;

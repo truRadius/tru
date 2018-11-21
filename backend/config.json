@@ -3,5 +3,10 @@
     "user": "kbatiste",
     "password": "Jack9330!",
     "server": "198.71.226.6"
+  },
+  "secret": {
+    "secret": "MakeMillionsTruRadius",
+    "resave": true,
+    "saveUninitialized": true
   }
 }
