@@ -34,8 +34,7 @@ const RegistrationStrategy = new Strategy(
 
         // query to the database and get the data to see if it already exists
         request.query(`select * from Account where Email = ${email}`, function(err, recordset) {
-          if (err) console.log('This the error?', err);
-          console.log('Recordset---->', recordset);
+          if (err) console.log(err);
           if (recordset) {
             return done(null, false, {
               message: 'That email is already taken'
@@ -71,9 +70,7 @@ const RegistrationStrategy = new Strategy(
                     if (err) {
                       console.log(err);
                     }
-                    console.log(data, '----- DATA');
                     return done(null, data, null);
-                    // return data;
                   }
                 );
               }
@@ -95,6 +92,11 @@ const LoginStrategy = new Strategy(
     passReqToCallback: true // allows us to pass back the entire request to the callback
   },
   (req, email, password, done) => {
+    const isValidPassword = (password, userPass) => {
+      // hashes the passed-in password and then compares it to the hashed password fetched from the db
+      return bCrypt.compareSync(password, userPass);
+    }; //function we defined above
+
     sql.close();
     sql.connect(
       config,
@@ -105,51 +107,30 @@ const LoginStrategy = new Strategy(
         let request = new sql.Request();
 
         // query to the database and get the data
-        request.query(`select * from Account where email like ${email} or phoneNO like ${email}`, function(err, user) {
+        request.query(`select * from Account where email like '${email}' or phoneNO like '${email}'`, function(
+          err,
+          user
+        ) {
           if (err) console.log(err);
           if (!user) {
             return done(null, false, {
               message: "Can't find a user with those credentials. Please try again"
             });
           }
-          if (req.body.username != user.Email) {
+          if (req.body.Email != user.Email || req.body.Email != user.PhoneNO) {
             return done(null, false, {
               message: 'This email/phone number does not match our database'
             });
           }
-          if (!isValidPassword(user.Password, password)) {
+          if (!isValidPassword(password, user.recordset[0].Password)) {
             return done(null, false, {
               message: 'Incorrect password.'
             });
           }
+          return done(null, user.recordset[0]);
         });
       }
     );
-    // User.findOne({ where: { email } })
-    //   .then(user => {
-    //     if (!user) {
-    //       return done(null, false, {
-    //         message: "Can't find a user with those credentials. Please try again"
-    //       });
-    //     }
-    //     if (req.body.username != user.username) {
-    //       return done(null, false, {
-    //         message: 'This email/phone number does not match our database'
-    //       });
-    //     }
-    //     if (!isValidPassword(user.password, password)) {
-    //       return done(null, false, {
-    //         message: 'Incorrect password.'
-    //       });
-    //     }
-    //     const userinfo = user.get();
-    //     return done(null, userinfo);
-    //   })
-    //   .catch(err => {
-    //     return done(null, false, {
-    //       message: 'Something went wrong with your sign in' + err
-    //     });
-    //   });
   }
 );
 
@@ -157,24 +138,38 @@ const LoginStrategy = new Strategy(
 // manage retrieving the user details when needed.
 // It achieves this with the following two methods:
 
-//serialize. In this function, we will be saving the user id to the session in
-// req.session.passport.user
+// serialize. In this function, we will be saving the user id to the session in req.session.passport.user
 passport.serializeUser((user, done) => {
+  console.log(user, '-- User in serializeUser');
   // This saves the whole user obj into the session cookie,
   // but typically you will see just user.id passed in.
-  done(null, user);
+  done(null, user.Account_ID);
 });
 
 // deserialize user
 // We use Sequelize's findById to get the user. Then we use the Sequelize getter function, user.get(), to pass a reference to the user to the 'done' function.
-passport.deserializeUser(({ id }, done) => {
-  User.findById(id).then(user => {
-    if (user) {
-      done(null, user.get());
-    } else {
-      done(user.errors, null);
+passport.deserializeUser(({ Account_ID }, done) => {
+  console.log('Whats the id here?', Account_ID);
+  sql.close();
+  sql.connect(
+    config,
+    function(err) {
+      if (err) console.log(err);
+
+      // create Request object
+      let request = new sql.Request();
+
+      // query to the database and get the data
+      request.query(`select * from Account where Account_ID = ${Account_ID}`, function(err, user) {
+        if (err) console.log(err);
+        if (user) {
+          done(null, user.get());
+        } else {
+          done(user.errors, null);
+        }
+      });
     }
-  });
+  );
 });
 
 // Take the new strategies we just created and use them as middleware, so the http requests get piped through them. A POST to register or login will trigger a strategy, because we will call passport.authenticate in the auth ctrl.

@@ -36,63 +36,32 @@ module.exports.dbPostOneAccount = (req, res, next) => {
       if (err) {
         next(err);
       }
-      console.log('What is user?', user, msgObj);
+      console.log(user);
 
-      // req.logIn(user, err => { TODO: Log-In the newly registered user
-      //   if (err) {
-      //     return next(err);
-      //   }
-      //   console.log('registerMsg', `Thanks for signing up, ${user.firstName}!`);
-      // });
-      resolve(req.body);
+      // TODO: Log-In the newly registered user
+
+      resolve(user);
     })(req, res, next);
   });
-  // return new Promise((resolve, reject) => {
-  //   sql.close();
-  //   sql.connect(
-  //     config,
-  //     function(err) {
-  //       if (err) console.log(err);
-  //       let request = new sql.Request();
-  //       //insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO) values('Anna','Banana','a.banana@gmail.com','33647', 'abc123','personal','Female','Tampa','FL', 'active','1231547879');
-  //       request.query(
-  //         `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO, AccountCreated) values(
-  //           '${UserObj.FName}','${UserObj.LName}','${UserObj.Email}','${UserObj.Zip}','${UserObj.Password}',
-  //           '${UserObj.Account_Type}','${UserObj.Gender}','${UserObj.City}','${UserObj.State}','active',
-  //           '${UserObj.PhoneNO}', SYSDATETIME())`,
-  //         (err, data) => {
-  //           if (err) {
-  //             console.log(err);
-  //           }
-  //           console.log(data, '----- DATA');
-  //           resolve(data);
-  //         }
-  //       );
-  //     }
-  //   );
-  // });
 };
 
-module.exports.dbSignIn = signInCreds => {
-  console.log('Recieved obj:', signInCreds);
+module.exports.dbSignIn = (req, res, next) => {
+  console.log('Recieved obj:', req.body);
   return new Promise((resolve, reject) => {
     passport.authenticate('local-signin', (err, user, msgObj) => {
       // If login fails, the error is sent back by the passport strategy as { message: "some msg"}
-      // console.log('error msg?', msgObj);
+      console.log('error msg?', msgObj);
 
       if (err) {
         next(err);
       } //or return next(err) once handler set up in app.js
-      if (!user) {
-        return res.render('login', msgObj);
-      }
 
       req.logIn(user, err => {
         if (err) {
           return next(err);
         }
-        // console.log('authenticated. Rerouting to welcome!', user);
-        console.log(`Welcome back, `, user.FName);
+        console.log('authenticated. Rerouting to welcome!', user);
+        resolve(user);
         // TODO: change the loggedin state to true somehow
       });
     })(req, res, next);
