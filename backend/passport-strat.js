@@ -10,7 +10,7 @@ let sql = require('mssql');
 let { config } = require('./config.json');
 // initialize the passport-local strategy
 const { Strategy } = require('passport-local');
-let User = null;
+// let User = null;
 
 //******************** Registration authetication *************************
 const RegistrationStrategy = new Strategy(
@@ -33,11 +33,11 @@ const RegistrationStrategy = new Strategy(
         let request = new sql.Request();
 
         // query to the database and get the data to see if it already exists
-        request.query(`select * from Account where Email = ${email}`, function(err, recordset) {
+        request.query(`select * from Account where Email = ${email} or PhoneNO =${email}`, function(err, recordset) {
           if (err) console.log(err);
           if (recordset) {
             return done(null, false, {
-              message: 'That email is already taken'
+              message: 'That email or Phone number is already taken'
             });
           } else {
             const userPassword = generateHash(password); //function we defined above
@@ -95,7 +95,7 @@ const LoginStrategy = new Strategy(
     const isValidPassword = (password, userPass) => {
       // hashes the passed-in password and then compares it to the hashed password fetched from the db
       return bCrypt.compareSync(password, userPass);
-    }; //function we defined above
+    };
 
     sql.close();
     sql.connect(
@@ -140,7 +140,6 @@ const LoginStrategy = new Strategy(
 
 // serialize. In this function, we will be saving the user id to the session in req.session.passport.user
 passport.serializeUser((user, done) => {
-  console.log(user, '-- User in serializeUser');
   // This saves the whole user obj into the session cookie,
   // but typically you will see just user.id passed in.
   done(null, user.Account_ID);
@@ -148,8 +147,8 @@ passport.serializeUser((user, done) => {
 
 // deserialize user
 // We use Sequelize's findById to get the user. Then we use the Sequelize getter function, user.get(), to pass a reference to the user to the 'done' function.
-passport.deserializeUser(({ Account_ID }, done) => {
-  console.log('Whats the id here?', Account_ID);
+passport.deserializeUser(({ id }, done) => {
+  console.log('Whats the id here?', id);
   sql.close();
   sql.connect(
     config,
@@ -160,7 +159,7 @@ passport.deserializeUser(({ Account_ID }, done) => {
       let request = new sql.Request();
 
       // query to the database and get the data
-      request.query(`select * from Account where Account_ID = ${Account_ID}`, function(err, user) {
+      request.query(`select * from Account where Account_ID = ${id}`, function(err, user) {
         if (err) console.log(err);
         if (user) {
           done(null, user.get());

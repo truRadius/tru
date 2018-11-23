@@ -8,5 +8,6 @@
     "secret": "MakeMillionsTruRadius",
     "resave": true,
     "saveUninitialized": true
-  }
+  },
+  "jwtSecret": "Random Secret String!"
 }
