@@ -8,8 +8,6 @@ import { Profile } from './Profile/ViewUserProfile';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
-// import { session } from 'express-session';
-let session = require('express-session');
 
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
@@ -24,12 +22,14 @@ class InternalApp extends React.PureComponent<InternalState> {
   };
 
   isLoggedIn = () => {
-    console.log(session.passport);
-    if (session.passport) {
+    if (window.localStorage.UserObj) {
       this.setState({ loggedIn: true });
     } else this.setState({ loggedIn: false });
   };
 
+  componentDidMount = () => {
+    console.log(window.sessionStorage, 'Whats the localStorage');
+  };
   render() {
     return (
       <Router>

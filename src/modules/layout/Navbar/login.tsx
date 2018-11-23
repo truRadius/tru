@@ -60,14 +60,19 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
     }
   };
 
-  signIn = () => {
+  signIn = (e: any) => {
+    e.preventDefault();
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
       axios
         .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })
         .then(response => {
-          alert(response);
-          localStorage.setItem('UserObj', this.state.email);
+          console.log(response.data);
+          this.setState({ err: '' });
+          localStorage.setItem('UserObj', response.data);
           this.props.isLoggedIn();
+        })
+        .catch(() => {
+          this.setState({ err: 'Invalid login credentials', email: '', password: '' });
         });
       // TODO: Alert should be replaced by functionality to check from database if the information matches.
     }
@@ -90,7 +95,6 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
             <Grid item>
               <TextField
                 id="username"
-                name="username"
                 label="Email or Mobile Number"
                 className={classes.textField}
                 value={this.state.email}
@@ -101,7 +105,6 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
               />
               <TextField
                 id="password"
-                name="password"
                 label="Password"
                 type="password"
                 className={classes.textField}

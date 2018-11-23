@@ -4,6 +4,7 @@ let sql = require('mssql');
 // config for your database
 let { config } = require('../config.json');
 const passport = require('passport');
+let jwt = require('jsonwebtoken');
 
 module.exports.dbGetOneAccount = (res, id) => {
   return new Promise((resolve, reject) => {
@@ -30,7 +31,6 @@ module.exports.dbGetOneAccount = (res, id) => {
 };
 
 module.exports.dbPostOneAccount = (req, res, next) => {
-  console.log('Recieved obj:', req.body);
   return new Promise((resolve, reject) => {
     passport.authenticate('local-signup', (err, user, msgObj) => {
       if (err) {
@@ -46,23 +46,23 @@ module.exports.dbPostOneAccount = (req, res, next) => {
 };
 
 module.exports.dbSignIn = (req, res, next) => {
+  let { jwtSecret } = require('../config.json');
+  let jwToken;
   console.log('Recieved obj:', req.body);
   return new Promise((resolve, reject) => {
     passport.authenticate('local-signin', (err, user, msgObj) => {
-      // If login fails, the error is sent back by the passport strategy as { message: "some msg"}
-      console.log('error msg?', msgObj);
-
       if (err) {
         next(err);
-      } //or return next(err) once handler set up in app.js
+      }
+      jwt.sign({ user }, jwtSecret, (err, token) => {
+        if (err) console.log(err);
+        resolve(token);
+      });
 
       req.logIn(user, err => {
         if (err) {
           return next(err);
         }
-        console.log('authenticated. Rerouting to welcome!', user);
-        resolve(user);
-        // TODO: change the loggedin state to true somehow
       });
     })(req, res, next);
   });
