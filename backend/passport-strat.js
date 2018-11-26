@@ -34,7 +34,6 @@ const RegistrationStrategy = new Strategy(
 
         // query to the database and get the data to see if it already exists
         request.query(`select * from Account where Email = ${email} or PhoneNO =${email}`, function(err, recordset) {
-          if (err) console.log(err);
           if (recordset) {
             return done(null, false, {
               message: 'That email or Phone number is already taken'

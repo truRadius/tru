@@ -61,7 +61,6 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
   };
 
   signIn = (e: any) => {
-    e.preventDefault();
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
       axios
         .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })

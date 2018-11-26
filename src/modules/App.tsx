@@ -4,7 +4,7 @@ import * as React from 'react';
 import { StyledComponentProps, withTheme } from '@material-ui/core';
 import { NavBar } from './layout/Navbar/NavBar';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Profile } from './profile/ViewUserProfile';
+import { Profile } from './Profile/ViewUserProfile';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
@@ -27,9 +27,6 @@ class InternalApp extends React.PureComponent<InternalState> {
     } else this.setState({ loggedIn: false });
   };
 
-  componentDidMount = () => {
-    console.log(window.sessionStorage, 'Whats the localStorage');
-  };
   render() {
     return (
       <Router>
