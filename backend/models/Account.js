@@ -45,7 +45,9 @@ module.exports.dbPostOneAccount = (req, res, next) => {
       //     return next(err);
       //   }
       // });
-      resolve(user);
+      module.exports.dbSignIn(req, res, next).then(token => {
+        resolve(token);
+      });
     })(req, res, next);
   });
 };
@@ -62,11 +64,11 @@ module.exports.dbSignIn = (req, res, next) => {
         resolve(token);
       });
 
-      req.logIn(user, err => {
-        if (err) {
-          return next(err);
-        }
-      });
+      // req.logIn(user, err => {
+      //   if (err) {
+      //     return next(err);
+      //   }
+      // });
     })(req, res, next);
   });
 };

@@ -61,6 +61,7 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
   };
 
   signIn = (e: any) => {
+    e.preventDefault();
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
       axios
         .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })
@@ -89,8 +90,8 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
     const { classes } = this.props;
     return (
       <div style={{ width: '-webkit-fill-available' }}>
-        <form onSubmit={this.signIn}>
-          <Grid container alignItems="center" justify="flex-end" spacing={24}>
+        <Grid container alignItems="center" justify="flex-end" spacing={24}>
+          <form onSubmit={this.signIn}>
             <Grid item>
               <TextField
                 id="username"
@@ -116,10 +117,10 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
               <Button color="primary" type="submit">
                 Log In
               </Button>
-              <CreateUserModal classes={classes} />
             </Grid>
-          </Grid>
-        </form>
+          </form>
+          <CreateUserModal classes={classes} />
+        </Grid>
       </div>
     );
   }
