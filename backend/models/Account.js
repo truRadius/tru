@@ -5,6 +5,7 @@ let sql = require('mssql');
 let { config } = require('../config.json');
 const passport = require('passport');
 let jwt = require('jsonwebtoken');
+let { jwtSecret } = require('../config.json');
 
 module.exports.dbGetOneAccount = (res, id) => {
   return new Promise((resolve, reject) => {
@@ -36,25 +37,27 @@ module.exports.dbPostOneAccount = (req, res, next) => {
       if (err) {
         next(err);
       }
-      console.log(user);
+      console.log('User Obj', user);
 
       // TODO: Log-In the newly registered user
-
+      // req.logIn(user, err => {
+      //   if (err) {
+      //     return next(err);
+      //   }
+      // });
       resolve(user);
     })(req, res, next);
   });
 };
 
 module.exports.dbSignIn = (req, res, next) => {
-  let { jwtSecret } = require('../config.json');
-  let jwToken;
-  console.log('Recieved obj:', req.body);
-  return new Promise((resolve, reject) => {
-    passport.authenticate('local-signin', (err, user, msgObj) => {
+  return new Promise(resolve => {
+    passport.authenticate('local-signin', (err, id, msgObj) => {
       if (err) {
         next(err);
       }
-      jwt.sign({ user }, jwtSecret, (err, token) => {
+      jwt.sign({ id }, jwtSecret, (err, token) => {
+        //creating a jwt token for Account_ID to store it on local storage
         if (err) console.log(err);
         resolve(token);
       });
