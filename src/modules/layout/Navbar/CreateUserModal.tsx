@@ -272,7 +272,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
         axios.post('http://localhost:8000/api/account', data).then(response => {
           console.log('Data submitted');
           this.resetForm();
-          this.handleCloseModal();
         });
       });
     }
