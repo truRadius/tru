@@ -59,9 +59,8 @@ const RegistrationStrategy = new Strategy(
               function(err) {
                 if (err) console.log(err);
                 let request = new sql.Request();
-                //insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO) values('Anna','Banana','a.banana@gmail.com','33647', 'abc123','personal','Female','Tampa','FL', 'active','1231547879');
                 request.query(
-                  `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO, AccountCreated) values(
+                  `insert into Account (FName, LName, Email, Zip, Password, Account_Type, Gender, City, State, Status, PhoneNO, AccountCreated) output Inserted.Account_ID values(
             '${UserObj.FName}','${UserObj.LName}','${UserObj.Email}','${UserObj.Zip}','${UserObj.Password}',
             '${UserObj.Account_Type}','${UserObj.Gender}','${UserObj.City}','${UserObj.State}','active',
             '${UserObj.PhoneNO}', SYSDATETIME())`,
@@ -69,7 +68,7 @@ const RegistrationStrategy = new Strategy(
                     if (err) {
                       console.log(err);
                     }
-                    return done(null, data, null);
+                    return done(null, data);
                   }
                 );
               }

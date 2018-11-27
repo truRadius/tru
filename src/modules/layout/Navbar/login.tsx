@@ -119,7 +119,7 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
               </Button>
             </Grid>
           </form>
-          <CreateUserModal classes={classes} />
+          <CreateUserModal classes={classes} isLoggedIn={this.props.isLoggedIn} />
         </Grid>
       </div>
     );
