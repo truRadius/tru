@@ -217,7 +217,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         .post('http://localhost:8000/api/externalApi', search_text)
         .then(res => this.setState({ results: res }))
         // tslint:disable-next-line:no-console
-        .catch(err => console.log(err));
+        .catch((err: any) => console.log(err));
     });
   };
   render() {

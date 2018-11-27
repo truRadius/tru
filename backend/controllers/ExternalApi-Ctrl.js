@@ -2,7 +2,7 @@
 let axios = require('axios');
 
 // const { dbGetOneAccount } = require('../models/Account');
-
+let { apiKey } = require('../config.json');
 module.exports.getDataFromExternalApi = (req, res, next) => {
   let term = Object.keys(req.body)[0];
   console.log('------------->', term);
@@ -12,7 +12,7 @@ module.exports.getDataFromExternalApi = (req, res, next) => {
       { search_terms: term },
       {
         headers: {
-          'Subscription-Key': '1bfa55e4bea8456cb36e835dfc215df1',
+          'Subscription-Key': apiKey,
           'Content-Type': 'application/json'
         }
       }
