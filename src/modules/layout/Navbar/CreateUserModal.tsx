@@ -36,6 +36,9 @@ interface DispatchProps {}
 
 interface InternalState {}
 
+interface StateProps {
+  isLoggedIn: any;
+}
 // www.npmjs.com/package/zipcodes - to convert zipcode to city and state
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   paperModal: {
@@ -269,8 +272,12 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
+        console.log('This happens??', data);
         axios.post('http://localhost:8000/api/account', data).then(response => {
-          console.log('Data submitted');
+          console.log('Data submitted', response.data);
+          debugger;
+          localStorage.setItem('UserObj', response.data);
+          this.props.isLoggedIn();
           this.resetForm();
         });
       });

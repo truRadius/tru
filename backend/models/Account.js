@@ -37,15 +37,11 @@ module.exports.dbPostOneAccount = (req, res, next) => {
       if (err) {
         next(err);
       }
-      console.log('User Obj', user);
-
-      // TODO: Log-In the newly registered user
-      // req.logIn(user, err => {
-      //   if (err) {
-      //     return next(err);
-      //   }
-      // });
-      module.exports.dbSignIn(req, res, next).then(token => {
+      console.log('User ID', user.recordset[0].Account_ID);
+      let id = user.recordset[0].Account_ID;
+      jwt.sign({ id }, jwtSecret, (err, token) => {
+        //creating a jwt token for Account_ID to store it on local storage
+        if (err) console.log(err);
         resolve(token);
       });
     })(req, res, next);
@@ -63,12 +59,6 @@ module.exports.dbSignIn = (req, res, next) => {
         if (err) console.log(err);
         resolve(token);
       });
-
-      // req.logIn(user, err => {
-      //   if (err) {
-      //     return next(err);
-      //   }
-      // });
     })(req, res, next);
   });
 };
