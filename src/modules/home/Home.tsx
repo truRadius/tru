@@ -13,7 +13,8 @@ import {
   Select,
   MenuItem,
   Checkbox,
-  ListItemText
+  ListItemText,
+  Button
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import {
@@ -177,19 +178,14 @@ const causes = [
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   causes: Array<string> = [];
   state = {
-    selected: 'event',
+    selected: 'organizations',
     expanded: false,
     cause: this.causes,
     distance: 10,
     search_text: '',
-    apiUrl: 'https://apidata.guidestar.org/essentials/v1',
-    headers: {
-      'Content-Type': 'application/json',
-      // subscription key goes here
-      'Subscription-Key': '',
-      'Access-Control-Allow-Origin': '*'
-    },
-    results: []
+    results: {
+      data: []
+    }
   };
   unique = 1;
   handleMoreOption = () => {
@@ -210,21 +206,24 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   // tslint:disable-next-line:no-any
   onTextChange = (e: any) => {
+    this.setState({ [e.target.name]: e.target.value });
+  };
+
+  onSubmit = () => {
     const { search_text } = this.state;
 
-    this.setState({ [e.target.name]: e.target.value }, () => {
-      axios
-        .post('http://localhost:8000/api/externalApi', search_text)
-        .then(res => this.setState({ results: res }))
-        // tslint:disable-next-line:no-console
-        .catch((err: any) => console.log(err));
-    });
-  };
-  render() {
-    const { classes } = this.props;
-    const { search_text } = this.state;
+    axios
+      .post('http://localhost:8000/api/externalApi', search_text)
+      .then(res => this.setState({ results: res }))
+      // tslint:disable-next-line:no-console
+      .catch((err: any) => console.log(err));
     // tslint:disable-next-line:no-console
     console.log('results', this.state.results);
+  };
+
+  render() {
+    const { classes } = this.props;
+    const { search_text, results } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -240,6 +239,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     placeholder="Search"
                     classes={{ input: classes.inputInput }}
                   />
+                  <Button onClick={this.onSubmit} color="secondary" variant="contained">Search</Button>
                 </FormControl>
               </Grid>
 
@@ -250,20 +250,20 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                       id="event"
                       value="event"
                       style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'event' ? classes.activeBtn : classes.toggleBtn}
+                      className={this.state.selected === 'events' ? classes.activeBtn : classes.toggleBtn}
                     >
-                      <span id="event" className={classes.customButton}>
-                        Event
+                      <span id="events" className={classes.customButton}>
+                        Events
                       </span>
                     </ToggleButton>
                     <ToggleButton
                       value="organization"
                       id="organization"
                       style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'organization' ? classes.activeBtn : classes.toggleBtn}
+                      className={this.state.selected === 'organizations' ? classes.activeBtn : classes.toggleBtn}
                     >
-                      <span id="organization" className={classes.customButton}>
-                        Organization
+                      <span id="organizations" className={classes.customButton}>
+                        Organizations
                       </span>
                     </ToggleButton>
                   </ToggleButtonGroup>
@@ -329,7 +329,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         </div>
         <div className={classes.spacerDiv} />
         <div className={classes.displayDiv}>
-          {this.state.selected === 'event' ? <DisplayEventCards /> : <DisplayOrgCards />}
+          {this.state.selected === 'event' ? <DisplayEventCards /> : <DisplayOrgCards orgs={results.data} />}
         </div>
       </div>
     );
