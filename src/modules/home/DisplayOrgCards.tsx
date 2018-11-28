@@ -11,27 +11,24 @@ import {
   Card,
   Typography,
   Button,
-  IconButton,
-  CardActions,
-  Collapse
 } from '@material-ui/core';
-import classnames from 'classnames';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Brands from '@fortawesome/free-brands-svg-icons';
+import { LocationOn } from '@material-ui/icons';
 // import { faFacebookF, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 library.add(faGlobe);
 const logo = require('./dummy-logo.jpg');
 
-interface StateProps {}
+interface StateProps {
+  orgs: Array<{organization_id: string; organization_name: string; mission: string; address_line_1: string; city: string; state: string; zip: string; website_url: string}>;
+}
 
 interface DispatchProps {}
 
 interface InternalState {
-  expanded: boolean;
 }
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
@@ -41,7 +38,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     margin: '0 auto'
   },
   button: {
-    margin: theme.spacing.unit
+    // margin: theme.spacing.unit
   },
   logo: {
     width: '100%',
@@ -90,96 +87,58 @@ type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
   'expandOpen'
 >;
 
-const causes = [
-  'Animal Welfare',
-  'Arts and Culture',
-  'Children',
-  'Social Services'
-];
-
 class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    expanded: false,
   };
-
-  handleExpandClick = () => {
-    this.setState(state => ({ expanded: !state.expanded }));
-  }
 
   followOrganization = () => {
     // TODO: add to follow table
   }
-  createCard = () => {
-    const { classes } = this.props;
-    const { expanded } = this.state;
-    return (
-      <Card className={this.props.classes.card} style={{ margin: '10px auto' }}>
-        <CardContent>
-          <Grid container spacing={16}>
-            <Grid item xs={12} sm={4} className={classes.logo} />
-            <Grid item xs>
-              <Typography variant="h6" color="secondary">Placeholder Organization</Typography>
-              <Grid item xs={12} container direction="row">
-                {causes.map(c => (                      
-                  <Typography variant="subtitle1" style={{ padding: '10px 20px 0 0' }}>{c}</Typography>
-                ))}
-              </Grid>
-              <Grid item xs={12} container direction="row">
-                <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon={Brands.faFacebookF} />
-                <FontAwesomeIcon className={classes.socialIcons} icon="globe" />
-                <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
-                <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
-              </Grid>
-              <Grid item xs={12} container direction="row">
-                <Typography variant="subtitle2" style={{ padding: '10px 20px 0 0' }}>200 Followers</Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </CardContent>
-        <CardActions  disableActionSpacing>
-          <Button color="primary" className={classes.button} onClick={this.followOrganization}>
-            Follow
-          </Button>
-          <IconButton
-            className={classnames(classes.expand, {
-              [classes.expandOpen]: this.state.expanded,
-            })}
-            onClick={this.handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="Show more"
-          >
-            <ExpandMoreIcon />
-          </IconButton>
-        </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
-          <CardContent>
-            <Typography gutterBottom component="h7">
-              It is a long established fact that a reader will be distracted by the readable content of a page when
-              looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-              distribution of letters, as opposed to using 'Content here, content here', making it look like
-              readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their
-              default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy.
-              Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected
-              humour and the like).
-            </Typography>
-          </CardContent>
-        </Collapse>
-      </Card>
-    );
-  }
-
   render() {
+    const { classes, orgs } = this.props;
     return (
-      <div>
-        <Grid container alignContent="center" justify="center" direction="column">
-          <Grid item sm={12}>{this.createCard()}</Grid>
-          <Grid item sm={12}>{this.createCard()}</Grid>
-          <Grid item sm={12}>{this.createCard()}</Grid>
-          <Grid item sm={12}>{this.createCard()}</Grid>
-          <Grid item sm={12}>{this.createCard()}</Grid>
-          <Grid item sm={12}>{this.createCard()}</Grid>
+      <Grid container alignContent="center" justify="center" direction="row">
+        {orgs.map(org => (
+        <Grid key={org.organization_id} item sm={12}>
+          <Card className={classes.card} style={{ margin: '10px auto' }}>
+            <CardContent>
+              <Grid container spacing={16}>
+                <Grid item xs={12} sm={4} className={classes.logo} />
+                <Grid item xs>
+                  <Typography variant="h4" color="secondary">{org.organization_name}</Typography>
+                  <Grid item xs={12} container alignItems="center" direction="row">
+                    <LocationOn color="secondary" />
+                    <Typography variant="h6" style={{ padding: 10 }}>
+                      {org.city}, {org.state}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} container direction="row">
+                    <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon={Brands.faFacebookF} />
+                    {
+                      org.website_url !== '' ?
+                      <a href={org.website_url}>
+                      <FontAwesomeIcon className={classes.socialIcons} icon="globe" />
+                      </a> :
+                      undefined
+                    }
+                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
+                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
+                  </Grid>
+                  <Grid item xs={12} container direction="row">
+                    <Button color="primary" className={classes.button} onClick={this.followOrganization}>
+                      Follow
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  {org.mission}
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
-      </div>
+        ))}
+      </Grid>
     );
   }
 }
