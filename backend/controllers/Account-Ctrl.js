@@ -1,11 +1,22 @@
 'use strict';
 
-const { dbGetOneAccount } = require('../models/Account');
+const { dbGetOneAccount, dbPostOneAccount, dbSignIn } = require('../models/Account');
 
 module.exports.getSingleAccount = (req, res, next) => {
-  dbGetOneAccount(res)
+  let id = req.params.id;
+  dbGetOneAccount(res, id)
     .then(account => {
       res.status(200).json(account);
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+module.exports.postAccount = (req, res, next) => {
+  dbPostOneAccount(req, res, next)
+    .then(token => {
+      res.send(token);
     })
     .catch(err => {
       next(err);

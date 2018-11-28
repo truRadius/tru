@@ -1,6 +1,7 @@
 /* tslint:disable */
 
 import * as React from 'react';
+import axios from 'axios';
 import {
   StyledComponentProps,
   Theme,
@@ -59,14 +60,20 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
     }
   };
 
-  signIn = () => {
+  signIn = (e: any) => {
+    e.preventDefault();
     if (this.state.email !== '' && this.state.password !== '' && this.state.err === '') {
-      // let signInCreds = {
-      //   email: this.state.email,
-      //   password: this.state.password
-      // };
-      localStorage.setItem('UserObj', this.state.email);
-      this.props.isLoggedIn();
+      axios
+        .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })
+        .then(response => {
+          console.log(response.data);
+          this.setState({ err: '' });
+          localStorage.setItem('UserObj', response.data);
+          this.props.isLoggedIn();
+        })
+        .catch(() => {
+          this.setState({ err: 'Invalid login credentials', email: '', password: '' });
+        });
       // TODO: Alert should be replaced by functionality to check from database if the information matches.
     }
   };
@@ -83,11 +90,11 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
     const { classes } = this.props;
     return (
       <div style={{ width: '-webkit-fill-available' }}>
-        <form onSubmit={this.signIn}>
-          <Grid container alignItems="center" justify="flex-end" spacing={24}>
+        <Grid container alignItems="center" justify="flex-end" spacing={24}>
+          <form onSubmit={this.signIn}>
             <Grid item>
               <TextField
-                id="standard-email"
+                id="username"
                 label="Email or Mobile Number"
                 className={classes.textField}
                 value={this.state.email}
@@ -97,7 +104,7 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
                 helperText={this.state.err}
               />
               <TextField
-                id="standard-password"
+                id="password"
                 label="Password"
                 type="password"
                 className={classes.textField}
@@ -110,10 +117,10 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
               <Button color="primary" type="submit">
                 Log In
               </Button>
-              <CreateUserModal classes={classes} />
             </Grid>
-          </Grid>
-        </form>
+          </form>
+          <CreateUserModal classes={classes} isLoggedIn={this.props.isLoggedIn} />
+        </Grid>
       </div>
     );
   }
