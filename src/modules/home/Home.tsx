@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -25,9 +26,9 @@ import {
 } from '@material-ui/core';
 import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
+import axios from 'axios';
 
 interface StateProps {}
 
@@ -106,9 +107,9 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   moreOptionPanel: {
     width: '80%',
     margin: '0 auto',
-    maxWidth: 1000, 
+    maxWidth: 1000,
     paddingTop: 0,
-    paddingBottom: 10,
+    paddingBottom: 10
   },
   whiteText: {
     color: 'white'
@@ -179,26 +180,51 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     selected: 'event',
     expanded: false,
     cause: this.causes,
-    distance: 10
+    distance: 10,
+    search_text: '',
+    apiUrl: 'https://apidata.guidestar.org/essentials/v1',
+    headers: {
+      'Content-Type': 'application/json',
+      // subscription key goes here
+      'Subscription-Key': '',
+      'Access-Control-Allow-Origin': '*'
+    },
+    results: []
   };
   unique = 1;
   handleMoreOption = () => {
     this.setState({
       expanded: !this.state.expanded
     });
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
     this.setState({ [name]: event.target.value });
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
     this.setState({ selected: e.target.id });
-  }
+  };
+
+  // tslint:disable-next-line:no-any
+  onTextChange = (e: any) => {
+    const { search_text } = this.state;
+
+    this.setState({ [e.target.name]: e.target.value }, () => {
+      axios
+        .post('http://localhost:8000/api/externalApi', search_text)
+        .then(res => this.setState({ results: res }))
+        // tslint:disable-next-line:no-console
+        .catch((err: any) => console.log(err));
+    });
+  };
   render() {
     const { classes } = this.props;
+    const { search_text } = this.state;
+    // tslint:disable-next-line:no-console
+    console.log('results', this.state.results);
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -206,7 +232,14 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             <Grid container alignItems="center" direction="row" justify="space-evenly">
               <Grid item xs>
                 <FormControl className={classes.formControl}>
-                  <InputBase fullWidth placeholder="Search" classes={{ input: classes.inputInput }} />
+                  <InputBase
+                    name="search_text"
+                    value={search_text}
+                    onChange={this.onTextChange}
+                    fullWidth
+                    placeholder="Search"
+                    classes={{ input: classes.inputInput }}
+                  />
                 </FormControl>
               </Grid>
 
@@ -239,7 +272,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             </Grid>
           </Grid>
           <ExpansionPanel expanded={this.state.expanded} onChange={this.handleMoreOption}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />} style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
+            <ExpansionPanelSummary
+              expandIcon={<ExpandMoreIcon />}
+              style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}
+            >
               <Typography className={classes.heading}>More Options</Typography>
             </ExpansionPanelSummary>
             <ExpansionPanelDetails className={classes.moreOptionPanel}>

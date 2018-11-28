@@ -1,6 +1,7 @@
 /* tslint:disable */
 
 import * as React from 'react';
+import axios from 'axios';
 import {
   Modal,
   withStyles,
@@ -35,6 +36,9 @@ interface DispatchProps {}
 
 interface InternalState {}
 
+interface StateProps {
+  isLoggedIn: any;
+}
 // www.npmjs.com/package/zipcodes - to convert zipcode to city and state
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   paperModal: {
@@ -191,7 +195,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   handleZipcodeChange = (event: any) => {
     const onlyNums = event.target.value.replace(/[^0-9]/, '');
     // tslint:disable-next-line:no-console
-    console.log('Onlynums:', onlyNums);
     if (onlyNums.length < 5) {
       this.setState({ zipcode: onlyNums });
     } else if (onlyNums.length === 5) {
@@ -247,27 +250,34 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
   createUserObj = () => {
     return new Promise((resolve, reject) => {
       let userObj = {
-        fname: this.state.firstName,
-        lname: this.state.lastName,
-        gender: this.state.gender,
-        causes: this.state.cause,
-        zipcode: this.state.zipcode,
-        city: this.state.city,
-        state: this.state.state,
-        email: this.state.email,
-        password: this.state.password,
-        phoneNumber: this.state.unformattedPhoneNumber
+        FName: this.state.firstName,
+        LName: this.state.lastName,
+        Gender: this.state.gender,
+        Zip: this.state.zipcode,
+        City: this.state.city,
+        State: this.state.state,
+        Email: this.state.email,
+        Password: this.state.password,
+        PhoneNO: this.state.unformattedPhoneNumber,
+        AccountCreated: Date.now(),
+        Account_Type: 'Personal'
       };
       resolve(userObj);
     });
   };
 
-  onFormSubmit = () => {
+  onFormSubmit = (e: any) => {
+    e.preventDefault();
     if (this.state.errStack.length > 0) {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
-        localStorage.setItem('UserObj', JSON.stringify(data)); // TODO: change it to actual database once ready
+        axios.post('http://localhost:8000/api/account', data).then(response => {
+          // console.log('Data submitted', response.data);
+          localStorage.setItem('UserObj', response.data);
+          this.props.isLoggedIn();
+          this.resetForm();
+        });
       });
     }
   };
@@ -424,7 +434,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     fullWidth
                     required
                     onBlur={this.validateEmail}
-                    id="standard-email"
+                    id="email"
+                    name="email"
                     label="Email"
                     value={this.state.email}
                     onChange={this.handleChange('email')}
@@ -438,7 +449,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     <Input
                       fullWidth
                       required
-                      id="adornment-password"
+                      id="password"
+                      name="password"
                       type={this.state.showPassword ? 'text' : 'password'}
                       value={this.state.password}
                       onChange={this.handleChange('password')}
