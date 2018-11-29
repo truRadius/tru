@@ -38,7 +38,6 @@ interface DispatchProps {}
 interface InternalState {
   selected: string;
   expanded: boolean;
-  multiSelectValues: Array<string>;
   body: {
     search_terms: string;
     from: number;
@@ -216,7 +215,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
     selected: 'organizations',
     expanded: false,
-    multiSelectValues: [],
     body: {
       search_terms: "",
       from: 0,
@@ -262,10 +260,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           }
         }
       }));
-      this.setState(prevState => ({
-        multiSelectValues: [...prevState.multiSelectValues, event.target.key]
-      }));
-      console.log('event targte', event.target);
     } else if (name === 'radius') {
       this.setState(prevState => ({
         ...prevState,
