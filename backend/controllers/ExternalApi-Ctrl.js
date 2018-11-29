@@ -7,8 +7,9 @@ let { apiKey } = require('../config.json');
 module.exports.getDataFromExternalApi = (req, res, next) => {
   let term = req.body.search_text;
   let dist = req.body.distance;
-  dbGetOneAccount().then(data => {
-    console.log('------------->', req.body);
+  let token = req.body.token;
+  dbGetOneAccount(req, res, token).then(data => {
+    console.log('------------->', data);
     axios
       .post(
         'https://apidata.guidestar.org/essentials/v1',
@@ -17,7 +18,7 @@ module.exports.getDataFromExternalApi = (req, res, next) => {
           filters: {
             geography: {
               radius: dist,
-              zip: '33647' //TODO: watch the video. Use token to get user's id and get their zip code from it.
+              zip: data.Zip //TODO: watch the video. Use token to get user's id and get their zip code from it.
             }
           }
         },
