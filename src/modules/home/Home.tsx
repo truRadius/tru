@@ -38,6 +38,7 @@ interface DispatchProps {}
 interface InternalState {
   selected: string;
   expanded: boolean;
+  multiSelectValues: Array<string>;
   body: {
     search_terms: string;
     from: number;
@@ -206,7 +207,7 @@ const causes = [
   {code: 'U00', category: 'Science and Technology'},
   {code: 'V00', category: 'Social Science'},
   {code: 'W00', category: 'Public/Sociaety Benefit'},
-  {code: 'X00', category: 'Religion/SSpiritual Development'},
+  {code: 'X00', category: 'Religion/Spiritual Development'},
   {code: 'Y00', category: 'Mutual Membership Benefit Organizations'},
   {code: 'Z00', category: 'Unknown'},
 ];
@@ -215,6 +216,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
     selected: 'organizations',
     expanded: false,
+    multiSelectValues: [],
     body: {
       search_terms: "",
       from: 0,
@@ -255,25 +257,38 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             ...prevState.body.filters,
             organization: {
               ...prevState.body.filters.organization,
-              ntee_major_codes: {
-                ...prevState.body.filters.organization.ntee_major_codes,
-                ntee_major_codes: event.target.value
-              }
+              ntee_major_codes: event.target.value
+            }
+          }
+        }
+      }));
+      this.setState(prevState => ({
+        multiSelectValues: [...prevState.multiSelectValues, event.target.key]
+      }));
+      console.log('event targte', event.target);
+    } else if (name === 'radius') {
+      this.setState(prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          filters: {
+            ...prevState.body.filters,
+            geography: {
+              ...prevState.body.filters.geography,
+              radius: event.target.value
             }
           }
         }
     }));
-    } else if (name === 'radius') {
-      this.setState(prevState => ({
-        body: {
-          ...prevState.body,
-          [name]: event.target.value
-        }
-    }));
       console.log('radius');
     } else if (name === 'search_terms') {
-      // this.setState({ body: [...this.state.body.search_terms, event.target.value]})
-      console.log('terms');
+      this.setState(prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          search_terms: event.target.value
+        }
+    }));
     }
   };
 
@@ -362,12 +377,12 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                       multiple
                       value={body.filters.organization.ntee_major_codes}
                       onChange={this.handleChange('ntee_major_codes')}
-                      input={<Input multiline id="select-multiple-checkbox" />}
-                      renderValue={() => body.filters.organization.ntee_major_codes.join(', ')}
+                      input={<Input id="select-multiple-checkbox" />}
+                      renderValue={selected => selected && [selected].join(', ')}
                       MenuProps={MenuProps}
                     >
                       {causes.map(c => (
-                        <MenuItem key={c.code} value={c.code}>
+                        <MenuItem key={c.category} value={c.code}>
                           <Checkbox checked={body.filters.organization.ntee_major_codes.indexOf(c.code) > -1} />
                           <Typography>
                             <ListItemText primary={c.category} />
@@ -386,7 +401,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                       fullWidth
                       value={body.filters.geography.radius}
                       onChange={this.handleChange('radius')}
-                      inputProps={{ name: 'body.filters.geography.radius', id: 'distance', style: { color: 'white' } }}
+                      inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
                     >
                       {distance.map(d => (
                         <MenuItem key={d} value={d}>
