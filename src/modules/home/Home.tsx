@@ -210,10 +210,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   onSubmit = () => {
-    const { search_text } = this.state;
+    const { search_text, distance } = this.state;
 
     axios
-      .post('http://localhost:8000/api/externalApi', search_text)
+      .post('http://localhost:8000/api/externalApi', { search_text, distance })
       .then(res => this.setState({ results: res }))
       // tslint:disable-next-line:no-console
       .catch((err: any) => console.log(err));
@@ -239,7 +239,9 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     placeholder="Search"
                     classes={{ input: classes.inputInput }}
                   />
-                  <Button onClick={this.onSubmit} color="secondary" variant="contained">Search</Button>
+                  <Button onClick={this.onSubmit} color="secondary" variant="contained">
+                    Search
+                  </Button>
                 </FormControl>
               </Grid>
 
