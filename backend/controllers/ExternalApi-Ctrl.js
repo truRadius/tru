@@ -8,6 +8,7 @@ module.exports.getDataFromExternalApi = (req, res, next) => {
   let term = req.body.search_text;
   let dist = req.body.distance;
   let token = req.body.token;
+  let codes = req.body.codes;
   dbGetOneAccount(req, res, token).then(data => {
     console.log('------------->', data);
     axios
@@ -19,6 +20,9 @@ module.exports.getDataFromExternalApi = (req, res, next) => {
             geography: {
               radius: dist,
               zip: data.Zip //TODO: watch the video. Use token to get user's id and get their zip code from it.
+            },
+            organization: {
+              ntee_major_codes: codes
             }
           }
         },
