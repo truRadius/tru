@@ -7,27 +7,32 @@ const passport = require('passport');
 let jwt = require('jsonwebtoken');
 let { jwtSecret } = require('../config.json');
 
-module.exports.dbGetOneAccount = (res, id) => {
+module.exports.dbGetOneAccount = (req, res, id) => {
   return new Promise((resolve, reject) => {
-    sql.close();
-    sql.connect(
-      config,
-      function(err) {
-        if (err) console.log(err);
+    jwt.verify(id, jwtSecret, (err, authData) => {
+      if (err) res.sendStatus(404);
+      else {
+        sql.close();
+        sql.connect(
+          config,
+          function(err) {
+            if (err) console.log(err);
 
-        // create Request object
-        let request = new sql.Request();
+            // create Request object
+            let request = new sql.Request();
 
-        // query to the database and get the data
-        request.query(`select * from Account where Account_ID = ${id}`, function(err, recordset) {
-          if (err) console.log(err);
-
-          // send data as a response
-          res.json(recordset);
-        });
+            // query to the database and get the data
+            request.query(`select * from Account where Account_ID = ${authData.id}`, function(err, data) {
+              if (err) console.log(err);
+              else {
+                console.log(data.recordset[0]);
+                resolve(data.recordset[0]);
+              }
+            });
+          }
+        );
       }
-    );
-    // sql.close();
+    });
   });
 };
 
