@@ -45,20 +45,20 @@ interface InternalState {
     sort: {
       sort_by: string;
       ascending: boolean;
-    },
+    };
     filters: {
       geography: {
         zip: string;
         radius: number;
-      },
+      };
       organization: {
         ntee_major_codes: Array<string>;
-      }
-    }
-  },
+      };
+    };
+  };
   results: {
     data: Array<any>;
-  }
+  };
 }
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
@@ -183,32 +183,32 @@ const MenuProps = {
 const distance = [10, 25, 50, 100];
 
 const causes = [
-  {code: 'A00', category: 'Arts, Culture, and Humanities'},
-  {code: 'B00', category: 'Education'},
-  {code: 'C00', category: 'Environmental Quality, Protection, and Beautification'},
-  {code: 'D00', category: 'Animal Related'},
-  {code: 'E00', category: 'Health, General and Rehabilitative'},
-  {code: 'F00', category: 'Mental Health Crisis Intervention'},
-  {code: 'G00', category: 'Diseases, Disorders, Medical Disciplines'},
-  {code: 'H00', category: 'Medical Research'},
-  {code: 'I00', category: 'Crime, Legal Related'},
-  {code: 'J00', category: 'Employment, Job Related'},
-  {code: 'K00', category: 'Food, Agriculture, and Nutrition'},
-  {code: 'L00', category: 'Housing/Shelter'},
-  {code: 'M00', category: 'Public Safety, Disaster Preparedness and Relief'},
-  {code: 'N00', category: 'Recreation, Sports, Leisure, and Athletics'},
-  {code: 'O00', category: 'Youth Development'},
-  {code: 'P00', category: 'Human Services'},
-  {code: 'Q00', category: 'International/Foreign Affairs and National Security'},
-  {code: 'R00', category: 'Civil Rights and Social Action'},
-  {code: 'S00', category: 'Community Improvement'},
-  {code: 'T00', category: 'Philanthropy'},
-  {code: 'U00', category: 'Science and Technology'},
-  {code: 'V00', category: 'Social Science'},
-  {code: 'W00', category: 'Public/Sociaety Benefit'},
-  {code: 'X00', category: 'Religion/Spiritual Development'},
-  {code: 'Y00', category: 'Mutual Membership Benefit Organizations'},
-  {code: 'Z00', category: 'Unknown'},
+  { code: 'A00', category: 'Arts, Culture, and Humanities' },
+  { code: 'B00', category: 'Education' },
+  { code: 'C00', category: 'Environmental Quality, Protection, and Beautification' },
+  { code: 'D00', category: 'Animal Related' },
+  { code: 'E00', category: 'Health, General and Rehabilitative' },
+  { code: 'F00', category: 'Mental Health Crisis Intervention' },
+  { code: 'G00', category: 'Diseases, Disorders, Medical Disciplines' },
+  { code: 'H00', category: 'Medical Research' },
+  { code: 'I00', category: 'Crime, Legal Related' },
+  { code: 'J00', category: 'Employment, Job Related' },
+  { code: 'K00', category: 'Food, Agriculture, and Nutrition' },
+  { code: 'L00', category: 'Housing/Shelter' },
+  { code: 'M00', category: 'Public Safety, Disaster Preparedness and Relief' },
+  { code: 'N00', category: 'Recreation, Sports, Leisure, and Athletics' },
+  { code: 'O00', category: 'Youth Development' },
+  { code: 'P00', category: 'Human Services' },
+  { code: 'Q00', category: 'International/Foreign Affairs and National Security' },
+  { code: 'R00', category: 'Civil Rights and Social Action' },
+  { code: 'S00', category: 'Community Improvement' },
+  { code: 'T00', category: 'Philanthropy' },
+  { code: 'U00', category: 'Science and Technology' },
+  { code: 'V00', category: 'Social Science' },
+  { code: 'W00', category: 'Public/Sociaety Benefit' },
+  { code: 'X00', category: 'Religion/Spiritual Development' },
+  { code: 'Y00', category: 'Mutual Membership Benefit Organizations' },
+  { code: 'Z00', category: 'Unknown' }
 ];
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
@@ -216,20 +216,20 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     selected: 'organizations',
     expanded: false,
     body: {
-      search_terms: "",
+      search_terms: '',
       from: 0,
       size: 25,
       sort: {
-        sort_by: "",
+        sort_by: '',
         ascending: true
       },
       filters: {
         geography: {
-          zip: "37128",
-            radius: 10,
+          zip: '37128',
+          radius: 10
         },
         organization: {
-          ntee_major_codes: [],
+          ntee_major_codes: []
         }
       }
     },
@@ -273,7 +273,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             }
           }
         }
-    }));
+      }));
       console.log('radius');
     } else if (name === 'search_terms') {
       this.setState(prevState => ({
@@ -282,7 +282,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           ...prevState.body,
           search_terms: event.target.value
         }
-    }));
+      }));
     }
   };
 
@@ -321,7 +321,9 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     placeholder="Search"
                     classes={{ input: classes.inputInput }}
                   />
-                  <Button onClick={this.onSubmit} color="secondary" variant="contained">Search</Button>
+                  <Button onClick={this.onSubmit} color="secondary" variant="contained">
+                    Search
+                  </Button>
                 </FormControl>
               </Grid>
 
