@@ -8,6 +8,7 @@ import { Profile } from './Profile/ViewUserProfile';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
+import { OrganizationProfile } from './profile/OrganizationProfile';
 
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
@@ -42,6 +43,7 @@ class InternalApp extends React.PureComponent<InternalState> {
             )}
             {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
             <Route exact path="/profile" render={() => <Profile />} />
+            <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
           </main>
           <footer>
             <Footer isLoggedIn={this.isLoggedIn} />

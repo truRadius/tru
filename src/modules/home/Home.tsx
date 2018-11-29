@@ -35,7 +35,31 @@ interface StateProps {}
 
 interface DispatchProps {}
 
-interface InternalState {}
+interface InternalState {
+  selected: string;
+  expanded: boolean;
+  body: {
+    search_terms: string;
+    from: number;
+    size: number;
+    sort: {
+      sort_by: string;
+      ascending: boolean;
+    };
+    filters: {
+      geography: {
+        zip: string;
+        radius: number;
+      };
+      organization: {
+        ntee_major_codes: Array<string>;
+      };
+    };
+  };
+  results: {
+    data: Array<any>;
+  };
+}
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {},
@@ -159,30 +183,56 @@ const MenuProps = {
 const distance = [10, 25, 50, 100];
 
 const causes = [
-  'Animal Welfare',
-  'Arts and Culture',
-  'Children',
-  'Civil Rights and Social Action',
-  'Disaster and Humanitarian Relief',
-  'Economic Empowerment',
-  'Education',
-  'Environment',
-  'Health',
-  'Human Rights',
-  'Politics',
-  'Poverty Alleviation',
-  'Science and Technology',
-  'Social Services'
+  { code: 'A00', category: 'Arts, Culture, and Humanities' },
+  { code: 'B00', category: 'Education' },
+  { code: 'C00', category: 'Environmental Quality, Protection, and Beautification' },
+  { code: 'D00', category: 'Animal Related' },
+  { code: 'E00', category: 'Health, General and Rehabilitative' },
+  { code: 'F00', category: 'Mental Health Crisis Intervention' },
+  { code: 'G00', category: 'Diseases, Disorders, Medical Disciplines' },
+  { code: 'H00', category: 'Medical Research' },
+  { code: 'I00', category: 'Crime, Legal Related' },
+  { code: 'J00', category: 'Employment, Job Related' },
+  { code: 'K00', category: 'Food, Agriculture, and Nutrition' },
+  { code: 'L00', category: 'Housing/Shelter' },
+  { code: 'M00', category: 'Public Safety, Disaster Preparedness and Relief' },
+  { code: 'N00', category: 'Recreation, Sports, Leisure, and Athletics' },
+  { code: 'O00', category: 'Youth Development' },
+  { code: 'P00', category: 'Human Services' },
+  { code: 'Q00', category: 'International/Foreign Affairs and National Security' },
+  { code: 'R00', category: 'Civil Rights and Social Action' },
+  { code: 'S00', category: 'Community Improvement' },
+  { code: 'T00', category: 'Philanthropy' },
+  { code: 'U00', category: 'Science and Technology' },
+  { code: 'V00', category: 'Social Science' },
+  { code: 'W00', category: 'Public/Sociaety Benefit' },
+  { code: 'X00', category: 'Religion/Spiritual Development' },
+  { code: 'Y00', category: 'Mutual Membership Benefit Organizations' },
+  { code: 'Z00', category: 'Unknown' }
 ];
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
-  causes: Array<string> = [];
-  state = {
+  state: InternalState = {
     selected: 'organizations',
     expanded: false,
-    cause: this.causes,
-    distance: 10,
-    search_text: '',
+    body: {
+      search_terms: '',
+      from: 0,
+      size: 25,
+      sort: {
+        sort_by: '',
+        ascending: true
+      },
+      filters: {
+        geography: {
+          zip: '37128',
+          radius: 10
+        },
+        organization: {
+          ntee_major_codes: []
+        }
+      }
+    },
     results: {
       data: []
     }
@@ -196,7 +246,44 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
-    this.setState({ [name]: event.target.value });
+    if (name === 'ntee_major_codes') {
+      this.setState(prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          filters: {
+            ...prevState.body.filters,
+            organization: {
+              ...prevState.body.filters.organization,
+              ntee_major_codes: event.target.value
+            }
+          }
+        }
+      }));
+    } else if (name === 'radius') {
+      this.setState(prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          filters: {
+            ...prevState.body.filters,
+            geography: {
+              ...prevState.body.filters.geography,
+              radius: event.target.value
+            }
+          }
+        }
+      }));
+      console.log('radius');
+    } else if (name === 'search_terms') {
+      this.setState(prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          search_terms: event.target.value
+        }
+      }));
+    }
   };
 
   // tslint:disable-next-line:no-any
@@ -204,16 +291,11 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ selected: e.target.id });
   };
 
-  // tslint:disable-next-line:no-any
-  onTextChange = (e: any) => {
-    this.setState({ [e.target.name]: e.target.value });
-  };
-
   onSubmit = () => {
-    const { search_text, distance } = this.state;
+    const { body } = this.state;
 
     axios
-      .post('http://localhost:8000/api/externalApi', { search_text, distance })
+      .post('http://localhost:8000/api/externalApi', body)
       .then(res => this.setState({ results: res }))
       // tslint:disable-next-line:no-console
       .catch((err: any) => console.log(err));
@@ -223,7 +305,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   render() {
     const { classes } = this.props;
-    const { search_text, results } = this.state;
+    const { body, results } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -233,8 +315,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                 <FormControl className={classes.formControl}>
                   <InputBase
                     name="search_text"
-                    value={search_text}
-                    onChange={this.onTextChange}
+                    value={body.search_terms}
+                    onChange={this.handleChange('search_terms')}
                     fullWidth
                     placeholder="Search"
                     classes={{ input: classes.inputInput }}
@@ -289,17 +371,17 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     </InputLabel>
                     <Select
                       multiple
-                      value={this.state.cause}
-                      onChange={this.handleChange('cause')}
-                      input={<Input multiline id="select-multiple-checkbox" />}
-                      renderValue={() => this.state.cause.join(', ')}
+                      value={body.filters.organization.ntee_major_codes}
+                      onChange={this.handleChange('ntee_major_codes')}
+                      input={<Input id="select-multiple-checkbox" />}
+                      renderValue={selected => selected && [selected].join(', ')}
                       MenuProps={MenuProps}
                     >
                       {causes.map(c => (
-                        <MenuItem key={this.unique++} value={c}>
-                          <Checkbox checked={this.state.cause.indexOf(c) > -1} />
+                        <MenuItem key={c.category} value={c.code}>
+                          <Checkbox checked={body.filters.organization.ntee_major_codes.indexOf(c.code) > -1} />
                           <Typography>
-                            <ListItemText primary={c} />
+                            <ListItemText primary={c.category} />
                           </Typography>
                         </MenuItem>
                       ))}
@@ -313,9 +395,9 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     </InputLabel>
                     <Select
                       fullWidth
-                      value={this.state.distance}
-                      onChange={this.handleChange('distance')}
-                      inputProps={{ name: 'distance', id: 'distance', style: { color: 'white' } }}
+                      value={body.filters.geography.radius}
+                      onChange={this.handleChange('radius')}
+                      inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
                     >
                       {distance.map(d => (
                         <MenuItem key={d} value={d}>
