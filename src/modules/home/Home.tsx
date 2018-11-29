@@ -213,7 +213,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     const { search_text, distance } = this.state;
 
     axios
-      .post('http://localhost:8000/api/externalApi', { search_text, distance })
+      .post('http://localhost:8000/api/externalApi', { search_text, distance, token: localStorage.getItem('UserObj') })
       .then(res => this.setState({ results: res }))
       // tslint:disable-next-line:no-console
       .catch((err: any) => console.log(err));
