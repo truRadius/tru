@@ -19,6 +19,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Brands from '@fortawesome/free-brands-svg-icons';
 import { LocationOn } from '@material-ui/icons';
 // import { faFacebookF, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import { Link } from 'react-router-dom';
 library.add(faGlobe);
 const logo = require('./dummy-logo.jpg');
 
@@ -99,44 +100,46 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
     return (
       <Grid container alignContent="center" justify="center" direction="row">
         {orgs.map(org => (
-        <Grid key={org.organization_id} item sm={12}>
-          <Card className={classes.card} style={{ margin: '10px auto' }}>
-            <CardContent>
-              <Grid container spacing={16}>
-                <Grid item xs={12} sm={4} className={classes.logo} />
-                <Grid item xs>
-                  <Typography variant="h4" color="secondary">{org.organization_name}</Typography>
-                  <Grid item xs={12} container alignItems="center" direction="row">
-                    <LocationOn color="secondary" />
-                    <Typography variant="h6" style={{ padding: 10 }}>
-                      {org.city}, {org.state}
-                    </Typography>
+        <Link to={'/organization/' + org.organization_id}>
+          <Grid key={org.organization_id} item sm={12}>
+            <Card className={classes.card} style={{ margin: '10px auto' }}>
+              <CardContent>
+                <Grid container spacing={16}>
+                  <Grid item xs={12} sm={4} className={classes.logo} />
+                  <Grid item xs>
+                    <Typography variant="h4" color="secondary">{org.organization_name}</Typography>
+                    <Grid item xs={12} container alignItems="center" direction="row">
+                      <LocationOn color="secondary" />
+                      <Typography variant="h6" style={{ padding: 10 }}>
+                        {org.city}, {org.state}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} container direction="row">
+                      <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon={Brands.faFacebookF} />
+                      {
+                        org.website_url !== '' ?
+                        <a href={org.website_url}>
+                          <FontAwesomeIcon className={classes.socialIcons} icon="globe" />
+                        </a> :
+                        undefined
+                      }
+                      <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
+                      <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
+                    </Grid>
+                    <Grid item xs={12} container direction="row">
+                      <Button color="primary" className={classes.button} onClick={this.followOrganization}>
+                        Follow
+                      </Button>
+                    </Grid>
                   </Grid>
-                  <Grid item xs={12} container direction="row">
-                    <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon={Brands.faFacebookF} />
-                    {
-                      org.website_url !== '' ?
-                      <a href={org.website_url}>
-                      <FontAwesomeIcon className={classes.socialIcons} icon="globe" />
-                      </a> :
-                      undefined
-                    }
-                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
-                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
-                  </Grid>
-                  <Grid item xs={12} container direction="row">
-                    <Button color="primary" className={classes.button} onClick={this.followOrganization}>
-                      Follow
-                    </Button>
+                  <Grid item xs={12}>
+                    {org.mission}
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  {org.mission}
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
+        </Link>
         ))}
       </Grid>
     );

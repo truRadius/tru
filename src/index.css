@@ -5,3 +5,8 @@ body {
   background-color: #E8E8E8;
   height: '100%'
 }
+
+a {
+  text-decoration: none;
+  color: initial;
+}
