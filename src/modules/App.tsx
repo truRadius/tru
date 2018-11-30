@@ -8,7 +8,7 @@ import { Profile } from './Profile/ViewUserProfile';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
-import { OrganizationProfile } from './profile/OrganizationProfile';
+import { OrganizationProfile } from './Profile/OrganizationProfile';
 
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';

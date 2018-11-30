@@ -225,7 +225,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       },
       filters: {
         geography: {
-          zip: '37128',
+          zip: '',
           radius: 10
         },
         organization: {

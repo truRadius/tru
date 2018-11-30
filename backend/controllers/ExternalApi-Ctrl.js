@@ -5,10 +5,8 @@ const { dbGetOneAccount } = require('../models/Account');
 
 let { apiKey } = require('../config.json');
 module.exports.getDataFromExternalApi = (req, res, next) => {
-  let term = req.body.search_text;
-  let dist = req.body.distance;
-  let token = req.body.token;
-  let codes = req.body.codes;
+  let body = req.body;
+  console.log(body);
   dbGetOneAccount(req, res, token).then(data => {
     console.log('------------->', data);
     axios
