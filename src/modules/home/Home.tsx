@@ -1,4 +1,3 @@
-/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -38,6 +37,7 @@ interface DispatchProps {}
 interface InternalState {
   selected: string;
   expanded: boolean;
+  text: string;
   body: {
     search_terms: string;
     from: number;
@@ -57,6 +57,7 @@ interface InternalState {
     };
   };
   results: {
+    // tslint:disable-next-line:no-any
     data: Array<any>;
   };
 }
@@ -215,6 +216,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
     selected: 'organizations',
     expanded: false,
+    text: '',
     body: {
       search_terms: '',
       from: 0,
@@ -274,15 +276,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           }
         }
       }));
-      console.log('radius');
     } else if (name === 'search_terms') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          search_terms: event.target.value
-        }
-      }));
+      this.setState({
+        text: event.target.value
+      });
     }
   };
 
@@ -292,20 +289,30 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   onSubmit = () => {
-    const { body } = this.state;
+    const { body, text } = this.state;
 
-    axios
-      .post('http://localhost:8000/api/externalApi', body)
-      .then(res => this.setState({ results: res }))
-      // tslint:disable-next-line:no-console
-      .catch((err: any) => console.log(err));
-    // tslint:disable-next-line:no-console
-    console.log('results', this.state.results);
+    this.setState(
+      prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          search_terms: text
+        }
+      }),
+      // tslint:disable-next-line:align
+      () => {
+        axios
+          .post('http://localhost:8000/api/externalApi', body)
+          .then(res => this.setState({ results: res }))
+          // tslint:disable-next-line:no-any
+          .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+      }
+    );
   };
 
   render() {
     const { classes } = this.props;
-    const { body, results } = this.state;
+    const { body, results, text } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -314,8 +321,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
               <Grid item xs>
                 <FormControl className={classes.formControl}>
                   <InputBase
-                    name="search_text"
-                    value={body.search_terms}
+                    name="search_terms"
+                    value={text}
                     onChange={this.handleChange('search_terms')}
                     fullWidth
                     placeholder="Search"
