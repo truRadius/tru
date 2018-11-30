@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -290,7 +291,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   onSubmit = () => {
     const { body, text } = this.state;
-
     this.setState(
       prevState => ({
         ...prevState,
@@ -302,7 +302,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       // tslint:disable-next-line:align
       () => {
         axios
-          .post('http://localhost:8000/api/externalApi', body)
+          .post('http://localhost:8000/api/externalApi', {
+            data: body,
+            token: localStorage.getItem('UserObj')
+          })
           .then(res => this.setState({ results: res }))
           // tslint:disable-next-line:no-any
           .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
