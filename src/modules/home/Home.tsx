@@ -1,4 +1,3 @@
-/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -38,6 +37,7 @@ interface DispatchProps {}
 interface InternalState {
   selected: string;
   expanded: boolean;
+  text: string;
   body: {
     search_terms: string;
     from: number;
@@ -53,10 +53,16 @@ interface InternalState {
       };
       organization: {
         ntee_major_codes: Array<string>;
+<<<<<<< HEAD
+      }
+    }
+=======
       };
     };
+>>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
   };
   results: {
+    // tslint:disable-next-line:no-any
     data: Array<any>;
   };
 }
@@ -215,6 +221,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
     selected: 'organizations',
     expanded: false,
+    text: '',
     body: {
       search_terms: '',
       from: 0,
@@ -226,7 +233,11 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       filters: {
         geography: {
           zip: '37128',
+<<<<<<< HEAD
+            radius: 10,
+=======
           radius: 10
+>>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
         },
         organization: {
           ntee_major_codes: []
@@ -242,7 +253,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({
       expanded: !this.state.expanded
     });
-  };
+  }
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
@@ -273,6 +284,13 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             }
           }
         }
+<<<<<<< HEAD
+    }));
+    } else if (name === 'search_terms') {
+      this.setState({
+        text: event.target.value
+      });
+=======
       }));
       console.log('radius');
     } else if (name === 'search_terms') {
@@ -283,29 +301,39 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           search_terms: event.target.value
         }
       }));
+>>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
     }
-  };
+  }
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
     this.setState({ selected: e.target.id });
-  };
+  }
 
   onSubmit = () => {
-    const { body } = this.state;
+    const { body, text } = this.state;
 
-    axios
-      .post('http://localhost:8000/api/externalApi', body)
-      .then(res => this.setState({ results: res }))
-      // tslint:disable-next-line:no-console
-      .catch((err: any) => console.log(err));
-    // tslint:disable-next-line:no-console
-    console.log('results', this.state.results);
-  };
+    this.setState(prevState => ({
+      ...prevState,
+      body: {
+        ...prevState.body,
+        search_terms: text
+      }
+    }), 
+      // tslint:disable-next-line:align
+      () => {
+        axios
+        .post('http://localhost:8000/api/externalApi', body)
+        .then(res => this.setState({ results: res }))
+        // tslint:disable-next-line:no-any
+        .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+      }
+    );
+  }
 
   render() {
     const { classes } = this.props;
-    const { body, results } = this.state;
+    const { body, results, text } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -314,8 +342,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
               <Grid item xs>
                 <FormControl className={classes.formControl}>
                   <InputBase
-                    name="search_text"
-                    value={body.search_terms}
+                    name="search_terms"
+                    value={text}
                     onChange={this.handleChange('search_terms')}
                     fullWidth
                     placeholder="Search"
