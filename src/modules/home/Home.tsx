@@ -1,3 +1,4 @@
+/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -53,13 +54,8 @@ interface InternalState {
       };
       organization: {
         ntee_major_codes: Array<string>;
-<<<<<<< HEAD
-      }
-    }
-=======
       };
     };
->>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
   };
   results: {
     // tslint:disable-next-line:no-any
@@ -232,12 +228,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       },
       filters: {
         geography: {
-          zip: '37128',
-<<<<<<< HEAD
-            radius: 10,
-=======
+          zip: '',
           radius: 10
->>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
         },
         organization: {
           ntee_major_codes: []
@@ -253,7 +245,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({
       expanded: !this.state.expanded
     });
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
@@ -284,52 +276,42 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
             }
           }
         }
-<<<<<<< HEAD
-    }));
+      }));
     } else if (name === 'search_terms') {
       this.setState({
         text: event.target.value
       });
-=======
-      }));
-      console.log('radius');
-    } else if (name === 'search_terms') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          search_terms: event.target.value
-        }
-      }));
->>>>>>> 6a1854b13b25688d8dde4ef0359c7e870d174e9e
     }
-  }
+  };
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
     this.setState({ selected: e.target.id });
-  }
+  };
 
   onSubmit = () => {
     const { body, text } = this.state;
-
-    this.setState(prevState => ({
-      ...prevState,
-      body: {
-        ...prevState.body,
-        search_terms: text
-      }
-    }), 
+    this.setState(
+      prevState => ({
+        ...prevState,
+        body: {
+          ...prevState.body,
+          search_terms: text
+        }
+      }),
       // tslint:disable-next-line:align
       () => {
         axios
-        .post('http://localhost:8000/api/externalApi', body)
-        .then(res => this.setState({ results: res }))
-        // tslint:disable-next-line:no-any
-        .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+          .post('http://localhost:8000/api/externalApi', {
+            data: body,
+            token: localStorage.getItem('UserObj')
+          })
+          .then(res => this.setState({ results: res }))
+          // tslint:disable-next-line:no-any
+          .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
       }
     );
-  }
+  };
 
   render() {
     const { classes } = this.props;

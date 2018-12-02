@@ -4,7 +4,7 @@ const { dbGetOneAccount, dbPostOneAccount, dbSignIn } = require('../models/Accou
 
 module.exports.getSingleAccount = (req, res, next) => {
   let id = req.params.id;
-  dbGetOneAccount(res, id)
+  dbGetOneAccount(req, res, id, next)
     .then(account => {
       res.status(200).json(account);
     })
