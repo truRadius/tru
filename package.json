@@ -53,6 +53,7 @@
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.22.2",
     "mssql": "^4.2.3",
+    "npm": "^6.4.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "react": "^16.6.3",
