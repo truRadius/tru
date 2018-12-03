@@ -291,25 +291,41 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ selected: e.target.id });
   };
 
+  getOrganizationData = (body: any) => {
+    axios
+      .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
+      .then(res => {
+        console.log(res.data);
+        if (res.data.code == 404) {
+          this.setState({ err: 'No Matching Data found' });
+        }
+        this.setState({ results: res });
+      })
+      // tslint:disable-next-line:no-any
+      .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+  };
+
   onSubmit = () => {
     const { body, text } = this.state;
     console.log('BODY ======>', body);
     this.setState(
       prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
-      function stateUpdateComplete(this: any) {
-        axios
-          .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
-          .then(res => {
-            console.log(res.data);
-            if (res.data.code == 404) {
-              this.setState({ err: 'No Matching Data found' });
-            }
-            this.setState({ results: res });
-          })
-          // tslint:disable-next-line:no-any
-          .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
-      }.bind(this)
+      () => {
+        body.search_terms = this.state.text;
+        setTimeout(() => {
+          console.log(body);
+          this.getOrganizationData(body);
+        }, 1000);
+      }
     );
+  };
+
+  // componentDidUpdate = () => {
+  //   this.getOrganizationData(this.state.body);
+  // };
+
+  componentDidMount = () => {
+    this.getOrganizationData(this.state.body);
   };
 
   render() {
