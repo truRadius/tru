@@ -92,6 +92,7 @@ const LoginStrategy = new Strategy(
   (req, email, password, done) => {
     const isValidPassword = (password, userPass) => {
       // hashes the passed-in password and then compares it to the hashed password fetched from the db
+      console.log('Password match:', bCrypt.compareSync(password, userPass));
       return bCrypt.compareSync(password, userPass);
     };
 
@@ -109,23 +110,20 @@ const LoginStrategy = new Strategy(
           err,
           user
         ) {
+          console.log('User?????????', user);
           if (err) console.log(err);
-          if (!user) {
+          if (user.recordset.length === 0) {
             return done(null, false, {
-              message: "Can't find a user with those credentials. Please try again"
+              message: 'This User does not exist. Please Register'
             });
+          } else {
+            if (!isValidPassword(password, user.recordset[0].Password)) {
+              return done(null, false, {
+                message: 'Incorrect password.'
+              });
+            }
           }
-          if (req.body.Email != user.Email || req.body.Email != user.PhoneNO) {
-            return done(null, false, {
-              message: 'This email/phone number does not match our database'
-            });
-          }
-          if (!isValidPassword(password, user.recordset[0].Password)) {
-            return done(null, false, {
-              message: 'Incorrect password.'
-            });
-          }
-          return done(null, user.recordset[0]);
+          return done(null, user.recordset[0], { message: 'Successfull' });
         });
       }
     );
