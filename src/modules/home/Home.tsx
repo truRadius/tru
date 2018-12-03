@@ -295,20 +295,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     const { body, text } = this.state;
     console.log('BODY ======>', body);
     this.setState(
-      prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          search_terms: text
-        }
-      }),
-      // tslint:disable-next-line:align
-      () => {
+      prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
+      function stateUpdateComplete(this: any) {
         axios
-          .post('http://localhost:8000/api/externalApi', {
-            data: body,
-            token: localStorage.getItem('UserObj')
-          })
+          .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
           .then(res => {
             console.log(res.data);
             if (res.data.code == 404) {
@@ -318,7 +308,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           })
           // tslint:disable-next-line:no-any
           .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
-      }
+      }.bind(this)
     );
   };
 
