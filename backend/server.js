@@ -26,8 +26,6 @@ require('./passport-strat.js');
 app.use(passport.initialize());
 app.use(passport.session());
 app.use((req, res, next) => {
-  // res.locals.session = req.session.user;
-  console.log('res.locals.session', res.locals.userId);
   next();
 });
 // Setup bodyparser and route middleware

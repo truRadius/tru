@@ -66,10 +66,14 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
       axios
         .post('http://localhost:8000/api/signin', { email: this.state.email, password: this.state.password })
         .then(response => {
-          console.log(response.data);
-          this.setState({ err: '' });
-          localStorage.setItem('UserObj', response.data);
-          this.props.isLoggedIn();
+          console.log(response);
+          if (response.data.token === false) {
+            this.setState({ err: response.data.message });
+          } else {
+            this.setState({ err: '' });
+            localStorage.setItem('UserObj', response.data);
+            this.props.isLoggedIn();
+          }
         })
         .catch(() => {
           this.setState({ err: 'Invalid login credentials', email: '', password: '' });
