@@ -105,7 +105,6 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
             <Card className={classes.card} style={{ margin: '10px auto' }}>
               <CardContent>
                 <Grid container spacing={16}>
-                  <Grid item xs={12} sm={4} className={classes.logo} />
                   <Grid item xs>
                     <Typography variant="h4" color="secondary">{org.organization_name}</Typography>
                     <Grid item xs={12} container alignItems="center" direction="row">

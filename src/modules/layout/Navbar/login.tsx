@@ -94,9 +94,9 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
     const { classes } = this.props;
     return (
       <div style={{ width: '-webkit-fill-available' }}>
-        <Grid container alignItems="center" justify="flex-end" spacing={24}>
-          <form onSubmit={this.signIn}>
-            <Grid item>
+        <form onSubmit={this.signIn}>
+          <Grid container alignItems="center" justify="flex-end" spacing={24}>
+            <Grid item xs container justify="flex-end">
               <TextField
                 id="username"
                 label="Email or Mobile Number"
@@ -116,15 +116,13 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
                 onChange={this.handlePassword}
                 margin="normal"
               />
-            </Grid>
-            <Grid item>
               <Button color="primary" type="submit">
                 Log In
               </Button>
+              <CreateUserModal classes={classes} isLoggedIn={this.props.isLoggedIn} />
             </Grid>
-          </form>
-          <CreateUserModal classes={classes} isLoggedIn={this.props.isLoggedIn} />
-        </Grid>
+          </Grid>
+        </form>
       </div>
     );
   }
