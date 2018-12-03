@@ -10,13 +10,15 @@ let { jwtSecret } = require('../config.json');
 module.exports.dbGetOneAccount = (req, res, id) => {
   return new Promise((resolve, reject) => {
     jwt.verify(id, jwtSecret, (err, authData) => {
-      if (err) res.sendStatus(404);
-      else {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        console.log(authData);
         sql.close();
         sql.connect(
           config,
           function(err) {
-            if (err) console.log(err);
+            if (err) console.log('This err?', err);
 
             // create Request object
             let request = new sql.Request();
@@ -54,16 +56,21 @@ module.exports.dbPostOneAccount = (req, res, next) => {
 };
 
 module.exports.dbSignIn = (req, res, next) => {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     passport.authenticate('local-signin', (err, id, msgObj) => {
       if (err) {
         next(err);
       }
-      jwt.sign({ id }, jwtSecret, (err, token) => {
-        //creating a jwt token for Account_ID to store it on local storage
-        if (err) console.log(err);
-        resolve(token);
-      });
+      console.log(id, msgObj.message);
+      if (id === false) {
+        resolve({ token: false, message: msgObj.message });
+      } else {
+        jwt.sign({ id }, jwtSecret, (err, token) => {
+          //creating a jwt token for Account_ID to store it on local storage
+          if (err) console.log(err);
+          resolve({ token, message: msgObj.message });
+        });
+      }
     })(req, res, next);
   });
 };
