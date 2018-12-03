@@ -101,10 +101,13 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
   };
   render() {
     const { classes, orgs, err } = this.props;
-    console.log(err);
+    // const {data} = this.props.orgs
+    console.log(orgs, err);
     return (
       <div>
-        {err === '' ? (
+        {err !== '' ? (
+          <h1>'No data found'</h1>
+        ) : (
           <Grid container alignContent="center" justify="center" direction="row">
             {orgs.map(org => (
               <Link to={'/organization/' + org.organization_id}>
@@ -155,8 +158,6 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
               </Link>
             ))}
           </Grid>
-        ) : (
-          { err }
         )}
       </div>
     );

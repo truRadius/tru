@@ -36,7 +36,6 @@ interface StateProps {}
 interface DispatchProps {}
 
 interface InternalState {
-  err: string;
   selected: string;
   expanded: boolean;
   text: string;
@@ -61,6 +60,7 @@ interface InternalState {
   results: {
     // tslint:disable-next-line:no-any
     data: Array<any>;
+    err: string;
   };
 }
 
@@ -216,7 +216,6 @@ const causes = [
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    err: '',
     selected: 'organizations',
     expanded: false,
     text: '',
@@ -239,7 +238,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       }
     },
     results: {
-      data: []
+      data: [],
+      err: ''
     }
   };
   unique = 1;
@@ -292,22 +292,30 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   };
 
   getOrganizationData = (body: any) => {
+    console.log('BODY ======>', body);
+
     axios
       .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
       .then(res => {
-        console.log(res.data);
-        if (res.data.code == 404) {
-          this.setState({ err: 'No Matching Data found' });
-        }
-        this.setState({ results: res });
+        let re = {
+          data: res.data,
+          err: ''
+        };
+        this.setState({ results: re });
       })
       // tslint:disable-next-line:no-any
-      .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+      .catch((err: any) => {
+        let res = {
+          data: [],
+          err: 'Not found'
+        };
+        this.setState({ results: res });
+        console.log(err);
+      }); // tslint:disable-line:no-console
   };
 
   onSubmit = () => {
     const { body, text } = this.state;
-    console.log('BODY ======>', body);
     this.setState(
       prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
       () => {
@@ -441,7 +449,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           {this.state.selected === 'event' ? (
             <DisplayEventCards />
           ) : (
-            <DisplayOrgCards err={this.state.err} orgs={results.data} />
+            <DisplayOrgCards orgs={results.data} err={results.err} />
           )}
         </div>
       </div>
