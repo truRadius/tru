@@ -123,7 +123,7 @@ const LoginStrategy = new Strategy(
               });
             }
           }
-          return done(null, user.recordset[0], { message: 'Successfull' });
+          return done(null, user.recordset[0].Account_ID, { message: 'Successfull' });
         });
       }
     );

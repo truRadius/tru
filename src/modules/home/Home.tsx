@@ -60,6 +60,7 @@ interface InternalState {
   results: {
     // tslint:disable-next-line:no-any
     data: Array<any>;
+    err: string;
   };
 }
 
@@ -237,7 +238,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       }
     },
     results: {
-      data: []
+      data: [],
+      err: ''
     }
   };
   unique = 1;
@@ -289,28 +291,49 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ selected: e.target.id });
   };
 
+  getOrganizationData = (body: any) => {
+    console.log('BODY ======>', body);
+
+    axios
+      .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
+      .then(res => {
+        let re = {
+          data: res.data,
+          err: ''
+        };
+        this.setState({ results: re });
+      })
+      // tslint:disable-next-line:no-any
+      .catch((err: any) => {
+        let res = {
+          data: [],
+          err: 'Not found'
+        };
+        this.setState({ results: res });
+        console.log(err);
+      }); // tslint:disable-line:no-console
+  };
+
   onSubmit = () => {
     const { body, text } = this.state;
     this.setState(
-      prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          search_terms: text
-        }
-      }),
-      // tslint:disable-next-line:align
+      prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
       () => {
-        axios
-          .post('http://localhost:8000/api/externalApi', {
-            data: body,
-            token: localStorage.getItem('UserObj')
-          })
-          .then(res => this.setState({ results: res }))
-          // tslint:disable-next-line:no-any
-          .catch((err: any) => console.log(err)); // tslint:disable-line:no-console
+        body.search_terms = this.state.text;
+        setTimeout(() => {
+          console.log(body);
+          this.getOrganizationData(body);
+        }, 1000);
       }
     );
+  };
+
+  // componentDidUpdate = () => {
+  //   this.getOrganizationData(this.state.body);
+  // };
+
+  componentDidMount = () => {
+    this.getOrganizationData(this.state.body);
   };
 
   render() {
@@ -423,7 +446,11 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         </div>
         <div className={classes.spacerDiv} />
         <div className={classes.displayDiv}>
-          {this.state.selected === 'event' ? <DisplayEventCards /> : <DisplayOrgCards orgs={results.data} />}
+          {this.state.selected === 'event' ? (
+            <DisplayEventCards />
+          ) : (
+            <DisplayOrgCards orgs={results.data} err={results.err} />
+          )}
         </div>
       </div>
     );

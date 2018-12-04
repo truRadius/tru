@@ -62,7 +62,7 @@ module.exports.dbSignIn = (req, res, next) => {
         next(err);
       }
       console.log(id, msgObj.message);
-      if (id === false) {
+      if (id === false || id === 'false') {
         resolve({ token: false, message: msgObj.message });
       } else {
         jwt.sign({ id }, jwtSecret, (err, token) => {
