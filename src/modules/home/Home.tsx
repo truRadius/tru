@@ -321,6 +321,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       () => {
         body.search_terms = this.state.text;
         setTimeout(() => {
+          //give state some time to set before using it
           console.log(body);
           this.getOrganizationData(body);
         }, 1000);

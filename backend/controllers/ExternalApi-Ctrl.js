@@ -24,3 +24,21 @@ module.exports.getDataFromExternalApi = (req, res, next) => {
       });
   });
 };
+
+module.exports.getTrialDataFromExternalApi = (req, res, next) => {
+  let data = req.body;
+  axios
+    .post('https://apidata.guidestar.org/essentials/v1', data.body, {
+      headers: {
+        'Subscription-Key': apiKey,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(result => {
+      console.log('result---->', result);
+      res.send(result.data.data.hits);
+    })
+    .catch(err => {
+      next(err);
+    });
+};

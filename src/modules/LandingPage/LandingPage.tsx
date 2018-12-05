@@ -25,6 +25,7 @@ import {
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 let zipcodes = require('zipcodes');
+let axios = require('axios');
 
 const heroImage = require('./hero-image-6.jpg');
 
@@ -151,6 +152,43 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
       this.setState({ zipcodeErr: '' });
     }
   };
+
+  getTrialData = (e: any) => {
+    e.preventDefault();
+    let body = {
+      search_terms: this.state.search,
+      size: 4,
+      filters: {
+        geography: {
+          radius: this.state.distance,
+          zip: this.state.zipCode
+        },
+        organization: {
+          ntee_major_codes: this.state.cause
+        }
+      }
+    };
+
+    axios
+      .post('http://localhost:8000/api/externalApi/trialData', { body })
+      .then((res: any) => {
+        console.log(res.data);
+        let re = {
+          data: res.data,
+          err: ''
+        };
+        this.setState({ results: re });
+      })
+      // tslint:disable-next-line:no-any
+      .catch((err: any) => {
+        let res = {
+          data: [],
+          err: 'Not found'
+        };
+        this.setState({ results: res });
+        console.log(err);
+      }); // tslint:disabl
+  };
   render() {
     const { classes } = this.props;
 
@@ -195,7 +233,7 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
             </Grid>
           </Grid>
         </div>
-        <form style={{ width: '80%', margin: '40px auto 60px', maxWidth: 1000 }}>
+        <form style={{ width: '80%', margin: '40px auto 60px', maxWidth: 1000 }} onSubmit={this.getTrialData}>
           <Grid container justify="center" alignItems="center">
             <Grid item style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
               <Typography variant="h4" color="secondary" className={classes.quote}>
@@ -213,6 +251,7 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
                   <FormControl className={classes.formControl}>
                     <InputBase
                       fullWidth
+                      onChange={this.handleChange('search')}
                       placeholder="Search"
                       classes={{
                         input: classes.inputInput
@@ -304,7 +343,7 @@ class InternalLandingPage extends React.PureComponent<PropsWithStyles, InternalS
                 </MuiThemeProvider>
               </Grid>
               <Grid item md={2} className={classes.gridItem}>
-                <Button color="primary" variant="contained" style={{ color: 'white' }}>
+                <Button color="primary" variant="contained" style={{ color: 'white' }} type="submit">
                   Search
                 </Button>
               </Grid>
