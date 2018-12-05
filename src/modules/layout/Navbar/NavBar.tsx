@@ -217,6 +217,8 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <Link to="/">
               <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
             </Link>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
             {this.props.loggedIn ? (
               <div>
                 {/* TODO: This will eventually change to profile/:id for particular user */}
@@ -229,8 +231,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             ) : (
               <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
             )}
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop} />
+            </div>
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
                 <MoreIcon className={classes.icons} />
