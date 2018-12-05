@@ -110,23 +110,25 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
         ) : (
           <Grid container alignContent="center" justify="center" direction="row">
             {orgs.map(org => (
-              <Link to={'/organization/' + org.organization_id}>
-                <Grid key={org.organization_id} item sm={12}>
+              <Grid key={org.organization_id} item sm={12}>
+                <Link to={'/organization/' + org.organization_id} style={{ width:'100%' }}>
                   <Card className={classes.card} style={{ margin: '10px auto' }}>
                     <CardContent>
                       <Grid container spacing={16}>
-                        <Grid item xs={12} sm={4} className={classes.logo} />
-                        <Grid item xs>
-                          <Typography variant="h4" color="secondary">
+                        <Grid item xs container>
+                          <Typography variant="h5" color="secondary">
                             {org.organization_name}
                           </Typography>
                           <Grid item xs={12} container alignItems="center" direction="row">
                             <LocationOn color="secondary" />
-                            <Typography variant="h6" style={{ padding: 10 }}>
+                            <Typography variant="h6" color="secondary" style={{ padding: 10 }}>
                               {org.city}, {org.state}
                             </Typography>
                           </Grid>
-                          <Grid item xs={12} container direction="row">
+                          <Grid item xs={12} container alignItems="center" style={{ padding: '20px 0' }}>
+                            {org.mission}
+                          </Grid>
+                          <Grid item xs direction="row">
                             <FontAwesomeIcon
                               className={classes.socialIcons}
                               style={{ paddingLeft: 0 }}
@@ -142,20 +144,17 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
                             <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
                             <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
                           </Grid>
-                          <Grid item xs={12} container direction="row">
+                          <Grid item xs direction="row" container justify="flex-end">
                             <Button color="primary" className={classes.button} onClick={this.followOrganization}>
                               Follow
                             </Button>
                           </Grid>
                         </Grid>
-                        <Grid item xs={12}>
-                          {org.mission}
-                        </Grid>
                       </Grid>
                     </CardContent>
                   </Card>
-                </Grid>
-              </Link>
+                </Link>
+              </Grid>
             ))}
           </Grid>
         )}
