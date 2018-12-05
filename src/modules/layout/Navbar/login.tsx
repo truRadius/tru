@@ -71,7 +71,7 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
             this.setState({ err: response.data.message });
           } else {
             this.setState({ err: '' });
-            localStorage.setItem('UserObj', response.data.token);
+            sessionStorage.setItem('UserObj', response.data.token);
             this.props.isLoggedIn();
           }
         })

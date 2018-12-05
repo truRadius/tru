@@ -274,7 +274,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.createUserObj().then(data => {
         axios.post('http://localhost:8000/api/account', data).then(response => {
           // console.log('Data submitted', response.data);
-          localStorage.setItem('UserObj', response.data);
+          sessionStorage.setItem('UserObj', response.data);
           this.props.isLoggedIn();
           this.resetForm();
         });

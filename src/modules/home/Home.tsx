@@ -295,7 +295,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     console.log('BODY ======>', body);
 
     axios
-      .post('http://localhost:8000/api/externalApi', { data: body, token: localStorage.getItem('UserObj') })
+      .post('http://localhost:8000/api/externalApi', { data: body, token: sessionStorage.getItem('UserObj') })
       .then(res => {
         let re = {
           data: res.data,
