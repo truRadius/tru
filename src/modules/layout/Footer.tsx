@@ -1,5 +1,6 @@
 /* tslint:disable */
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import {
   StyledComponentProps,
   Theme,
@@ -45,9 +46,10 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
   state = {};
 
   logOut = () => {
-    localStorage.removeItem('UserObj');
+    sessionStorage.removeItem('UserObj');
     this.props.isLoggedIn();
   };
+
   render() {
     const { classes } = this.props;
 
@@ -61,7 +63,14 @@ class InternalFooter extends React.Component<PropsWithStyles, InternalState> {
                 <ListItemText disableTypography className={classes.listText} primary="View" />
               </ListItem>
               <ListItem button>
-                <ListItemText disableTypography onClick={this.logOut} className={classes.listText} primary="Log Out" />
+                <Link to="/">
+                  <ListItemText
+                    disableTypography
+                    onClick={this.logOut}
+                    className={classes.listText}
+                    primary="Log Out"
+                  />
+                </Link>
               </ListItem>
             </List>
           </Grid>

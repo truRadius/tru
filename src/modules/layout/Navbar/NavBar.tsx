@@ -219,18 +219,18 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             </Link>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
-            {this.props.loggedIn ? (
-              <div>
-                {/* TODO: This will eventually change to profile/:id for particular user */}
-                <Link to="/profile">
-                  <IconButton color="primary">
-                    <AccountCircle />
-                  </IconButton>
-                </Link>
-              </div>
-            ) : (
-              <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
-            )}
+              {this.props.loggedIn ? (
+                <div>
+                  {/* TODO: This will eventually change to profile/:id for particular user */}
+                  <Link to={`/profile/${sessionStorage.UserObj ? sessionStorage.UserObj : localStorage.UserObj}`}>
+                    <IconButton color="primary">
+                      <AccountCircle />
+                    </IconButton>
+                  </Link>
+                </div>
+              ) : (
+                <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
+              )}
             </div>
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">

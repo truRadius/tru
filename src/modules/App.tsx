@@ -23,7 +23,7 @@ class InternalApp extends React.PureComponent<InternalState> {
   };
 
   isLoggedIn = () => {
-    if (window.localStorage.UserObj) {
+    if (window.sessionStorage.UserObj) {
       this.setState({ loggedIn: true });
     } else this.setState({ loggedIn: false });
   };
@@ -35,16 +35,16 @@ class InternalApp extends React.PureComponent<InternalState> {
           <nav>
             <NavBar isLoggedIn={this.isLoggedIn} loggedIn={this.state.loggedIn} />
           </nav>
-          <main>
-            {this.state.loggedIn ? (
+          {this.state.loggedIn ? (
+            <main>
               <Route exact path="/" render={() => <Home />} />
-            ) : (
-              <Route exact path="/" render={() => <LandingPage />} />
-            )}
-            {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
-            <Route exact path="/profile" render={() => <Profile />} />
-            <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
-          </main>
+              {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
+              <Route exact path="/profile/:id" render={() => <Profile />} />
+              <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
+            </main>
+          ) : (
+            <Route exact path="/" render={() => <LandingPage />} />
+          )}
           <footer>
             <Footer isLoggedIn={this.isLoggedIn} />
           </footer>
