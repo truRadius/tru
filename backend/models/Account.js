@@ -74,3 +74,29 @@ module.exports.dbSignIn = (req, res, next) => {
     })(req, res, next);
   });
 };
+
+module.exports.dbCheckAccount = (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    let email = req.query.email;
+    console.log('Email', email);
+    sql.close();
+    sql.connect(
+      config,
+      function(err) {
+        if (err) console.log('This err?', err);
+
+        // create Request object
+        let request = new sql.Request();
+
+        // query to the database and get the data
+        request.query(`select * from Account where Email = '${email}'`, function(err, data) {
+          if (err) console.log(err);
+          else {
+            console.log(data.recordset[0]);
+            resolve(data.recordset[0]);
+          }
+        });
+      }
+    );
+  });
+};

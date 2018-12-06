@@ -242,9 +242,23 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       this.errStack = 'Invalid Email';
       this.setState({ errStack: this.errStack });
     } else {
-      this.errStack = '';
-      this.setState({ errStack: this.errStack });
+      this.checkIfEmailAlreadyExists(this.state.email).then(data => {
+        console.log(data);
+        this.setState({ errStack: data });
+      });
     }
+  };
+
+  checkIfEmailAlreadyExists = (email: string) => {
+    console.log(email);
+    return new Promise(resolve => {
+      axios.get('http://localhost:8000/api/account/check', { params: { email } }).then(response => {
+        if (response.data !== '') {
+          resolve('Email is already taken');
+        } else resolve('');
+        // console.log(response);
+      });
+    });
   };
 
   createUserObj = () => {
