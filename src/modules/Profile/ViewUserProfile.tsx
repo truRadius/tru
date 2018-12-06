@@ -1,10 +1,12 @@
+/* tslint:disable */
+
 import * as React from 'react';
-import { 
-  StyledComponentProps, 
-  Theme, 
-  withStyles, 
-  WithStyles, 
-  withTheme, 
+import {
+  StyledComponentProps,
+  Theme,
+  withStyles,
+  WithStyles,
+  withTheme,
   WithTheme,
   Typography,
   Grid,
@@ -14,24 +16,22 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import LocationOn from '@material-ui/icons/LocationOn';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Brands from '@fortawesome/free-brands-svg-icons';
-
+const axios = require('axios');
 const defaultImg = require('./profile_default.png');
 
-const user = {
-  firstName: 'Jevon',
-  lastName: 'Thomas',
-  postalCode: 37128,
-  city: 'Murfreesboro',
-  state: 'TN',
-  causes: [
-    'Poverty Alleviation',
-    'Human Rights',
-  ],
-  about: 'Sed interdum, neque ut mattis rhoncus, quam purus lobortis sem, id efficitur risus nisi at metus. Praesent placerat lacinia facilisis. Suspendisse vel tempus massa. In ut pellentesque tellus. In euismod lacus ut dapibus consectetur. Suspendisse bibendum, turpis a eleifend condimentum, dui libero sollicitudin tellus, vel hendrerit lacus nunc sit amet purus. Integer finibus, diam ut ultrices laoreet, lectus eros elementum ex, sit amet pharetra quam magna non lorem.',
-  linkedIn: 'https://www.linkedin.com/in/jevonthomas/',
-  twitter: undefined,
-  facebook: 'https://www.facebook.com/moochDApush'
-};
+// const user = {
+//   firstName: 'Jevon',
+//   lastName: 'Thomas',
+//   postalCode: 37128,
+//   city: 'Murfreesboro',
+//   state: 'TN',
+//   causes: ['Poverty Alleviation', 'Human Rights'],
+//   about:
+//     'Sed interdum, neque ut mattis rhoncus, quam purus lobortis sem, id efficitur risus nisi at metus. Praesent placerat lacinia facilisis. Suspendisse vel tempus massa. In ut pellentesque tellus. In euismod lacus ut dapibus consectetur. Suspendisse bibendum, turpis a eleifend condimentum, dui libero sollicitudin tellus, vel hendrerit lacus nunc sit amet purus. Integer finibus, diam ut ultrices laoreet, lectus eros elementum ex, sit amet pharetra quam magna non lorem.',
+//   linkedIn: 'https://www.linkedin.com/in/jevonthomas/',
+//   twitter: undefined,
+//   facebook: 'https://www.facebook.com/moochDApush'
+// };
 
 interface StateProps {}
 
@@ -58,7 +58,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     width: '80%',
     margin: '0 auto',
     maxWidth: 1000,
-    padding: '20px 0',
+    padding: '20px 0'
   },
   socialIcons: {
     fontSize: '1.2em',
@@ -69,9 +69,9 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     transition: '.5s',
     transitionTimingFunction: 'cubic-bezier(.24,-0.01,0,1.69)',
     '&:hover': {
-      transform: 'scale(1.5)',
-    },
-  },
+      transform: 'scale(1.5)'
+    }
+  }
 });
 
 type PropsWithStyles = StateProps &
@@ -80,61 +80,106 @@ type PropsWithStyles = StateProps &
   WithStyles<'root' | 'basicInfoDiv' | 'profileImg' | 'imgDiv' | 'container' | 'socialIcons'>;
 
 class ViewProfile extends React.PureComponent<PropsWithStyles, InternalState> {
-  state = {};
+  state = {
+    user: {
+      firstName: '',
+      lastName: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      causes: ['Poverty Alleviation', 'Human Rights'],
+      about: '',
+      linkedIn: '#',
+      twitter: '#',
+      facebook: '#'
+    }
+  };
 
+  componentDidMount = () => {
+    let id = localStorage.UserObj ? localStorage.UserObj : sessionStorage.UserObj;
+    axios.get(`http://localhost:8000/api/account/${id}`).then((res: any) => {
+      console.log('Data', res.data);
+      let data = {
+        firstName: res.data.FName,
+        lastName: res.data.LName,
+        city: res.data.City,
+        state: res.data.State,
+        postalCode: res.data.Zip,
+        causes: ['Poverty Alleviation', 'Human Rights'],
+        about:
+          'Sed interdum, neque ut mattis rhoncus, quam purus lobortis sem, id efficitur risus nisi at metus. Praesent placerat lacinia facilisis. Suspendisse vel tempus massa. In ut pellentesque tellus. In euismod lacus ut dapibus consectetur. Suspendisse bibendum, turpis a eleifend condimentum, dui libero sollicitudin tellus, vel hendrerit lacus nunc sit amet purus. Integer finibus, diam ut ultrices laoreet, lectus eros elementum ex, sit amet pharetra quam magna non lorem.',
+        linkedIn: '#',
+        twitter: '#',
+        facebook: '#'
+      };
+      this.setState({ user: data });
+    });
+  };
   render() {
     const { classes } = this.props;
+    const { user } = this.state;
     return (
       <>
-      <div style={{ width: '100%', background: 'white' }}>
-        <Grid container className={classes.container}>
-          <Grid item sm={2}>
-            <img src={defaultImg} alt="default" className={classes.profileImg} />
-          </Grid>
-          <Grid item sm container direction="column" style={{ paddingLeft: 30 }}>
-            <Typography variant="h3" color="primary">{user.firstName} {user.lastName}</Typography>
-            <Grid item style={{ paddingTop: 10 }}>
-              <Typography variant="h6" color="secondary"><LocationOn /> {user.city}, {user.state}</Typography>
+        <div style={{ width: '100%', background: 'white' }}>
+          <Grid container className={classes.container}>
+            <Grid item sm={2}>
+              <img src={defaultImg} alt="default" className={classes.profileImg} />
             </Grid>
-            <Grid item>
-              {
-                user.facebook &&
-                <a href={user.facebook}>
-                <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon={Brands.faFacebookF} />
-                </a>
-              }
-              {
-                user.twitter &&
-                <a href={user.twitter}>
-                <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
-                </a>
-              }
-              {
-                user.linkedIn &&
-                <a href={user.linkedIn}>
-                <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
-                </a>
-              }
+            <Grid item sm container direction="column" style={{ paddingLeft: 30 }}>
+              <Typography variant="h3" color="primary">
+                {user.firstName} {user.lastName}
+              </Typography>
+              <Grid item style={{ paddingTop: 10 }}>
+                <Typography variant="h6" color="secondary">
+                  <LocationOn /> {user.city}, {user.state}
+                </Typography>
+              </Grid>
+              <Grid item>
+                {user.facebook && (
+                  <a href={user.facebook}>
+                    <FontAwesomeIcon
+                      className={classes.socialIcons}
+                      style={{ paddingLeft: 0 }}
+                      icon={Brands.faFacebookF}
+                    />
+                  </a>
+                )}
+                {user.twitter && (
+                  <a href={user.twitter}>
+                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faTwitter} />
+                  </a>
+                )}
+                {user.linkedIn && (
+                  <a href={user.linkedIn}>
+                    <FontAwesomeIcon className={classes.socialIcons} icon={Brands.faLinkedin} />
+                  </a>
+                )}
+              </Grid>
             </Grid>
           </Grid>
+        </div>
+        <Grid container className={classes.container} style={{ padding: '20px 0' }}>
+          <Grid item sm={4}>
+            <Typography variant="h5" color="secondary">
+              Causes
+            </Typography>
+            <List className={classes.root} subheader={<li />}>
+              {user.causes.map(c => (
+                <li key={c}>
+                  <Typography color="secondary">{c}</Typography>
+                </li>
+              ))}
+            </List>
+          </Grid>
+          <Grid item sm={8}>
+            <Typography variant="h5" color="secondary">
+              About
+            </Typography>
+            <Typography variant="body1" color="secondary">
+              {user.about}
+            </Typography>
+          </Grid>
         </Grid>
-      </div>
-      <Grid container className={classes.container} style={{ padding: '20px 0' }}>
-        <Grid item sm={4}>
-          <Typography variant="h5" color="secondary">Causes</Typography>
-          <List className={classes.root} subheader={<li />}>
-            {user.causes.map(c => (
-              <li key={c}>
-                <Typography color="secondary">{c}</Typography>
-              </li>
-            ))}
-          </List>
-        </Grid>
-        <Grid item sm={8}>
-          <Typography variant="h5" color="secondary">About</Typography>
-          <Typography variant="body1" color="secondary">{user.about}</Typography>
-        </Grid>
-      </Grid>
       </>
     );
   }

@@ -39,7 +39,7 @@ class InternalApp extends React.PureComponent<InternalState> {
             <main>
               <Route exact path="/" render={() => <Home />} />
               {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
-              <Route exact path="/profile" render={() => <Profile />} />
+              <Route exact path="/profile/:id" render={() => <Profile />} />
               <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
             </main>
           ) : (
