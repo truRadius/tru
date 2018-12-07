@@ -23,7 +23,8 @@ import {
   Grid,
   Paper,
   FormControl,
-  Typography
+  Typography,
+  Tooltip
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 let zipcodes = require('zipcodes');
@@ -175,7 +176,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     showPassword: false,
     passCheck: '',
     errStack: '',
-    unformattedPhoneNumber: ''
+    unformattedPhoneNumber: '',
+    passwordErr: ''
   };
   unique = 1;
 
@@ -235,6 +237,19 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ [name]: event.target.value });
   };
 
+  validatePassword = () => {
+    let password = this.state.password;
+    console.log('pass:', password);
+    let exp = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\s).{4,15}$/;
+    if (exp.test(password) === false) {
+      this.setState({
+        passwordErr: 'Should be between 4-15 characters long, At least one Upper letter, At least one Number'
+      });
+    } else {
+      this.setState({ passwordErr: '' });
+    }
+  };
+
   errStack = '';
   validateEmail = () => {
     let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -282,7 +297,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
 
   onFormSubmit = (e: any) => {
     e.preventDefault();
-    if (this.state.errStack.length > 0) {
+    if (this.state.errStack.length > 0 || this.state.passwordErr.length > 0) {
       this.setState({ errStack: this.state.errStack });
     } else {
       this.createUserObj().then(data => {
@@ -458,25 +473,34 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                   />
                 </Grid>
                 <Grid item xs={6}>
-                  <FormControl style={{ width: '100%', marginTop: 16 }}>
-                    <InputLabel htmlFor="adornment-password">Password</InputLabel>
-                    <Input
-                      fullWidth
-                      required
-                      id="password"
-                      name="password"
-                      type={this.state.showPassword ? 'text' : 'password'}
-                      value={this.state.password}
-                      onChange={this.handleChange('password')}
-                      endAdornment={
-                        <InputAdornment position="end">
-                          <IconButton aria-label="Toggle password visibility" onClick={this.handleClickShowPassword}>
-                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                          </IconButton>
-                        </InputAdornment>
-                      }
-                    />
-                  </FormControl>
+                  <Tooltip title={this.state.passwordErr} placement="top">
+                    <FormControl style={{ width: '100%', marginTop: 16 }}>
+                      <InputLabel htmlFor="adornment-password">Password</InputLabel>
+                      <TextField
+                        fullWidth
+                        required
+                        id="password"
+                        helperText={<span className={classes.errorSpan}>{this.state.passwordErr}</span>}
+                        name="password"
+                        type={this.state.showPassword ? 'text' : 'password'}
+                        value={this.state.password}
+                        onChange={this.handleChange('password')}
+                        onBlur={this.validatePassword}
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="Toggle password visibility"
+                                onClick={this.handleClickShowPassword}
+                              >
+                                {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                              </IconButton>
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    </FormControl>
+                  </Tooltip>
                 </Grid>
                 <Grid item xs={6}>
                   <Paper className={classes.paper}>
