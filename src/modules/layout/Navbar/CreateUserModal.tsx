@@ -477,6 +477,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                     <FormControl style={{ width: '100%', marginTop: 16 }}>
                       <InputLabel htmlFor="adornment-password">Password</InputLabel>
                       <TextField
+                        style={{ marginTop: 16 }}
                         fullWidth
                         required
                         id="password"
