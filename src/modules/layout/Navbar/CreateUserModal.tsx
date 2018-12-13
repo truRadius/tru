@@ -271,7 +271,6 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
         if (response.data !== '') {
           resolve('Email is already taken');
         } else resolve('');
-        // console.log(response);
       });
     });
   };
