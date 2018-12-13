@@ -9,6 +9,7 @@ import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
 import { OrganizationProfile } from './Profile/OrganizationProfile';
+import { CreateEventForm } from './Events/CreateEventForm';
 
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
@@ -40,6 +41,7 @@ class InternalApp extends React.PureComponent<InternalState> {
               <Route exact path="/" render={() => <Home />} />
               {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
               <Route exact path="/profile/:id" render={() => <Profile />} />
+              <Route exact path="/event" render={() => <CreateEventForm />} />
               <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
             </main>
           ) : (
