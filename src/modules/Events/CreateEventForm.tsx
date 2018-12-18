@@ -124,10 +124,6 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
   tileData = [
     {
-      img: none,
-      title: 'None'
-    },
-    {
       img: art,
       title: 'Art1'
     },
