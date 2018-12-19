@@ -27,7 +27,7 @@ import art4 from './art4.jpg';
 import art5 from './art5.jpg';
 import art6 from './art6.jpg';
 import art7 from './art7.jpg';
-
+let moment = require('moment');
 let zipcodes = require('zipcodes');
 interface StateProps {}
 
@@ -205,12 +205,12 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
     return {
       selectedImage: this.state.selectedImage,
       eventName: this.state.eventName,
-      streetAddress: this.state.streetAddress,
+      street: this.state.streetAddress,
       city: this.state.city,
       zipcode: this.state.zipcode,
       state: this.state.state,
-      startDateTime: this.state.startDateTime,
-      endDateTime: this.state.endDateTime,
+      startDateTime: moment(this.state.startDateTime).format('YYYY-MM-DD HH:mm:ss'),
+      endDateTime: moment(this.state.endDateTime).format('YYYY-MM-DD HH:mm:ss'),
       eventDescription: this.state.eventDescription,
       uploadedFileCloudinaryUrl: this.state.uploadedFileCloudinaryUrl,
       currentUser: sessionStorage.getItem('UserObj')
@@ -242,19 +242,24 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
   onSubmit = (event: any) => {
     event.preventDefault();
-
-    //create object
-
-    let obj = this.createEventObj();
-
-    axios
-      .post('http://localhost:8000/api/event', obj)
-      .then(response => {
-        console.log('Data submitted', response.data);
-      })
-      .catch(err => {
-        console.log(err, 'Error occured while trying to submit the data');
-      });
+    let date = new Date();
+    //check if time is provided with date and that they are in future
+    if (this.state.startDateTime === '' || this.state.endDateTime === '') {
+      alert('Please provide time for the event');
+    } else if (this.state.startDateTime < date.toLocaleString()) {
+    } else {
+      //create object
+      let obj = this.createEventObj();
+      console.log(obj);
+      axios
+        .post('http://localhost:8000/api/event', obj)
+        .then(response => {
+          console.log('Data submitted', response.data);
+        })
+        .catch(err => {
+          console.log(err, 'Error occured while trying to submit the data');
+        });
+    }
   };
 
   render() {

@@ -110,7 +110,6 @@ const LoginStrategy = new Strategy(
           err,
           user
         ) {
-          console.log('User?????????', user);
           if (err) console.log(err);
           if (user.recordset.length === 0) {
             return done(null, false, {
