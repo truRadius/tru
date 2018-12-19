@@ -1,7 +1,7 @@
 /* tslint:disable */
 
 import * as React from 'react';
-// import axios from 'axios';
+import axios from 'axios';
 let request = require('superagent');
 import {
   Theme,
@@ -201,7 +201,21 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
     }
   };
 
-  // createEventObj = () => {};
+  createEventObj = () => {
+    return {
+      selectedImage: this.state.selectedImage,
+      eventName: this.state.eventName,
+      streetAddress: this.state.streetAddress,
+      city: this.state.city,
+      zipcode: this.state.zipcode,
+      state: this.state.state,
+      startDateTime: this.state.startDateTime,
+      endDateTime: this.state.endDateTime,
+      eventDescription: this.state.eventDescription,
+      uploadedFileCloudinaryUrl: this.state.uploadedFileCloudinaryUrl,
+      currentUser: sessionStorage.getItem('UserObj')
+    };
+  };
 
   removeImage = () => {
     this.setState({ image: '' });
@@ -215,7 +229,6 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
       .field('api_secret', '2vgc24b_bx5qXSdq9PqpxH3WDLs')
       .field('file', file);
     upload.end((err: any, response: any) => {
-      console.log(response);
       if (err) {
         console.error(err);
       }
@@ -229,18 +242,19 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
   onSubmit = (event: any) => {
     event.preventDefault();
-    //save image to cloudinary
 
     //create object
 
-    // this.createEventObj();
-    let id = sessionStorage.getItem('UserObj');
-    this.setState({ currentUser: id }, () => {
-      // axios.post('http://localhost:8000/api/event', this.state).then(response => {
-      //   console.log('Data submitted', response.data);
-      console.log('On submit', this.state);
-      // });
-    });
+    let obj = this.createEventObj();
+
+    axios
+      .post('http://localhost:8000/api/event', obj)
+      .then(response => {
+        console.log('Data submitted', response.data);
+      })
+      .catch(err => {
+        console.log(err, 'Error occured while trying to submit the data');
+      });
   };
 
   render() {
