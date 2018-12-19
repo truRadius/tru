@@ -241,13 +241,16 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
   }
 
   onSubmit = (event: any) => {
-    event.preventDefault();
-    // let date = new Date();
+    // event.preventDefault();
+    let date = new Date();
+    date = moment(date).format('YYYY-MM-DD HH:mm:ss');
     //check if time is provided with date and that they are in future
     if (this.state.startDateTime === '' || this.state.endDateTime === '') {
       alert('Please provide time for the event');
     } else if (moment(this.state.endDateTime).isBefore(this.state.startDateTime)) {
       alert('Event cannot end before start date/time');
+    } else if (moment(this.state.startDateTime).isBefore(date) && moment(this.state.endDateTime).isBefore(date)) {
+      alert('Event cannot be in past. Please add future dates');
     } else {
       //create object
       let obj = this.createEventObj();
@@ -256,6 +259,7 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
         .post('http://localhost:8000/api/event', obj)
         .then(response => {
           console.log('Data submitted', response.data);
+          //TODO: redirect to event profile page
         })
         .catch(err => {
           console.log(err, 'Error occured while trying to submit the data');
