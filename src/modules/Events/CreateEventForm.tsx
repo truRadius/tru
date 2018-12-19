@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 // import axios from 'axios';
+let request = require('superagent');
 import {
   Theme,
   WithTheme,
@@ -19,14 +20,14 @@ import {
 } from '@material-ui/core';
 import { StarBorder, StarRate } from '@material-ui/icons';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import art from './art.jpg';
+import art1 from './art.jpg';
 import art2 from './art2.jpg';
 import art3 from './art3.jpg';
 import art4 from './art4.jpg';
 import art5 from './art5.jpg';
 import art6 from './art6.jpg';
 import art7 from './art7.jpg';
-import none from './noimage.jpg';
+
 let zipcodes = require('zipcodes');
 interface StateProps {}
 
@@ -119,12 +120,13 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
     state: '',
     startDateTime: '',
     endDateTime: '',
-    eventDescription: ''
+    eventDescription: '',
+    uploadedFileCloudinaryUrl: ''
   };
 
   tileData = [
     {
-      img: art,
+      img: art1,
       title: 'Art1'
     },
     {
@@ -156,11 +158,13 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
   handleChange = (name: string) => (event: any) => {
     if (name === 'image') {
       if (this.state.selectedImage === '') {
+        // console.log(event.target.value);
         let reader = new FileReader();
         reader.onload = (event: any) => {
           this.setState({ [name]: event.target.result });
         };
         reader.readAsDataURL(event.target.files[0]);
+        this.handleImageUpload(event.target.files[0]);
       } else {
         alert('You have already selected one from the list');
       }
@@ -197,18 +201,46 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
     }
   };
 
-  createEventObj = () => {};
+  // createEventObj = () => {};
 
   removeImage = () => {
     this.setState({ image: '' });
   };
 
+  handleImageUpload(file: String) {
+    let upload = request
+      .post('https://api.cloudinary.com/v1_1/truradius/upload')
+      .field('upload_preset', 'ek6zzccx')
+      .field('api_key', '662119735487578')
+      .field('api_secret', '2vgc24b_bx5qXSdq9PqpxH3WDLs')
+      .field('file', file);
+    upload.end((err: any, response: any) => {
+      console.log(response);
+      if (err) {
+        console.error(err);
+      }
+      if (response.body.secure_url !== '') {
+        this.setState({
+          uploadedFileCloudinaryUrl: response.body.secure_url
+        });
+      }
+    });
+  }
+
   onSubmit = (event: any) => {
     event.preventDefault();
-    console.log('On submit', this.state);
+    //save image to cloudinary
+
     //create object
-    this.createEventObj();
-    //send it to database
+
+    // this.createEventObj();
+    let id = sessionStorage.getItem('UserObj');
+    this.setState({ currentUser: id }, () => {
+      // axios.post('http://localhost:8000/api/event', this.state).then(response => {
+      //   console.log('Data submitted', response.data);
+      console.log('On submit', this.state);
+      // });
+    });
   };
 
   render() {
