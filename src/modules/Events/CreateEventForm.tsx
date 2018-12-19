@@ -242,11 +242,12 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
   onSubmit = (event: any) => {
     event.preventDefault();
-    let date = new Date();
+    // let date = new Date();
     //check if time is provided with date and that they are in future
     if (this.state.startDateTime === '' || this.state.endDateTime === '') {
       alert('Please provide time for the event');
-    } else if (this.state.startDateTime < date.toLocaleString()) {
+    } else if (moment(this.state.endDateTime).isBefore(this.state.startDateTime)) {
+      alert('Event cannot end before start date/time');
     } else {
       //create object
       let obj = this.createEventObj();
