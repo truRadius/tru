@@ -221,7 +221,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <div className={classes.sectionDesktop}>
               {this.props.loggedIn ? (
                 <div>
-                  {/* TODO: This will eventually change to profile/:id for particular user */}
                   <Link to={`/event`}>
                     <span style={{ color: 'white' }}>Create Event</span>
                   </Link>

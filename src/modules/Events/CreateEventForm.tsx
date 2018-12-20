@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import axios from 'axios';
+import { Redirect, withRouter } from 'react-router-dom';
 let request = require('superagent');
 import {
   Theme,
@@ -111,6 +112,8 @@ type PropsWithStyles = StateProps &
 
 class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
   state = {
+    fireRedirect: false,
+    path: '',
     image: '',
     selectedImage: '',
     eventName: '',
@@ -158,7 +161,6 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
   handleChange = (name: string) => (event: any) => {
     if (name === 'image') {
       if (this.state.selectedImage === '') {
-        // console.log(event.target.value);
         let reader = new FileReader();
         reader.onload = (event: any) => {
           this.setState({ [name]: event.target.result });
@@ -241,7 +243,7 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
   }
 
   onSubmit = (event: any) => {
-    // event.preventDefault();
+    event.preventDefault();
     let date = new Date();
     date = moment(date).format('YYYY-MM-DD HH:mm:ss');
     //check if time is provided with date and that they are in future
@@ -259,6 +261,11 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
         .post('http://localhost:8000/api/event', obj)
         .then(response => {
           console.log('Data submitted', response.data);
+          let path = '/event/' + response.data[0].Event_ID;
+          this.setState({ path, fireRedirect: true });
+          console.log(this.state);
+          // return <Redirect to={path} />;
+          // this.props.history.push(path);
           //TODO: redirect to event profile page
         })
         .catch(err => {
@@ -269,9 +276,10 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
   render() {
     const { classes } = this.props;
+    const { fireRedirect } = this.state;
     return (
       <div>
-        <form onSubmit={this.onSubmit}>
+        <form onSubmit={this.onSubmit} action={this.state.path}>
           <div className={classes.formDiv}>Create Event</div>
           <input
             accept=".png,.jpg,.jpeg"
@@ -430,6 +438,7 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
             </div>
           </div>
         </form>
+        {fireRedirect && <Redirect to={this.state.path} />}
       </div>
     );
   }
@@ -437,4 +446,5 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
 
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const CreateEventForm: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(CreateEvent));
-export default CreateEventForm;
+export const EventRouter: React.Component = withRouter(CreateEventForm);
+export default { CreateEventForm, EventRouter };

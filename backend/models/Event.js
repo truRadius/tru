@@ -76,3 +76,49 @@ module.exports.dbPostEvent = (req, res) => {
     });
   });
 };
+
+module.exports.dbGetOneEvent = (req, res, next) => {
+  return new Promise((resolve, reject) => {
+    let id = req.params.currentUser;
+    console.log(id);
+    jwt.verify(id, jwtSecret, (err, authData) => {
+      if (err) {
+        res.sendStatus(404);
+      } else {
+        console.log(authData);
+        console.log(eventObj);
+        sql.close();
+        sql.connect(
+          config,
+          function(err) {
+            if (err) console.log('This err?', err);
+
+            // create Request object
+            let request = new sql.Request();
+            // query to the database and get the data
+
+            request.query(
+              `insert into Events(Event_IMG,
+              Event_Name,
+              Event_Desc,
+              Street,
+              City,
+              State,
+              Zip,
+              Account_ID,
+              Start_Date,
+              End_Date
+              ) output Inserted.Event_ID values('${Event_IMG}', '${Event_Name}','${Event_Desc}','${Street}','${City}','${State}',${Zip},${Account_ID},'${Start_Date}','${End_Date}')`,
+              function(err, data) {
+                if (err) console.log(err);
+                else {
+                  resolve(data.recordsets[0]);
+                }
+              }
+            );
+          }
+        );
+      }
+    });
+  });
+};
