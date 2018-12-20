@@ -38,8 +38,8 @@ class ViewEventProfile extends React.PureComponent<PropsWithStyles, InternalStat
 
   componentDidMount = () => {
     let id = 33;
-    console.log(this.props);
-    // console.log(this.props);
+    console.log(this.props); //<--- this logs match property
+    // console.log(this.props.match); <----cant access match property and throws the error
     axios
       .get(`http://localhost:8000/api/event/${id}`, { params: { currentUser: sessionStorage.getItem('UserObj') } })
       .then((res: any) => {
