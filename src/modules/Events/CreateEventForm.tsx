@@ -17,7 +17,7 @@ import {
   GridListTileBar,
   Grid,
   TextField,
-  IconButton
+  // IconButton
 } from '@material-ui/core';
 import { StarBorder, StarRate } from '@material-ui/icons';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
@@ -66,7 +66,17 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     transform: 'translateZ(0)'
   },
   title: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.light,
+  },
+  star: {
+    color: theme.palette.primary.light,
+    cursor: 'pointer',
+    willChange: 'transform',
+    transition: '.5s',
+    transitionTimingFunction: 'cubic-bezier(.24,-0.01,0,1.69)',
+    '&:hover': {
+      transform: 'scale(1.5)'
+    }
   },
   titleBar: {
     background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
@@ -108,6 +118,7 @@ type PropsWithStyles = StateProps &
     | 'textField'
     | 'container'
     | 'removeImage'
+    | 'star'
   >;
 
 class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
@@ -313,16 +324,17 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
                   <GridListTile key={tile.img}>
                     <img src={tile.img} alt={tile.title} />
                     <GridListTileBar
+                      style={{ paddingRight: 20 }}
                       title={tile.title}
                       classes={{ root: classes.titleBar, title: classes.title }}
                       actionIcon={
-                        <IconButton id={tile.title} onClick={this.handleImageChange}>
+                        <>
                           {this.state.selectedImage !== '' && this.state.selectedImage === tile.title ? (
-                            <StarRate className={classes.title} id={tile.title} />
+                            <StarRate onClick={this.handleImageChange} className={classes.star} id={tile.title} />
                           ) : (
-                            <StarBorder className={classes.title} id={tile.title} />
+                            <StarBorder onClick={this.handleImageChange} className={classes.star} id={tile.title} />
                           )}
-                        </IconButton>
+                        </>
                       }
                     />
                   </GridListTile>
