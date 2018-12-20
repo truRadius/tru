@@ -38,7 +38,8 @@ class ViewEventProfile extends React.PureComponent<PropsWithStyles, InternalStat
 
   componentDidMount = () => {
     let id = 33;
-    console.log(this.context);
+    console.log(this.props);
+    // console.log(this.props);
     axios
       .get(`http://localhost:8000/api/event/${id}`, { params: { currentUser: sessionStorage.getItem('UserObj') } })
       .then((res: any) => {
@@ -54,6 +55,6 @@ class ViewEventProfile extends React.PureComponent<PropsWithStyles, InternalStat
     );
   }
 }
-type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
+type StyledProps = StateProps & DispatchProps & StyledComponentProps<any>;
 export const EventProfile: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(ViewEventProfile));
 export default EventProfile;
