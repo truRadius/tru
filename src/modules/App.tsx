@@ -9,6 +9,8 @@ import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
 import { Home } from './home/Home';
 import { OrganizationProfile } from './Profile/OrganizationProfile';
+import { CreateEventForm } from './Events/CreateEventForm';
+import { EventProfile } from './Profile/EventProfile';
 
 // import { library } from '@fortawesome/fontawesome-svg-core';
 // import { faStroopwafel } from '@fortawesome/free-solid-svg-icons';
@@ -40,7 +42,15 @@ class InternalApp extends React.PureComponent<InternalState> {
               <Route exact path="/" render={() => <Home />} />
               {/* TODO: profile will eventually change to profile/:id for viewing particular user's profile */}
               <Route exact path="/profile/:id" render={() => <Profile />} />
+              <Route exact path="/event" render={() => <CreateEventForm />} />
               <Route exact path="/organization/:id" render={() => <OrganizationProfile />} />
+              <Route
+                exact
+                path="/event/:id"
+                render={(props: any) => {
+                  return <EventProfile {...props} />;
+                }}
+              />
             </main>
           ) : (
             <Route exact path="/" render={() => <LandingPage />} />
@@ -53,5 +63,5 @@ class InternalApp extends React.PureComponent<InternalState> {
     );
   }
 }
-type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
+type StyledProps = StateProps & DispatchProps & StyledComponentProps<any>;
 export const App: React.ComponentType<StyledProps> = withTheme()(InternalApp);

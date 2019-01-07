@@ -212,7 +212,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
 
     return (
       <div className={classes.root}>
-        <AppBar position="static" style={{ backgroundColor: 'white', boxShadow: 'none' }}>
+        <AppBar position="static" style={{ backgroundColor: '#2E4C63', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
             <Link to="/">
               <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
@@ -221,7 +221,9 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <div className={classes.sectionDesktop}>
               {this.props.loggedIn ? (
                 <div>
-                  {/* TODO: This will eventually change to profile/:id for particular user */}
+                  <Link to={`/event`}>
+                    <span style={{ color: 'white' }}>Create Event</span>
+                  </Link>
                   <Link to={`/profile/${sessionStorage.UserObj ? sessionStorage.UserObj : localStorage.UserObj}`}>
                     <IconButton color="primary">
                       <AccountCircle />

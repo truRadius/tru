@@ -12,7 +12,7 @@ const expressValidator = require('express-validator');
 // Require third party modules
 let express = require('express');
 let app = express();
-let routes = require('./routes/');
+let routes = require('./routes');
 let { secret } = require('./config');
 app.use(cors());
 app.use(function(req, res, next) {
