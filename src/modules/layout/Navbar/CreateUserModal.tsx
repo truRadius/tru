@@ -24,7 +24,9 @@ import {
   Paper,
   FormControl,
   Typography,
-  Tooltip
+  Tooltip,
+  createMuiTheme,
+  MuiThemeProvider
 } from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
 let zipcodes = require('zipcodes');
@@ -103,6 +105,14 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   formDiv: {
     width: '100%',
     backgroundColor: 'yellow'
+  }
+});
+
+const themeAlt = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#ffffff'
+    }
   }
 });
 
@@ -335,9 +345,11 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     const { classes } = this.props;
     return (
       <>
-        <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>
-          Register
-        </Button>
+        <MuiThemeProvider theme={themeAlt}>
+          <Button color="primary" onClick={this.handleOpenModal} aria-label="Register" className={classes.button}>
+            Register
+          </Button>
+        </MuiThemeProvider>
         <Modal
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"

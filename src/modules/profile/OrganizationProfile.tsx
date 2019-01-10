@@ -117,7 +117,7 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
   render() {
     const { classes } = this.props;
     return (
-      <>
+      <div style={{height: 'calc(100vh - 290px)'}}>
       <div style={{ width: '100%', background: 'white' }}>
         <Grid container className={classes.container}>
           <Grid item sm>
@@ -285,7 +285,7 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
           </GridListTile>
         </GridList>
       </Grid>
-      </>
+      </div>
     );
   }
 }

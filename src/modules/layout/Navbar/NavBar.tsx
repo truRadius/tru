@@ -13,12 +13,15 @@ import {
   Avatar,
   Menu,
   MenuItem,
-  IconButton
+  IconButton,
+  Typography,
+  Grid
 } from '@material-ui/core';
 
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import AddCircle from '@material-ui/icons/AddCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
 import { Link } from 'react-router-dom';
@@ -220,12 +223,19 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
             <div className={classes.grow} />
             <div className={classes.sectionDesktop}>
               {this.props.loggedIn ? (
-                <div>
+                <div style={{display: 'flex'}}>
                   <Link to={`/event`}>
-                    <span style={{ color: 'white' }}>Create Event</span>
+                    <Grid container direction="column" alignItems="center">
+                      <Grid item>
+                        <AddCircle style={{ color: 'white' }} />
+                      </Grid>
+                      <Grid item>
+                        <Typography variant="button" style={{ color: 'white' }}>Create Event</Typography>
+                      </Grid>
+                    </Grid>
                   </Link>
                   <Link to={`/profile/${sessionStorage.UserObj ? sessionStorage.UserObj : localStorage.UserObj}`}>
-                    <IconButton color="primary">
+                    <IconButton>
                       <AccountCircle />
                     </IconButton>
                   </Link>

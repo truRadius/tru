@@ -4,6 +4,8 @@ import { App } from 'src/modules/App';
 // import createRouter from './createRouter';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core';
 import './index.css';
+import { Provider } from 'react-redux';
+import store from './store';
 
 // const router = createRouter();
 
@@ -12,7 +14,9 @@ const defaultTheme = createMuiTheme(defaultThemeJson);
 
 const wrappedApp = (
   <MuiThemeProvider theme={defaultTheme}>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </MuiThemeProvider>
 );
 

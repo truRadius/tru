@@ -9,31 +9,30 @@ import {
   WithTheme,
   Typography,
   Input,
-  InputLabel,
   Select,
   MenuItem,
   Checkbox,
   ListItemText,
-  Button
+  FormHelperText,
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import {
   Grid,
   FormControl,
   InputBase,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails
 } from '@material-ui/core';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { ApplicationState } from 'src/reducers';
+import { Actions } from 'src/actions/actions';
+// import axios from 'axios';
 
 interface StateProps {}
 
-interface DispatchProps {}
+interface DispatchProps {
+  onFetchOrganizations: typeof Actions.fetchOrganizations;
+}
 
 interface InternalState {
   selected: string;
@@ -81,7 +80,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     margin: 'auto 0'
   },
   mainDiv: {
-    backgroundColor: '#f17820'
+    backgroundColor: '#ffffff',
+    paddingTop: 20
   },
   toggleBtn: {
     padding: 0,
@@ -216,7 +216,7 @@ const causes = [
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    selected: 'organizations',
+    selected: 'organization',
     expanded: false,
     text: '',
     body: {
@@ -288,34 +288,35 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
-    this.setState({ selected: e.target.id });
+    this.setState({ selected: e.target.value });
   };
 
-  getOrganizationData = (body: any) => {
-    console.log('BODY ======>', body);
+  // getOrganizationData = (body: any) => {
+  //   console.log('BODY ======>', body);
 
-    axios
-      .post('http://localhost:8000/api/externalApi', { data: body, token: sessionStorage.getItem('UserObj') })
-      .then(res => {
-        let re = {
-          data: res.data,
-          err: ''
-        };
-        this.setState({ results: re });
-      })
-      // tslint:disable-next-line:no-any
-      .catch((err: any) => {
-        let res = {
-          data: [],
-          err: 'Not found'
-        };
-        this.setState({ results: res });
-        console.log(err);
-      }); // tslint:disable-line:no-console
-  };
+  //   axios
+  //     .post('http://localhost:8000/api/externalApi', { data: body, token: sessionStorage.getItem('UserObj') })
+  //     .then(res => {
+  //       let re = {
+  //         data: res.data,
+  //         err: ''
+  //       };
+  //       this.setState({ results: re });
+  //     })
+  //     // tslint:disable-next-line:no-any
+  //     .catch((err: any) => {
+  //       let res = {
+  //         data: [],
+  //         err: 'Not found'
+  //       };
+  //       this.setState({ results: res });
+  //       console.log(err);
+  //     }); // tslint:disable-line:no-console
+  // };
 
-  onSubmit = () => {
+  onSubmit = (e: any) => {
     const { body, text } = this.state;
+    e.preventDefault();
     this.setState(
       prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
       () => {
@@ -323,7 +324,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         setTimeout(() => {
           //give state some time to set before using it
           console.log(body);
-          this.getOrganizationData(body);
+          // this.getOrganizationData(body);
         }, 1000);
       }
     );
@@ -333,8 +334,8 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   //   this.getOrganizationData(this.state.body);
   // };
 
-  componentDidMount = () => {
-    this.getOrganizationData(this.state.body);
+  componentWillMount = () => {
+    this.props.onFetchOrganizations(this.state.body);
   };
 
   render() {
@@ -345,105 +346,79 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         <div className={classes.mainDiv}>
           <Grid container spacing={24} direction="column" style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
             <Grid container alignItems="center" direction="row" justify="space-evenly">
-              <Grid item xs>
-                <FormControl className={classes.formControl}>
-                  <InputBase
-                    name="search_terms"
-                    value={text}
-                    onChange={this.handleChange('search_terms')}
-                    fullWidth
-                    placeholder="Search"
-                    classes={{ input: classes.inputInput }}
-                  />
-                  <Button onClick={this.onSubmit} color="secondary" variant="contained">
-                    Search
-                  </Button>
-                </FormControl>
+              <Grid item xs={12}>
+                <form onSubmit={this.onSubmit}>
+                  <FormControl className={classes.formControl}>
+                    <InputBase
+                      name="search_terms"
+                      value={text}
+                      onChange={this.handleChange('search_terms')}
+                      fullWidth
+                      placeholder="Search"
+                      classes={{ input: classes.inputInput }}
+                    />
+                  </FormControl>
+                </form>
               </Grid>
-
-              <Grid item xs>
+              <Grid item xs md={2}>
                 <div className={classes.toggleContainer}>
-                  <ToggleButtonGroup className={classes.toggleGroup} exclusive onClick={this.handleToggle}>
-                    <ToggleButton
-                      id="event"
-                      value="event"
-                      style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'events' ? classes.activeBtn : classes.toggleBtn}
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      value={this.state.selected}
+                      onChange={this.handleToggle}
+                      disableUnderline
                     >
-                      <span id="events" className={classes.customButton}>
-                        Events
-                      </span>
-                    </ToggleButton>
-                    <ToggleButton
-                      value="organization"
-                      id="organization"
-                      style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'organizations' ? classes.activeBtn : classes.toggleBtn}
-                    >
-                      <span id="organizations" className={classes.customButton}>
-                        Organizations
-                      </span>
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                      <MenuItem value={'organization'}>Organizations</MenuItem>
+                      <MenuItem value={'event'}>Events</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
+              </Grid>
+              <Grid item xs={6}>
+                <Grid item md={12} container alignItems="center">
+                  <Grid item md className={classes.gridItem}>
+                    <FormControl className={classes.formControl}>
+                      <Select
+                        multiple
+                        value={body.filters.organization.ntee_major_codes}
+                        onChange={this.handleChange('ntee_major_codes')}
+                        input={<Input id="select-multiple-checkbox" />}
+                        renderValue={selected => selected && [selected].join(', ')}
+                        MenuProps={MenuProps}
+                      >
+                        {causes.map(c => (
+                          <MenuItem key={c.category} value={c.code}>
+                            <Checkbox checked={body.filters.organization.ntee_major_codes.indexOf(c.code) > -1} />
+                            <Typography>
+                              <ListItemText primary={c.category} />
+                            </Typography>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>Causes</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={2} className={classes.gridItem}>
+                    <FormControl className={classes.formControl}>
+                      <Select
+                        fullWidth
+                        value={body.filters.geography.radius}
+                        onChange={this.handleChange('radius')}
+                        inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
+                      >
+                        {distance.map(d => (
+                          <MenuItem key={d} value={d}>
+                            <Typography>{d} Miles</Typography>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>Distance</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
           </Grid>
-          <ExpansionPanel expanded={this.state.expanded} onChange={this.handleMoreOption}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}
-            >
-              <Typography className={classes.heading}>More Options</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.moreOptionPanel}>
-              <Grid item md={12} container alignItems="center">
-                <Grid item md className={classes.gridItem}>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="causes">
-                      <Typography>Causes</Typography>
-                    </InputLabel>
-                    <Select
-                      multiple
-                      value={body.filters.organization.ntee_major_codes}
-                      onChange={this.handleChange('ntee_major_codes')}
-                      input={<Input id="select-multiple-checkbox" />}
-                      renderValue={selected => selected && [selected].join(', ')}
-                      MenuProps={MenuProps}
-                    >
-                      {causes.map(c => (
-                        <MenuItem key={c.category} value={c.code}>
-                          <Checkbox checked={body.filters.organization.ntee_major_codes.indexOf(c.code) > -1} />
-                          <Typography>
-                            <ListItemText primary={c.category} />
-                          </Typography>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item md={2} className={classes.gridItem}>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="distance">
-                      <Typography>Distance</Typography>
-                    </InputLabel>
-                    <Select
-                      fullWidth
-                      value={body.filters.geography.radius}
-                      onChange={this.handleChange('radius')}
-                      inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
-                    >
-                      {distance.map(d => (
-                        <MenuItem key={d} value={d}>
-                          <Typography>{d} Miles</Typography>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-              </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
         </div>
         <div className={classes.spacerDiv} />
         <div className={classes.displayDiv}>
@@ -459,4 +434,10 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 }
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
-export default Home;
+export default connect(
+  (state: ApplicationState): StateProps => ({
+  }),
+  {
+    onFetchOrganizations: Actions.fetchOrganizations,
+  }
+)(Home);

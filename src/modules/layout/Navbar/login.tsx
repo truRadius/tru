@@ -10,9 +10,14 @@ import {
   WithStyles,
   withTheme,
   WithTheme,
-  TextField,
+  // TextField,
   Button,
-  Grid
+  Grid,
+  InputBase,
+  MuiThemeProvider,
+  FormControl,
+  createMuiTheme,
+  Typography,
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import CreateUserModal from './CreateUserModal';
@@ -35,10 +40,41 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   },
   paddingTop: {
     paddingTop: '50px !important'
+  },
+  input: {
+    paddingTop: 4,
+    paddingRight: theme.spacing.unit,
+    paddingBottom: 4,
+    paddingLeft: 20,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    border: '1px solid #2E4C63',
+    borderRadius: 40,
+    backgroundColor: 'white'
+  },
+  formControl: {
+    minWidth: 120,
+    width: '30%',
+    maxWidth: 1000,
+    paddingRight: 10
+  },
+});
+
+const themeAlt = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#ffffff'
+    }
   }
 });
 
-type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<'root' | 'textField' | 'paddingTop'>;
+type PropsWithStyles = StateProps & DispatchProps & WithTheme & WithStyles<
+'root' | 
+'textField' | 
+'paddingTop' |
+'input' |
+'formControl'
+>;
 interface StateProps {
   isLoggedIn: any;
 }
@@ -96,29 +132,41 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
       <div style={{ width: '-webkit-fill-available' }}>
         <form onSubmit={this.signIn}>
           <Grid container alignItems="center" justify="flex-end" spacing={24}>
-            <Grid item xs container justify="flex-end">
-              <TextField
-                id="username"
-                label="Email or Mobile Number"
-                className={classes.textField}
-                value={this.state.email}
-                onBlur={this.validateEmailOrPhoneNUmber}
-                onChange={this.handleEmail}
-                margin="normal"
-                helperText={this.state.err}
-              />
-              <TextField
-                id="password"
-                label="Password"
-                type="password"
-                className={classes.textField}
-                value={this.state.password}
-                onChange={this.handlePassword}
-                margin="normal"
-              />
-              <Button color="primary" type="submit">
-                Log In
-              </Button>
+            <Grid item xs container justify="flex-end" alignItems="center">
+              <FormControl className={classes.formControl}>
+                <InputBase
+                  fullWidth
+                  id="username"
+                  placeholder="Email or Mobile Number"
+                  value={this.state.email}
+                  onBlur={this.validateEmailOrPhoneNUmber}
+                  onChange={this.handleEmail}
+                  classes={{
+                    input: classes.input,
+                  }}
+                />
+                <Typography variant='caption' style={{color: 'white'}}>
+                  {this.state.err}
+                </Typography>
+              </FormControl>
+              <FormControl className={classes.formControl}>
+                <InputBase
+                  fullWidth
+                  id="password"
+                  placeholder="Password"
+                  type="password"
+                  value={this.state.password}
+                  onChange={this.handlePassword}
+                  classes={{
+                    input: classes.input,
+                  }}
+                />
+              </FormControl>
+              <MuiThemeProvider theme={themeAlt}>
+                <Button color="primary" type="submit">
+                  Log In
+                </Button>
+              </MuiThemeProvider>
               <CreateUserModal classes={classes} isLoggedIn={this.props.isLoggedIn} />
             </Grid>
           </Grid>
