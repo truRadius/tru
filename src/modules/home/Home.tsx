@@ -24,14 +24,14 @@ import {
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
 import { connect } from 'react-redux';
-import { ApplicationState } from 'src/reducers';
-import { Actions } from 'src/actions/actions';
+import { fetchOrganizations } from 'src/actions/organizationActions';
 // import axios from 'axios';
 
-interface StateProps {}
-
+interface StateProps {
+  organizations: any;
+}
 interface DispatchProps {
-  onFetchOrganizations: typeof Actions.fetchOrganizations;
+  onFetchOrganizations: typeof fetchOrganizations;
 }
 
 interface InternalState {
@@ -75,7 +75,6 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     flexBasis: '100%'
   },
   customButton: {
-    // border: '1px solid white',
     borderRadius: 0,
     margin: 'auto 0'
   },
@@ -152,8 +151,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps &
-  DispatchProps &
+type PropsWithStyles = StateProps & DispatchProps &
   WithTheme &
   WithStyles<
     | 'root'
@@ -291,29 +289,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     this.setState({ selected: e.target.value });
   };
 
-  // getOrganizationData = (body: any) => {
-  //   console.log('BODY ======>', body);
-
-  //   axios
-  //     .post('http://localhost:8000/api/externalApi', { data: body, token: sessionStorage.getItem('UserObj') })
-  //     .then(res => {
-  //       let re = {
-  //         data: res.data,
-  //         err: ''
-  //       };
-  //       this.setState({ results: re });
-  //     })
-  //     // tslint:disable-next-line:no-any
-  //     .catch((err: any) => {
-  //       let res = {
-  //         data: [],
-  //         err: 'Not found'
-  //       };
-  //       this.setState({ results: res });
-  //       console.log(err);
-  //     }); // tslint:disable-line:no-console
-  // };
-
   onSubmit = (e: any) => {
     const { body, text } = this.state;
     e.preventDefault();
@@ -329,10 +304,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       }
     );
   };
-
-  // componentDidUpdate = () => {
-  //   this.getOrganizationData(this.state.body);
-  // };
 
   componentWillMount = () => {
     this.props.onFetchOrganizations(this.state.body);
@@ -425,19 +396,21 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
           {this.state.selected === 'event' ? (
             <DisplayEventCards />
           ) : (
-            <DisplayOrgCards orgs={results.data} err={results.err} />
+            <DisplayOrgCards orgs={this.props.organizations} err={results.err} />
           )}
         </div>
       </div>
     );
   }
 }
+
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
 export default connect(
-  (state: ApplicationState): StateProps => ({
+  (state: any): StateProps => ({
+    organizations: state.organizations.items,
   }),
-  {
-    onFetchOrganizations: Actions.fetchOrganizations,
+  { 
+    onFetchOrganizations: fetchOrganizations, 
   }
 )(Home);

@@ -1,21 +1,15 @@
-import { ActionTypes, Actions } from 'src/actions/actions';
-import { combineReducers } from 'redux';
+import { FETCH_ORGANIZATIONS } from 'src/actions/types';
 
-export class UIState {
-  // tslint:disable-next-line:no-any
-  fetchOrganizations: any;
-}
-
-const initialState: UIState = {
-  fetchOrganizations: []
+const initialState = {
+  items: []
 };
 
 // tslint:disable-next-line:no-any
-const fetchOrganizations = (state: any = initialState, action: Actions) => {
+export default function(state: any = initialState, action: any) {
   switch (action.type) {
-    case ActionTypes.FETCH_ORGANIZATIONS:
+    case FETCH_ORGANIZATIONS:
       // tslint:disable-next-line:no-console
-      console.log('orgs', action.payload);
+      console.log('reducer', action.payload);
       return {
         ...state,
         items: action.payload
@@ -24,14 +18,4 @@ const fetchOrganizations = (state: any = initialState, action: Actions) => {
       return state;
 
   }
-};
-
-const organizations = combineReducers({
-  fetchOrganizations,
-});
-
-export default organizations;
-
-export const fromOrgs = {
-  getFetchedOrganizations: (state: UIState) => state.fetchOrganizations,
-};
+}

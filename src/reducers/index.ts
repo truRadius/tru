@@ -1,16 +1,6 @@
 import { combineReducers } from 'redux';
-import organizations, { fromOrgs } from './organizationReducer';
-import { AppState } from 'src/modules/types';
-
-export class ApplicationState {
-  // tslint:disable-next-line:no-any
-  organizations: any;
-}
+import organizationReducer from './organizationReducer';
 
 export default combineReducers({
-  organizations
+  organizations: organizationReducer
 });
-
-export const selectors = {
-  fetchOrganizations: (state: AppState) => fromOrgs.getFetchedOrganizations(state.appState.organizations),
-};
