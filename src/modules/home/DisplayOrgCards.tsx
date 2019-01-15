@@ -19,7 +19,6 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Brands from '@fortawesome/free-brands-svg-icons';
 import { LocationOn } from '@material-ui/icons';
-// import { faFacebookF, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import { Link } from 'react-router-dom';
 library.add(faGlobe);
 const logo = require('./dummy-logo.jpg');
@@ -111,7 +110,7 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
           <Grid container alignContent="center" justify="center" direction="row">
             {orgs.map(org => (
               <Grid key={org.organization_id} item sm={12}>
-                <Link to={'/organization/' + org.organization_id} style={{ width:'100%' }}>
+                <Link to={'/organization/' + org.organization_id} style={{ width: '100%' }}>
                   <Card className={classes.card} style={{ margin: '10px auto' }}>
                     <CardContent>
                       <Grid container spacing={16}>
