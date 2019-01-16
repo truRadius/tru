@@ -5,7 +5,6 @@ let sql = require('mssql');
 let { config } = require('../config.json');
 
 module.exports.dbGetAllCauses = (req, res, next) => {
-  console.log('This happens?');
   return new Promise((resolve, reject) => {
     sql.close();
     sql.connect(
@@ -24,6 +23,34 @@ module.exports.dbGetAllCauses = (req, res, next) => {
             resolve(data.recordsets[0]);
           }
         });
+      }
+    );
+  });
+};
+
+module.exports.dbSaveUserCauses = (req, res, next, id) => {
+  return new Promise((resolve, reject) => {
+    sql.close();
+    sql.connect(
+      config,
+      function(err) {
+        if (err) console.log(err);
+
+        // create Request object
+        let request = new sql.Request();
+        let rowsInserted = 0;
+        console.log(req.body.Causes);
+        req.body.Causes.forEach(cause => {
+          request.query(
+            `insert into Causes_TBR(Account_ID, Causes_ID)
+Values(${id},(select Causes_ID from CausesList where CauseName = '${cause}')) `,
+            function(err, data) {
+              if (err) console.log('Error while saving causes to db:', err);
+              else rowsInserted++;
+            }
+          );
+        });
+        resolve(rowsInserted);
       }
     );
   });

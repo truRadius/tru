@@ -44,13 +44,15 @@ module.exports.dbPostOneAccount = (req, res, next) => {
       if (err) {
         next(err);
       }
-      console.log('User ID', user.recordset[0].Account_ID);
-      let id = user.recordset[0].Account_ID;
-      jwt.sign({ id }, jwtSecret, (err, token) => {
-        //creating a jwt token for Account_ID to store it on local storage
-        if (err) console.log(err);
-        resolve(token);
-      });
+      if (user) {
+        console.log('User ID', user.recordset[0].Account_ID);
+        let id = user.recordset[0].Account_ID;
+        jwt.sign({ id }, jwtSecret, (err, token) => {
+          //creating a jwt token for Account_ID to store it on local storage
+          if (err) console.log(err);
+          resolve({ token, id });
+        });
+      }
     })(req, res, next);
   });
 };
