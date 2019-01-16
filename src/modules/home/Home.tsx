@@ -14,7 +14,6 @@ import {
   Checkbox,
   ListItemText,
   FormHelperText,
-  InputLabel,
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import {
@@ -25,14 +24,21 @@ import {
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
 import { connect } from 'react-redux';
-import { fetchOrganizations } from 'src/actions/organizationActions';
-import axios from 'axios';
+import { fetchOrganizations, fetchCauses } from 'src/actions/searchActions';
+import { SearchState } from 'src/reducers';
+import { Causes } from 'src/api/causes';
+// import axios from 'axios';
 
 interface StateProps {
   organizations: any;
+  // redux5: added the cause prop here. Defined the type in the api folder. I need to do the same for organizations
+  // connected this cause to the state in the searchReducer at the bottom
+  causes: Causes[];
 }
 interface DispatchProps {
   onFetchOrganizations: typeof fetchOrganizations;
+  // redux7: actions go here and defined at the bottom as well
+  onFetchCauses: typeof fetchCauses;
 }
 
 interface InternalState {
@@ -185,39 +191,10 @@ const MenuProps = {
 
 const distance = [10, 25, 50, 100];
 
-// const causes = [
-//   { code: 'A00', category: 'Arts, Culture, and Humanities' },
-//   { code: 'B00', category: 'Education' },
-//   { code: 'C00', category: 'Environmental Quality, Protection, and Beautification' },
-//   { code: 'D00', category: 'Animal Related' },
-//   { code: 'E00', category: 'Health, General and Rehabilitative' },
-//   { code: 'F00', category: 'Mental Health Crisis Intervention' },
-//   { code: 'G00', category: 'Diseases, Disorders, Medical Disciplines' },
-//   { code: 'H00', category: 'Medical Research' },
-//   { code: 'I00', category: 'Crime, Legal Related' },
-//   { code: 'J00', category: 'Employment, Job Related' },
-//   { code: 'K00', category: 'Food, Agriculture, and Nutrition' },
-//   { code: 'L00', category: 'Housing/Shelter' },
-//   { code: 'M00', category: 'Public Safety, Disaster Preparedness and Relief' },
-//   { code: 'N00', category: 'Recreation, Sports, Leisure, and Athletics' },
-//   { code: 'O00', category: 'Youth Development' },
-//   { code: 'P00', category: 'Human Services' },
-//   { code: 'Q00', category: 'International/Foreign Affairs and National Security' },
-//   { code: 'R00', category: 'Civil Rights and Social Action' },
-//   { code: 'S00', category: 'Community Improvement' },
-//   { code: 'T00', category: 'Philanthropy' },
-//   { code: 'U00', category: 'Science and Technology' },
-//   { code: 'V00', category: 'Social Science' },
-//   { code: 'W00', category: 'Public/Sociaety Benefit' },
-//   { code: 'X00', category: 'Religion/Spiritual Development' },
-//   { code: 'Y00', category: 'Mutual Membership Benefit Organizations' },
-//   { code: 'Z00', category: 'Unknown' }
-// ];
-
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
     causes: [],
-    selected: 'organizations',
+    selected: 'organization',
     expanded: false,
     text: '',
     body: {
@@ -307,67 +284,33 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
       }
     );
   };
-
-  getCausesWithCode = () => {
-    return new Promise((resolve, reject) => {
-      axios.get('http://localhost:8000/api/causes').then((causes: any) => {
-        this.setState({ causes: causes.data });
-        console.log('Data------->', causes.data);
-        resolve('done');
-      });
-    });
-  };
   componentWillMount = () => {
-    this.getCausesWithCode().then(() => {
-      this.props.onFetchOrganizations(this.state.body);    
-    });
+    const { onFetchCauses, onFetchOrganizations } = this.props;
+    // redux8: this kicks off the api call action
+    // i added the test string because it kept saying it expected an argument, but i don't need test there otherwise
+    onFetchCauses('test')
+    onFetchOrganizations(this.state.body)
   };
 
   render() {
-    const { classes } = this.props;
-    const { body, results, text, causes } = this.state;
+    const { classes, causes } = this.props;
+    const { body, results, text } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
           <Grid container spacing={24} direction="column" style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
             <Grid container alignItems="center" direction="row" justify="space-evenly">
               <Grid item xs={12}>
-                <form onSubmit={this.onSubmit}>
-                  <FormControl className={classes.formControl}>
-                    <InputBase
-                      name="search_terms"
-                      value={text}
-                      onChange={this.handleChange('search_terms')}
-                      fullWidth
-                      placeholder="Search"
-                      classes={{ input: classes.inputInput }}
-                    />
-                    <InputLabel htmlFor="causes">
-                      <Typography>Causes</Typography>
-                    </InputLabel>
-                    <Select
-                      multiple
-                      value={body.filters.organization.ntee_major_codes}
-                      onChange={this.handleChange('ntee_major_codes')}
-                      input={<Input id="select-multiple-checkbox" />}
-                      renderValue={selected => selected && [selected].join(', ')}
-                      MenuProps={MenuProps}
-                    >
-                      {causes.length > 0
-                        ? causes.map(c => (
-                            <MenuItem key={c.Casues_ID} value={c.CauseName}>
-                              <Checkbox
-                                checked={body.filters.organization.ntee_major_codes.indexOf(c.ntee_code) > -1}
-                              />
-                              <Typography>
-                                <ListItemText primary={c.CauseName} />
-                              </Typography>
-                            </MenuItem>
-                          ))
-                        : ''}
-                    </Select>
-                  </FormControl>
-                </form>
+                <FormControl className={classes.formControl}>
+                  <InputBase
+                    name="search_terms"
+                    value={text}
+                    onChange={this.handleChange('search_terms')}
+                    fullWidth
+                    placeholder="Search"
+                    classes={{ input: classes.inputInput }}
+                  />
+                </FormControl>
               </Grid>
               <Grid item xs md={2}>
                 <div className={classes.toggleContainer}>
@@ -395,14 +338,17 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                         renderValue={selected => selected && [selected].join(', ')}
                         MenuProps={MenuProps}
                       >
-                        {causes.map(c => (
-                          <MenuItem key={c.category} value={c.code}>
-                            <Checkbox checked={body.filters.organization.ntee_major_codes.indexOf(c.code) > -1} />
-                            <Typography>
-                              <ListItemText primary={c.category} />
-                            </Typography>
-                          </MenuItem>
-                        ))}
+                        {causes.map((c: any) => (
+                            <MenuItem key={c.Casues_ID} value={c.CauseName}>
+                              <Checkbox
+                                checked={body.filters.organization.ntee_major_codes.indexOf(c.Casues_ID) > -1}
+                              />
+                              <Typography>
+                                <ListItemText primary={c.CauseName} />
+                              </Typography>
+                            </MenuItem>
+                          ))
+                        }
                       </Select>
                       <FormHelperText>Causes</FormHelperText>
                     </FormControl>
@@ -445,10 +391,14 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
 export default connect(
-  (state: any): StateProps => ({
-    organizations: state.organizations.items,
+  (state: SearchState): StateProps => ({
+    organizations: state.searchReducer.organizations,
+    // redux6: the state variable here is mapped to searchstate from index in the reducer folder
+    // this state is passed up to the causes prop
+    causes: state.searchReducer.causes
   }),
   { 
     onFetchOrganizations: fetchOrganizations, 
+    onFetchCauses: fetchCauses, 
   }
 )(Home);
