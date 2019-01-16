@@ -3,6 +3,8 @@
 let sql = require('mssql');
 // config for your database
 let { config } = require('../config.json');
+let jwt = require('jsonwebtoken');
+let { jwtSecret } = require('../config.json');
 
 module.exports.dbGetAllCauses = (req, res, next) => {
   return new Promise((resolve, reject) => {
@@ -53,5 +55,44 @@ Values(${id},(select Causes_ID from CausesList where CauseName = '${cause}')) `,
         resolve(rowsInserted);
       }
     );
+  });
+};
+
+module.exports.dbGetUserCauses = (req, res, id) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(id, jwtSecret, (err, authData) => {
+      if (err) console.log('Error verifying token:', err);
+      else {
+        sql.close();
+        sql.connect(
+          config,
+          function(err) {
+            if (err) console.log(err);
+
+            // create Request object
+            let request = new sql.Request();
+
+            // query to the database and get the data
+            request.query(
+              `select CausesList.ntee_code from Causes_TBR
+              join CausesList
+              on Causes_TBR.Causes_ID = CausesList.Causes_ID
+              join Account
+              on causes_TBR.Account_ID = Account.Account_ID
+              where Account.Account_ID=${authData.id}`,
+              function(err, data) {
+                if (err) console.log(err);
+                else {
+                  console.log(data);
+                  resolve(data.recordset);
+                }
+              }
+            );
+          }
+        );
+      }
+    });
+  }).catch(err => {
+    reject(err);
   });
 };
