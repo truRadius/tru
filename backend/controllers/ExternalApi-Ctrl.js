@@ -3,7 +3,7 @@ let axios = require('axios');
 
 const { dbGetOneAccount } = require('../models/Account');
 const { dbGetUserCauses } = require('../models/Causes');
-let { apiKey } = require('../config.json');
+let { apiKey, premierKey } = require('../config.json');
 
 module.exports.getDataFromExternalApi = (req, res, next) => {
   let body = req.body.data;
@@ -46,8 +46,24 @@ module.exports.getTrialDataFromExternalApi = (req, res, next) => {
       }
     })
     .then(result => {
-      console.log('result---->', result);
       res.send(result.data.data.hits);
+    })
+    .catch(err => {
+      next(err);
+    });
+};
+
+module.exports.getOrganizationById = (req, res, next) => {
+  let orgId = +req.params.id;
+  axios
+    .get(`https://apidata.guidestar.org/premier/v1/${orgId}`, {
+      headers: {
+        'Subscription-Key': premierKey
+      }
+    })
+    .then(result => {
+      console.log('result---->', result.data.data);
+      res.send(result.data.data);
     })
     .catch(err => {
       next(err);

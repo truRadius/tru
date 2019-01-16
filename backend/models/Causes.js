@@ -21,7 +21,6 @@ module.exports.dbGetAllCauses = (req, res, next) => {
         request.query(`select * from CausesList`, function(err, data) {
           if (err) console.log('This errrrr', err);
           else {
-            console.log('Causes data ----->>', data.recordsets[0]);
             resolve(data.recordsets[0]);
           }
         });
