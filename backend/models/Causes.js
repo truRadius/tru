@@ -74,7 +74,7 @@ module.exports.dbGetUserCauses = (req, res, id) => {
 
             // query to the database and get the data
             request.query(
-              `select CausesList.ntee_code from Causes_TBR
+              `select CausesList.ntee_code, CausesList.CauseName from Causes_TBR
               join CausesList
               on Causes_TBR.Causes_ID = CausesList.Causes_ID
               join Account
