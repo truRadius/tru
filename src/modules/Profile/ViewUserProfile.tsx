@@ -105,7 +105,7 @@ class ViewProfile extends React.PureComponent<PropsWithStyles, InternalState> {
         city: res.data.City,
         state: res.data.State,
         postalCode: res.data.Zip,
-        causes: ['Poverty Alleviation', 'Human Rights'],
+        causes: res.data.causes,
         about:
           'Sed interdum, neque ut mattis rhoncus, quam purus lobortis sem, id efficitur risus nisi at metus. Praesent placerat lacinia facilisis. Suspendisse vel tempus massa. In ut pellentesque tellus. In euismod lacus ut dapibus consectetur. Suspendisse bibendum, turpis a eleifend condimentum, dui libero sollicitudin tellus, vel hendrerit lacus nunc sit amet purus. Integer finibus, diam ut ultrices laoreet, lectus eros elementum ex, sit amet pharetra quam magna non lorem.',
         linkedIn: '#',

@@ -130,22 +130,7 @@ type PropsWithStyles = StateProps &
   >;
 
 const gender = ['Male', 'Female', 'Other'];
-const causes = [
-  'Animal Welfare',
-  'Arts and Culture',
-  'Children',
-  'Civil Rights and Social Action',
-  'Disaster and Humanitarian Relief',
-  'Economic Empowerment',
-  'Education',
-  'Environment',
-  'Health',
-  'Human Rights',
-  'Politics',
-  'Poverty Alleviation',
-  'Science and Technology',
-  'Social Services'
-];
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -158,7 +143,7 @@ const MenuProps = {
 };
 
 class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
-  cause: Array<string> = [];
+  cause: Array<any> = [];
   state = {
     open: false,
     defaultState: '',
@@ -166,6 +151,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
     lastName: '',
     gender: '',
     cause: this.cause,
+    causeList: this.cause,
     zipcode: '',
     cs: '',
     city: '',
@@ -288,7 +274,8 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
         Password: this.state.password,
         PhoneNO: this.state.unformattedPhoneNumber,
         AccountCreated: Date.now(),
-        Account_Type: 'Personal'
+        Account_Type: 'Personal',
+        Causes: this.state.cause
       };
       resolve(userObj);
     });
@@ -316,7 +303,7 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       firstName: '',
       lastName: '',
       gender: '',
-      cause: this.cause,
+      causeList: this.cause,
       zipcode: '',
       cs: '',
       city: '',
@@ -329,6 +316,17 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
       errStack: '',
       unformattedPhoneNumber: ''
     });
+  };
+
+  getCausesWithCode = () => {
+    axios.get('http://localhost:8000/api/causes').then((causes: any) => {
+      this.setState({ causeList: causes.data });
+      console.log('Data------->', causes.data);
+    });
+  };
+
+  componentDidMount = () => {
+    this.getCausesWithCode();
   };
 
   render() {
@@ -407,12 +405,24 @@ class CreateModal extends React.PureComponent<PropsWithStyles, InternalState> {
                       renderValue={() => this.state.cause.join(', ')}
                       MenuProps={MenuProps}
                     >
-                      {causes.map(c => (
-                        <MenuItem key={this.unique++} value={c}>
-                          <Checkbox checked={this.state.cause.indexOf(c) > -1} />
-                          <ListItemText primary={c} />
-                        </MenuItem>
-                      ))}
+                      {/* {this.state.causes.length > 0
+                        ? this.state.causes.map(c => (
+                            <MenuItem key={this.unique++} value={c.CauseName}>
+                              <Checkbox checked={this.state.causes.indexOf(c) > -1} />
+                              <ListItemText primary={c} />
+                            </MenuItem>
+                          ))
+                        : ''} */}
+                      {this.state.causeList.length > 0
+                        ? this.state.causeList.map(c => (
+                            <MenuItem key={c.Casues_ID} value={c.CauseName}>
+                              <Checkbox checked={this.state.cause.indexOf(c.ntee_code) > -1} />
+                              <Typography>
+                                <ListItemText primary={c.CauseName} />
+                              </Typography>
+                            </MenuItem>
+                          ))
+                        : ''}
                     </Select>
                   </FormControl>
                 </Grid>
