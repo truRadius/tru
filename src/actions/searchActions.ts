@@ -1,5 +1,6 @@
-import { FETCH_ORGANIZATIONS, FETCH_CAUSES } from './types';
+import { FETCH_ORGANIZATIONS, FETCH_CAUSES, UPDATE_SEARCH_TERMS } from './types';
 import axios from 'axios';
+import { createAction } from '../utilities/action-helpers';
 
 // tslint:disable-next-line:no-any
 export const fetchOrganizations = (body: any) => (dispatch: any) => {
@@ -26,4 +27,8 @@ export const fetchCauses = (test: string) => (dispatch: any) => {
       payload: causes.data
     }));
   });
+};
+
+export const updateSearchTerms = (terms: string) => {
+  createAction(UPDATE_SEARCH_TERMS, terms);
 };

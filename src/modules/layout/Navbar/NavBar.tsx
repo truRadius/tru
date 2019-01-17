@@ -1,5 +1,4 @@
 /* tslint:disable */ //toavoid unnecessary semicolon errors
-
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -14,10 +13,11 @@ import {
   Menu,
   MenuItem,
   IconButton,
-  Typography,
-  Grid
+  Grid,
+  FormControl,
+  InputBase,
+  Tooltip
 } from '@material-ui/core';
-
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -25,14 +25,31 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
 import { Link } from 'react-router-dom';
+import { updateSearchTerms } from 'src/actions/searchActions';
+import { connect } from 'react-redux';
+import { SearchState } from 'src/reducers';
+import { SearchBody } from 'src/api/searchBody';
 
 const logo = require('../logo.png');
 
-interface StateProps {}
+interface StateProps {
+  body: SearchBody;
+}
 
-interface DispatchProps {}
+interface DispatchProps {
+  onUpdateSearchTerms: typeof updateSearchTerms;
+}
 
-interface InternalState {}
+interface InternalState {
+  anchorEl: any,
+  mobileMoreAnchorEl: any,
+  open: boolean,
+  errStack: any,
+  isLoggedIn: any;
+  loggedIn: boolean;
+}
+
+type Props = StateProps & DispatchProps & InternalState;
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
@@ -84,15 +101,22 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     width: '100%'
   },
   inputInput: {
-    paddingTop: theme.spacing.unit,
+    paddingTop: 4,
     paddingRight: theme.spacing.unit,
-    paddingBottom: theme.spacing.unit,
-    paddingLeft: theme.spacing.unit * 6,
+    paddingBottom: 4,
+    paddingLeft: 20,
     transition: theme.transitions.create('width'),
     width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200
-    }
+    border: '1px solid #2E4C63',
+    borderRadius: 40,
+    backgroundColor: 'white',
+    justifyContent: 'space-evenly',
+  },
+  formControl: {
+    minWidth: 120,
+    width: '100%',
+    justifyContent: 'space-evenly',
+    color: 'white'
   },
   sectionDesktop: {
     display: 'none',
@@ -116,8 +140,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps &
-  DispatchProps &
+type PropsWithStyles = Props &
   WithTheme &
   WithStyles<
     | 'button'
@@ -134,18 +157,16 @@ type PropsWithStyles = StateProps &
     | 'icons'
     | 'container'
     | 'paper'
+    | 'formControl'
   >;
 
-interface StateProps {
-  isLoggedIn: any;
-  loggedIn: boolean;
-}
 class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
-  state = {
+  state: InternalState = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     open: false,
     errStack: [],
+    isLoggedIn: this.props.isLoggedIn,
     loggedIn: this.props.loggedIn
   };
 
@@ -217,33 +238,45 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
       <div className={classes.root}>
         <AppBar position="static" style={{ backgroundColor: '#2E4C63', boxShadow: 'none' }}>
           <Toolbar className={classes.container}>
-            <Link to="/">
-              <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
-            </Link>
-            <div className={classes.grow} />
-            <div className={classes.sectionDesktop}>
+            <Grid container alignItems="center">
+              <Grid item md={4}>
+                <Link to="/">
+                  <Avatar alt="truRadius Logo" src={logo} className={classes.title} />
+                </Link>
+              </Grid>
               {this.props.loggedIn ? (
-                <div style={{display: 'flex'}}>
+                <>
+                <Grid item md={4}>
+                  <FormControl className={classes.formControl}>
+                    <InputBase
+                      name="search_terms"
+                      fullWidth
+                      placeholder="Search"
+                      classes={{ input: classes.inputInput }}
+                    />
+                  </FormControl>
+                </Grid>
+                <Grid item md={4} container justify="flex-end" alignItems="center">
                   <Link to={`/event`}>
-                    <Grid container direction="column" alignItems="center">
-                      <Grid item>
+                    <Tooltip title="Create Event" aria-label="Create Event">
+                      <IconButton>
                         <AddCircle style={{ color: 'white' }} />
-                      </Grid>
-                      <Grid item>
-                        <Typography variant="button" style={{ color: 'white' }}>Create Event</Typography>
-                      </Grid>
-                    </Grid>
+                      </IconButton>
+                    </Tooltip>
                   </Link>
                   <Link to={`/profile/${sessionStorage.UserObj ? sessionStorage.UserObj : localStorage.UserObj}`}>
-                    <IconButton>
-                      <AccountCircle />
-                    </IconButton>
+                    <Tooltip title="View Profile" aria-label="View Profile">
+                      <IconButton>
+                        <AccountCircle style={{ color: 'white' }} />
+                      </IconButton>
+                    </Tooltip>
                   </Link>
-                </div>
-              ) : (
-                <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
-              )}
-            </div>
+                </Grid>
+                </>
+                ) : (
+                  <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
+                )}
+            </Grid>
             <div className={classes.sectionMobile}>
               <IconButton aria-haspopup="true" onClick={this.handleMobileMenuOpen} color="inherit">
                 <MoreIcon className={classes.icons} />
@@ -260,3 +293,11 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
 
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const NavBar: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalNavBar));
+export default connect(
+  (state: SearchState): StateProps => ({
+    body: state.searchReducer.body,
+  }),
+  { 
+    onUpdateSearchTerms: updateSearchTerms
+  }
+)(NavBar);

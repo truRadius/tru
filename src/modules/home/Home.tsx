@@ -14,13 +14,10 @@ import {
   Checkbox,
   ListItemText,
   FormHelperText,
-} from '@material-ui/core';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import {
   Grid,
   FormControl,
-  InputBase,
 } from '@material-ui/core';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
 import { connect } from 'react-redux';
@@ -88,7 +85,6 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   },
   mainDiv: {
     backgroundColor: '#ffffff',
-    paddingTop: 20
   },
   toggleBtn: {
     padding: 0,
@@ -294,13 +290,17 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   render() {
     const { classes, causes } = this.props;
-    const { body, results, text } = this.state;
+    const { 
+      body, 
+      results, 
+      // text 
+    } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
           <Grid container spacing={24} direction="column" style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
             <Grid container alignItems="center" direction="row" justify="space-evenly">
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <FormControl className={classes.formControl}>
                   <InputBase
                     name="search_terms"
@@ -311,7 +311,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                     classes={{ input: classes.inputInput }}
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
               <Grid item xs md={2}>
                 <div className={classes.toggleContainer}>
                   <FormControl className={classes.formControl}>
