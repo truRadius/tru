@@ -25,7 +25,7 @@ import AddCircle from '@material-ui/icons/AddCircle';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Login from './login';
 import { Link } from 'react-router-dom';
-import { updateSearchTerms } from 'src/actions/searchActions';
+import { updateSearchTerms, fetchOrganizations } from 'src/actions/searchActions';
 import { connect } from 'react-redux';
 import { SearchState } from 'src/reducers';
 import { SearchBody } from 'src/api/searchBody';
@@ -35,6 +35,7 @@ const logo = require('../logo.png');
 interface Props {
   body: SearchBody;
   onUpdateSearchTerms: typeof updateSearchTerms;
+  onFetchOrganizations: typeof fetchOrganizations;
   isLoggedIn: () => void;
   loggedIn: boolean;
 }
@@ -160,7 +161,6 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
   componentDidMount = () => {
     //TODO: Replace this login with actual logic to check if user is logged in
     this.props.isLoggedIn();
-    console.log('body:', this.props.body);
   };
 
   // tslint:disable-next-line:no-any
@@ -190,6 +190,13 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
     const { onUpdateSearchTerms } = this.props;
     
     onUpdateSearchTerms(event.target.value);
+  }
+
+  onSubmit = (e: any) => {
+    e.preventDefault();
+    const { onFetchOrganizations, body } = this.props;
+
+    onFetchOrganizations(body);
   }
 
   render() {
@@ -241,15 +248,17 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
               {this.props.loggedIn ? (
                 <>
                 <Grid item md={4}>
-                  <FormControl className={classes.formControl}>
-                    <InputBase
-                      name="search_terms"
-                      fullWidth
-                      placeholder="Search"
-                      classes={{ input: classes.inputInput }}
-                      onChange={this.handleChange}
-                    />
-                  </FormControl>
+                  <form onSubmit={this.onSubmit}>
+                    <FormControl className={classes.formControl}>
+                      <InputBase
+                        name="search_terms"
+                        fullWidth
+                        placeholder="Search"
+                        classes={{ input: classes.inputInput }}
+                        onChange={this.handleChange}
+                      />
+                    </FormControl>
+                  </form>
                 </Grid>
                 <Grid item md={4} container justify="flex-end" alignItems="center">
                   <Link to={`/event`}>
@@ -269,7 +278,9 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
                 </Grid>
                 </>
                 ) : (
-                  <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
+                  <Grid item md>
+                    <Login classes={classes} isLoggedIn={this.props.isLoggedIn} />
+                  </Grid>
                 )}
             </Grid>
             <div className={classes.sectionMobile}>
@@ -293,6 +304,7 @@ export default connect(
     body: state.searchReducer.body,
   }),
   { 
-    onUpdateSearchTerms: updateSearchTerms
+    onUpdateSearchTerms: updateSearchTerms,
+    onFetchOrganizations: fetchOrganizations,
   }
 )(NavBar);

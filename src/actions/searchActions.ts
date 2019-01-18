@@ -1,6 +1,11 @@
-import { FETCH_ORGANIZATIONS, FETCH_CAUSES, UPDATE_SEARCH_TERMS } from './types';
+import { 
+  FETCH_ORGANIZATIONS, 
+  FETCH_CAUSES, 
+  UPDATE_SEARCH_TERMS,
+  UPDATE_SEARCH_RADIUS,
+  UPDATE_SEARCH_CAUSES
+} from './types';
 import axios from 'axios';
-// import { createAction } from '../utilities/action-helpers';
 
 // tslint:disable-next-line:no-any
 export const fetchOrganizations = (body: any) => (dispatch: any) => {
@@ -32,5 +37,21 @@ export const updateSearchTerms = (terms: string) => (dispatch: any) => {
   dispatch({
     type: UPDATE_SEARCH_TERMS, 
     payload: terms
+  });
+};
+
+// tslint:disable-next-line:no-any
+export const updateSearchRadius = (radius: number) => (dispatch: any) => {
+  dispatch({
+    type: UPDATE_SEARCH_RADIUS, 
+    payload: radius
+  });
+};
+
+// tslint:disable-next-line:no-any
+export const updateSearchCauses = (causes: Array<string>) => (dispatch: any) => {
+  dispatch({
+    type: UPDATE_SEARCH_CAUSES, 
+    payload: causes
   });
 };

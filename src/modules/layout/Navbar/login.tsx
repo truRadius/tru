@@ -133,35 +133,39 @@ class InternalLogin extends React.PureComponent<PropsWithStyles, InternalState> 
         <form onSubmit={this.signIn}>
           <Grid container alignItems="center" justify="flex-end" spacing={24}>
             <Grid item xs container justify="flex-end" alignItems="center">
-              <FormControl className={classes.formControl}>
-                <InputBase
-                  fullWidth
-                  id="username"
-                  placeholder="Email or Mobile Number"
-                  value={this.state.email}
-                  onBlur={this.validateEmailOrPhoneNUmber}
-                  onChange={this.handleEmail}
-                  classes={{
-                    input: classes.input,
-                  }}
-                />
-                <Typography variant='caption' style={{color: 'white'}}>
-                  {this.state.err}
-                </Typography>
-              </FormControl>
-              <FormControl className={classes.formControl}>
-                <InputBase
-                  fullWidth
-                  id="password"
-                  placeholder="Password"
-                  type="password"
-                  value={this.state.password}
-                  onChange={this.handlePassword}
-                  classes={{
-                    input: classes.input,
-                  }}
-                />
-              </FormControl>
+              <Grid item>
+                <FormControl className={classes.formControl}>
+                  <InputBase
+                    fullWidth
+                    id="username"
+                    placeholder="Email or Mobile Number"
+                    value={this.state.email}
+                    onBlur={this.validateEmailOrPhoneNUmber}
+                    onChange={this.handleEmail}
+                    classes={{
+                      input: classes.input,
+                    }}
+                  />
+                  <Typography variant='caption' style={{color: 'white'}}>
+                    {this.state.err}
+                  </Typography>
+                </FormControl>
+              </Grid>
+              <Grid item>
+                <FormControl className={classes.formControl}>
+                  <InputBase
+                    fullWidth
+                    id="password"
+                    placeholder="Password"
+                    type="password"
+                    value={this.state.password}
+                    onChange={this.handlePassword}
+                    classes={{
+                      input: classes.input,
+                    }}
+                  />
+                </FormControl>
+              </Grid>
               <MuiThemeProvider theme={themeAlt}>
                 <Button color="primary" type="submit">
                   Log In

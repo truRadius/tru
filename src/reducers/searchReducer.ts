@@ -1,4 +1,10 @@
-import { FETCH_ORGANIZATIONS, FETCH_CAUSES, UPDATE_SEARCH_TERMS } from 'src/actions/types';
+import { 
+  FETCH_ORGANIZATIONS, 
+  FETCH_CAUSES, 
+  UPDATE_SEARCH_TERMS,
+  UPDATE_SEARCH_RADIUS,
+  UPDATE_SEARCH_CAUSES,
+} from 'src/actions/types';
 
 const initialState = {
   organizations: [],
@@ -44,6 +50,34 @@ export default function(state: any = initialState, action: any) {
         body: {
           ...state.body,
           search_terms: action.payload
+        }
+      };
+    case UPDATE_SEARCH_RADIUS:
+      return {
+        ...state,
+        body: {
+          ...state.body,
+          filters: {
+            ...state.body.filters,
+            geography: {
+              ...state.body.filters.geography,
+              radius: action.payload
+            }
+          }
+        }
+      };
+    case UPDATE_SEARCH_CAUSES:
+      return {
+        ...state,
+        body: {
+          ...state.body,
+          filters: {
+            ...state.body.filters,
+            organization: {
+              ...state.body.filters.organization,
+              ntee_major_codes: action.payload
+            }
+          }
         }
       };
     default:

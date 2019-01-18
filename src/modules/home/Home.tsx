@@ -21,12 +21,14 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
 import { connect } from 'react-redux';
-import { fetchOrganizations, fetchCauses } from 'src/actions/searchActions';
+import { fetchOrganizations, fetchCauses, updateSearchRadius, updateSearchCauses } from 'src/actions/searchActions';
 import { SearchState } from 'src/reducers';
 import { Causes } from 'src/api/causes';
+import { SearchBody } from 'src/api/searchBody';
 // import axios from 'axios';
 
 interface StateProps {
+  body: SearchBody;
   organizations: any;
   // redux5: added the cause prop here. Defined the type in the api folder. I need to do the same for organizations
   // connected this cause to the state in the searchReducer at the bottom
@@ -36,31 +38,12 @@ interface DispatchProps {
   onFetchOrganizations: typeof fetchOrganizations;
   // redux7: actions go here and defined at the bottom as well
   onFetchCauses: typeof fetchCauses;
+  onUpdateSearchRadius: typeof updateSearchRadius;
+  onUpdateSearchCauses: typeof updateSearchCauses;
 }
 
 interface InternalState {
-  causes: Array<any>;
   selected: string;
-  expanded: boolean;
-  text: string;
-  body: {
-    search_terms: string;
-    from: number;
-    size: number;
-    sort: {
-      sort_by: string;
-      ascending: boolean;
-    };
-    filters: {
-      geography: {
-        zip: string;
-        radius: number;
-      };
-      organization: {
-        ntee_major_codes: Array<string>;
-      };
-    };
-  };
   results: {
     // tslint:disable-next-line:no-any
     data: Array<any>;
@@ -189,74 +172,21 @@ const distance = [10, 25, 50, 100];
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    causes: [],
     selected: 'organization',
-    expanded: false,
-    text: '',
-    body: {
-      search_terms: '',
-      from: 0,
-      size: 25,
-      sort: {
-        sort_by: '',
-        ascending: true
-      },
-      filters: {
-        geography: {
-          zip: '',
-          radius: 10
-        },
-        organization: {
-          ntee_major_codes: []
-        }
-      }
-    },
     results: {
       data: [],
       err: ''
     }
   };
-  unique = 1;
-  handleMoreOption = () => {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  };
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
+    const { onUpdateSearchCauses, onUpdateSearchRadius } = this.props;
+
     if (name === 'ntee_major_codes') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          filters: {
-            ...prevState.body.filters,
-            organization: {
-              ...prevState.body.filters.organization,
-              ntee_major_codes: event.target.value
-            }
-          }
-        }
-      }));
+      onUpdateSearchCauses(event.target.value);
     } else if (name === 'radius') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          filters: {
-            ...prevState.body.filters,
-            geography: {
-              ...prevState.body.filters.geography,
-              radius: event.target.value
-            }
-          }
-        }
-      }));
-    } else if (name === 'search_terms') {
-      this.setState({
-        text: event.target.value
-      });
+      onUpdateSearchRadius(event.target.value);
     }
   };
 
@@ -264,36 +194,19 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   handleToggle = (e: any) => {
     this.setState({ selected: e.target.value });
   };
-
-  onSubmit = (e: any) => {
-    const { body, text } = this.state;
-    e.preventDefault();
-    this.setState(
-      prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
-      () => {
-        body.search_terms = this.state.text;
-        setTimeout(() => {
-          //give state some time to set before using it
-          console.log(body);
-          // this.getOrganizationData(body);
-        }, 1000);
-      }
-    );
-  };
   componentWillMount = () => {
-    const { onFetchCauses, onFetchOrganizations } = this.props;
+    const { onFetchCauses, onFetchOrganizations, body } = this.props;
     // redux8: this kicks off the api call action
     // i added the test string because it kept saying it expected an argument, but i don't need test there otherwise
     onFetchCauses('test')
-    onFetchOrganizations(this.state.body)
+    onFetchOrganizations(body)
   };
 
   render() {
-    const { classes, causes } = this.props;
-    const { 
-      body, 
+    const { classes, causes, body } = this.props;
+    console.log('body', body);
+    const {  
       results, 
-      // text 
     } = this.state;
     return (
       <div>
@@ -380,6 +293,7 @@ type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
 export default connect(
   (state: SearchState): StateProps => ({
+    body: state.searchReducer.body,
     organizations: state.searchReducer.organizations,
     // redux6: the state variable here is mapped to searchstate from index in the reducer folder
     // this state is passed up to the causes prop
@@ -388,5 +302,7 @@ export default connect(
   { 
     onFetchOrganizations: fetchOrganizations, 
     onFetchCauses: fetchCauses, 
+    onUpdateSearchRadius: updateSearchRadius,
+    onUpdateSearchCauses: updateSearchCauses
   }
 )(Home);
