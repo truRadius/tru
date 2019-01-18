@@ -1,12 +1,20 @@
 'use strict';
 
 const { dbGetOneAccount, dbPostOneAccount, dbSignIn, dbCheckAccount } = require('../models/Account');
+const { dbSaveUserCauses, dbGetUserCauses } = require('../models/Causes');
 
 module.exports.getSingleAccount = (req, res, next) => {
   let id = req.params.id;
   dbGetOneAccount(req, res, id, next)
     .then(account => {
-      res.status(200).json(account);
+      dbGetUserCauses(req, res, id).then(casueList => {
+        let list = [];
+        casueList.forEach(cause => {
+          list.push(cause.CauseName);
+        });
+        account.causes = list;
+        res.status(200).json(account);
+      });
     })
     .catch(err => {
       next(err);
@@ -15,8 +23,12 @@ module.exports.getSingleAccount = (req, res, next) => {
 
 module.exports.postAccount = (req, res, next) => {
   dbPostOneAccount(req, res, next)
-    .then(token => {
-      res.send(token);
+    .then(data => {
+      console.log(data.id);
+      dbSaveUserCauses(req, res, next, data.id).then(done => {
+        console.log('Causes saved:', done);
+        res.send(data.token);
+      });
     })
     .catch(err => {
       next(err);
