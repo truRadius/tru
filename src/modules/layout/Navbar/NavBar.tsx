@@ -32,24 +32,12 @@ import { SearchBody } from 'src/api/searchBody';
 
 const logo = require('../logo.png');
 
-interface StateProps {
+interface Props {
   body: SearchBody;
-}
-
-interface DispatchProps {
   onUpdateSearchTerms: typeof updateSearchTerms;
-}
-
-interface InternalState {
-  anchorEl: any,
-  mobileMoreAnchorEl: any,
-  open: boolean,
-  errStack: any,
-  isLoggedIn: any;
+  isLoggedIn: () => void;
   loggedIn: boolean;
 }
-
-type Props = StateProps & DispatchProps & InternalState;
 
 const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {
@@ -160,19 +148,19 @@ type PropsWithStyles = Props &
     | 'formControl'
   >;
 
-class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState> {
-  state: InternalState = {
+class InternalNavBar extends React.PureComponent<PropsWithStyles> {
+  state = {
     anchorEl: null,
     mobileMoreAnchorEl: null,
     open: false,
     errStack: [],
-    isLoggedIn: this.props.isLoggedIn,
     loggedIn: this.props.loggedIn
   };
 
   componentDidMount = () => {
     //TODO: Replace this login with actual logic to check if user is logged in
     this.props.isLoggedIn();
+    console.log('body:', this.props.body);
   };
 
   // tslint:disable-next-line:no-any
@@ -197,6 +185,12 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
   handleOpenModal = () => {
     this.setState({ open: true });
   };
+
+  handleChange = (event: any) => {
+    const { onUpdateSearchTerms } = this.props;
+    
+    onUpdateSearchTerms(event.target.value);
+  }
 
   render() {
     const { anchorEl, mobileMoreAnchorEl } = this.state;
@@ -253,6 +247,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
                       fullWidth
                       placeholder="Search"
                       classes={{ input: classes.inputInput }}
+                      onChange={this.handleChange}
                     />
                   </FormControl>
                 </Grid>
@@ -291,10 +286,10 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles, InternalState>
   }
 }
 
-type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
+type StyledProps = Props & StyledComponentProps<string>;
 export const NavBar: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalNavBar));
 export default connect(
-  (state: SearchState): StateProps => ({
+  (state: SearchState) => ({
     body: state.searchReducer.body,
   }),
   { 

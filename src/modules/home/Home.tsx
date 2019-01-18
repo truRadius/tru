@@ -72,10 +72,10 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {},
   toggleContainer: {
     height: 56,
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+    padding: 0,
     display: 'flex',
     justifyContent: 'space-evenly',
-    margin: `${theme.spacing.unit}px 0`,
+    margin: 0,
     maxWidth: '100%',
     flexBasis: '100%'
   },
@@ -300,18 +300,6 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         <div className={classes.mainDiv}>
           <Grid container spacing={24} direction="column" style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
             <Grid container alignItems="center" direction="row" justify="space-evenly">
-              {/* <Grid item xs={12}>
-                <FormControl className={classes.formControl}>
-                  <InputBase
-                    name="search_terms"
-                    value={text}
-                    onChange={this.handleChange('search_terms')}
-                    fullWidth
-                    placeholder="Search"
-                    classes={{ input: classes.inputInput }}
-                  />
-                </FormControl>
-              </Grid> */}
               <Grid item xs md={2}>
                 <div className={classes.toggleContainer}>
                   <FormControl className={classes.formControl}>
