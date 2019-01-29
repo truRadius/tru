@@ -82,20 +82,18 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)'
   },
   carousel: {
-    padding: '20px 50px'
+    padding: '20px 0px'
   },
   container: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    margin: 0,
   },
   textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
     width: 200
   },
   removeImage: {
     borderRadius: '100%',
-    position: 'fixed',
     color: 'red',
     backgroundColor: 'white'
   }
@@ -289,9 +287,9 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
     const { classes } = this.props;
     const { fireRedirect } = this.state;
     return (
-      <div>
-        <form onSubmit={this.onSubmit} action={this.state.path}>
-          <div className={classes.formDiv}>Create Event</div>
+      <div style={{height: 'calc(100vh - 290px)'}}>
+        <div className={classes.formDiv}>Create Event</div>
+        <form style={{maxWidth: 1000, margin: '0 auto', height: 'fill-available'}} onSubmit={this.onSubmit} action={this.state.path}>
           <input
             accept=".png,.jpg,.jpeg"
             onChange={this.handleChange('image')}
@@ -302,7 +300,7 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
           />
           <label htmlFor="contained-button-file">
             <Button variant="contained" component="span" className={classes.button}>
-              Upload Photo
+              <span style={{ color: 'white' }}>Upload Photo</span>
             </Button>
           </label>
           {this.state.image === '' ? (
@@ -397,12 +395,13 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
                       margin="normal"
                     />
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <form className={classes.container} noValidate>
                       <TextField
+                        fullWidth
                         required
                         id="start-datetime"
-                        label="Start Date & Time"
+                        label="Start Date &amp; Time"
                         type="datetime-local"
                         className={classes.textField}
                         value={this.state.startDateTime}
@@ -410,15 +409,17 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
                           shrink: true
                         }}
                         onChange={this.handleChange('startDateTime')}
+                        margin="normal"
                       />
                     </form>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <form className={classes.container} noValidate>
                       <TextField
+                        fullWidth
                         required
                         id="end-datetime"
-                        label="End Date & Time"
+                        label="End Date &amp; Time"
                         type="datetime-local"
                         value={this.state.endDateTime}
                         className={classes.textField}
@@ -426,6 +427,7 @@ class CreateEvent extends React.PureComponent<PropsWithStyles, InternalState> {
                           shrink: true
                         }}
                         onChange={this.handleChange('endDateTime')}
+                        margin="normal"
                       />
                     </form>
                   </Grid>

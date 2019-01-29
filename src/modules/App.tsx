@@ -2,12 +2,12 @@
 
 import * as React from 'react';
 import { StyledComponentProps, withTheme } from '@material-ui/core';
-import { NavBar } from './layout/Navbar/NavBar';
+import NavBar from './layout/Navbar/NavBar';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Profile } from './Profile/ViewUserProfile';
 import { Footer } from './layout/Footer';
 import { LandingPage } from './LandingPage/LandingPage';
-import { Home } from './home/Home';
+import Home from './home/Home';
 import { OrganizationProfile } from './Profile/OrganizationProfile';
 import { CreateEventForm } from './Events/CreateEventForm';
 import { EventProfile } from './Profile/EventProfile';

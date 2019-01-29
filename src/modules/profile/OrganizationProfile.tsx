@@ -11,43 +11,28 @@ import {
   Typography,
   Grid,
   List,
-  Button,
-  GridList,
-  GridListTile,
-  Card,
-  CardActionArea,
-  CardContent
+  Tabs,
+  Tab
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as Brands from '@fortawesome/free-brands-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGlobe } from '@fortawesome/free-solid-svg-icons';
+import { LocationOn } from '@material-ui/icons';
+import YouTube from 'react-youtube';
 const axios = require('axios');
+const defaultImg = require('./no-image.png');
 
 // const logo = require('../home/dummy-logo.jpg');
 library.add(faGlobe);
-
-// const organization = {
-//   name: 'Feeding America',
-//   postalCode: 37128,
-//   city: 'Murfreesboro',
-//   state: 'TN',
-//   causes: ['Poverty Alleviation', 'Human Rights'],
-//   about:
-//     'Sed interdum, neque ut mattis rhoncus, quam purus lobortis sem, id efficitur risus nisi at metus. Praesent placerat lacinia facilisis. Suspendisse vel tempus massa. In ut pellentesque tellus. In euismod lacus ut dapibus consectetur. Suspendisse bibendum, turpis a eleifend condimentum, dui libero sollicitudin tellus, vel hendrerit lacus nunc sit amet purus. Integer finibus, diam ut ultrices laoreet, lectus eros elementum ex, sit amet pharetra quam magna non lorem.',
-//   linkedIn: '#',
-//   twitter: '#',
-//   facebook: '#',
-//   website: '#',
-//   followers: 200
-// };
 
 interface StateProps {}
 
 interface DispatchProps {}
 
 interface InternalState {
+  value: number;
   organization: {
     summary: {
       organization_name: string;
@@ -56,6 +41,18 @@ interface InternalState {
       impact_statement: string;
       media_urls: Array<string>;
       mission: string;
+      ntee_codes: [
+        {
+          primary_description: string;
+        }
+      ];
+      state: string;
+      city: string;
+      videos: [
+        {
+          video_url: string;
+        }
+      ];
     };
   };
 }
@@ -69,7 +66,8 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     flexDirection: 'row'
   },
   profileImg: {
-    width: '100%',
+    width: 'auto',
+    maxHeight: 200,
     borderRadius: '100%'
   },
   imgDiv: {
@@ -118,6 +116,7 @@ type PropsWithStyles = StateProps &
 class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, InternalState> {
   emptyArr: Array<string> = [];
   state: InternalState = {
+    value: 1,
     organization: {
       summary: {
         organization_name: '',
@@ -125,7 +124,15 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
         logo_url: '',
         impact_statement: '',
         media_urls: this.emptyArr,
-        mission: ''
+        mission: '',
+        ntee_codes: [{
+          primary_description: ''
+        }],
+        state: '',
+        city: '',
+        videos: [{
+            video_url: '',
+        }]
       }
     }
   };
@@ -147,7 +154,11 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
                 logo_url: res.data.summary.logo_url,
                 impact_statement: res.data.summary.impact_statement,
                 media_urls: res.data.summary.social_media_urls,
-                mission: res.data.summary.mission
+                mission: res.data.summary.mission,
+                ntee_codes: res.data.summary.ntee_codes,
+                city: res.data.summary.city,
+                state: res.data.summary.state,
+                videos: res.data.summary.videos,
               }
             }
           }),
@@ -164,27 +175,46 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
       console.log('Response for Org:', data);
     });
   };
+
+  handleChange = (event: any, value: number) => {
+    this.setState({ value: value });
+  };
+  
   render() {
     const { classes } = this.props;
-    const { organization } = this.state;
+    const { organization, value } = this.state;
+    const opts = {
+      height: '390px',
+      width: '100%',
+    };
 
     return (
       <>
         {this.state.organization.hasOwnProperty('summary') ? (
-          <div>
+          <div style={{minHeight: '77vh'}}>
             <div style={{ width: '100%', background: 'white' }}>
               <Grid container className={classes.container}>
-                <Grid item sm>
-                  <img src={organization.summary.logo_url} alt="default" className={classes.profileImg} />
+                <Grid item container justify="center" xs>
+                  <img 
+                    src={organization.summary.logo_url !== '' ? organization.summary.logo_url : defaultImg} 
+                    alt="Organization Logo" 
+                    className={classes.profileImg} 
+                  />
                 </Grid>
-                <Grid item sm container direction="column" justify="center" style={{ paddingLeft: 30 }}>
-                  <Typography variant="h3" color="primary">
+                <Grid item xs container direction="column" justify="center" style={{ paddingLeft: 30 }}>
+                  <Typography variant="h4" color="primary">
                     {organization.summary.organization_name}
                   </Typography>
-                  <Grid item>
+                  <Grid item xs>
+                    <Grid item xs={12} container alignItems="center" direction="row">
+                      <LocationOn color="secondary" />
+                      <Typography variant="h6" color="secondary" style={{ padding: 10 }}>
+                        {organization.summary.city}, {organization.summary.state}
+                      </Typography>
+                    </Grid>
                     {organization.summary.website_url && (
                       <a href={organization.summary.website_url}>
-                        <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 0 }} icon="globe" />
+                        <FontAwesomeIcon className={classes.socialIcons} style={{ paddingLeft: 2 }} icon="globe" />
                       </a>
                     )}
 
@@ -204,152 +234,59 @@ class InternalOrganizationProfile extends React.PureComponent<PropsWithStyles, I
                       </a>
                     )} */}
                   </Grid>
-                  <Typography variant="subtitle1" color="primary">
-                    {/* {organization.followers} Followers */}
-                  </Typography>
-                  <Grid item>
-                    <Button color="primary">FOLLOW</Button>
-                  </Grid>
                 </Grid>
               </Grid>
+              <div className={classes.root}>
+                <Tabs centered value={value} onChange={this.handleChange}>
+                  <Tab value={1} label="About" />
+                  <Tab value={2} label="Media" />
+                </Tabs>
+              </div>
             </div>
-            <Grid container className={classes.container} style={{ padding: '20px 0' }} spacing={16}>
-              <Grid item sm={10}>
-                <Typography variant="h5" color="secondary" className={classes.typography}>
-                  About
-                </Typography>
-                <Typography variant="body1" color="secondary">
-                  {organization.summary.impact_statement != null
-                    ? organization.summary.impact_statement
-                    : organization.summary.mission}
-                </Typography>
+            {value === 1 &&
+              <Grid container className={classes.container} style={{ padding: '20px 0' }} spacing={16}>
+                <Grid item xs={12}>
+                  <Typography variant="h5" color="secondary" className={classes.typography}>
+                    Causes
+                  </Typography>
+                  <List className={classes.root} subheader={<li />}>
+                    {organization.summary.ntee_codes.map(d => (
+                      <li>
+                        <Typography color="secondary">{d.primary_description}</Typography>
+                      </li>
+                    ))}
+                  </List>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h5" color="secondary" className={classes.typography}>
+                    About
+                  </Typography>
+                  <Typography variant="body1" color="secondary">
+                    {organization.summary.impact_statement != null
+                      ? organization.summary.impact_statement
+                      : organization.summary.mission}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item sm={2}>
-                <Typography variant="h5" color="secondary" className={classes.typography}>
-                  Causes
-                </Typography>
-                <List className={classes.root} subheader={<li />}>
-                  {/* {organization.causes.map(c => (
-                    <li key={c}>
-                      <Typography color="secondary">{c}</Typography>
-                    </li>
-                  ))} */}
-                </List>
-              </Grid>
-              <Typography variant="h5" color="secondary" className={classes.typography}>
-                Events
-              </Typography>
-              <GridList className={classes.gridList} cols={2.5}>
-                <GridListTile>
-                  <Card className={classes.card} style={{ margin: '5% auto' }}>
-                    <CardActionArea>
-                      <CardContent>
-                        <Grid container alignContent="center" justify="space-evenly" direction="row" spacing={24}>
-                          <Grid sm={2} style={{ margin: '16px' }}>
-                            <Grid container alignContent="center" justify="flex-start" direction="column">
-                              <Grid sm style={{ color: '#F17820', fontSize: '3.4em' }}>
-                                29
-                              </Grid>
-                              <Grid sm style={{ fontSize: '2em' }}>
-                                Sep
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid sm style={{ margin: '16px' }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                              Feed the Homeless
-                            </Typography>
-                            <Typography component="p">8-am SanJose, CA </Typography>
-                            <Typography component="p">12 people are planning to attend</Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </GridListTile>
-                <GridListTile>
-                  <Card className={classes.card} style={{ margin: '5% auto' }}>
-                    <CardActionArea>
-                      <CardContent>
-                        <Grid container alignContent="center" justify="space-evenly" direction="row" spacing={24}>
-                          <Grid sm={2} style={{ margin: '16px' }}>
-                            <Grid container alignContent="center" justify="flex-start" direction="column">
-                              <Grid sm style={{ color: '#F17820', fontSize: '3.4em' }}>
-                                29
-                              </Grid>
-                              <Grid sm style={{ fontSize: '2em' }}>
-                                Sep
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid sm style={{ margin: '16px' }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                              Feed the Homeless
-                            </Typography>
-                            <Typography component="p">8-am SanJose, CA </Typography>
-                            <Typography component="p">12 people are planning to attend</Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </GridListTile>
-                <GridListTile>
-                  <Card className={classes.card} style={{ margin: '5% auto' }}>
-                    <CardActionArea>
-                      <CardContent>
-                        <Grid container alignContent="center" justify="space-evenly" direction="row" spacing={24}>
-                          <Grid sm={2} style={{ margin: '16px' }}>
-                            <Grid container alignContent="center" justify="flex-start" direction="column">
-                              <Grid sm style={{ color: '#F17820', fontSize: '3.4em' }}>
-                                29
-                              </Grid>
-                              <Grid sm style={{ fontSize: '2em' }}>
-                                Sep
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid sm style={{ margin: '16px' }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                              Feed the Homeless
-                            </Typography>
-                            <Typography component="p">8-am SanJose, CA </Typography>
-                            <Typography component="p">12 people are planning to attend</Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </GridListTile>
-                <GridListTile>
-                  <Card className={classes.card} style={{ margin: '5% auto' }}>
-                    <CardActionArea>
-                      <CardContent>
-                        <Grid container alignContent="center" justify="space-evenly" direction="row" spacing={24}>
-                          <Grid sm={2} style={{ margin: '16px' }}>
-                            <Grid container alignContent="center" justify="flex-start" direction="column">
-                              <Grid sm style={{ color: '#F17820', fontSize: '3.4em' }}>
-                                29
-                              </Grid>
-                              <Grid sm style={{ fontSize: '2em' }}>
-                                Sep
-                              </Grid>
-                            </Grid>
-                          </Grid>
-                          <Grid sm style={{ margin: '16px' }}>
-                            <Typography gutterBottom variant="h5" component="h2">
-                              Feed the Homeless
-                            </Typography>
-                            <Typography component="p">8-am SanJose, CA </Typography>
-                            <Typography component="p">12 people are planning to attend</Typography>
-                          </Grid>
-                        </Grid>
-                      </CardContent>
-                    </CardActionArea>
-                  </Card>
-                </GridListTile>
-              </GridList>
+            }
+            {value === 2 && 
+            <Grid container direction="row" className={classes.container} spacing={24}>
+              {organization.summary.videos.length > 0 && organization.summary.videos[0].video_url !== '' ?
+                organization.summary.videos.map(v => (
+                  <Grid item xs={12} md={6}>
+                    <YouTube 
+                      videoId={v.video_url.substr(32)}
+                      opts={opts}
+                    >
+                    </YouTube>
+                  </Grid>
+                )) :
+                <Grid item>
+                  No Videos Posted
+                </Grid>
+              }
             </Grid>
+            }
           </div>
         ) : (
           <h1>lOADING.....</h1>

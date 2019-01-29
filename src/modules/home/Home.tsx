@@ -9,55 +9,41 @@ import {
   WithTheme,
   Typography,
   Input,
-  InputLabel,
   Select,
   MenuItem,
   Checkbox,
   ListItemText,
-  Button
-} from '@material-ui/core';
-import { CSSProperties } from '@material-ui/core/styles/withStyles';
-import {
+  FormHelperText,
   Grid,
   FormControl,
-  InputBase,
-  ExpansionPanel,
-  ExpansionPanelSummary,
-  ExpansionPanelDetails
 } from '@material-ui/core';
-import { ToggleButton, ToggleButtonGroup } from '@material-ui/lab';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { fetchOrganizations, fetchCauses, updateSearchRadius, updateSearchCauses } from 'src/actions/searchActions';
+import { SearchState } from 'src/reducers';
+import { Causes } from 'src/api/causes';
+import { SearchBody } from 'src/api/searchBody';
+// import axios from 'axios';
 
-interface StateProps {}
-
-interface DispatchProps {}
+interface StateProps {
+  body: SearchBody;
+  organizations: any;
+  // redux5: added the cause prop here. Defined the type in the api folder. I need to do the same for organizations
+  // connected this cause to the state in the searchReducer at the bottom
+  causes: Causes[];
+}
+interface DispatchProps {
+  onFetchOrganizations: typeof fetchOrganizations;
+  // redux7: actions go here and defined at the bottom as well
+  onFetchCauses: typeof fetchCauses;
+  onUpdateSearchRadius: typeof updateSearchRadius;
+  onUpdateSearchCauses: typeof updateSearchCauses;
+}
 
 interface InternalState {
-  causes: Array<any>;
   selected: string;
-  expanded: boolean;
-  text: string;
-  body: {
-    search_terms: string;
-    from: number;
-    size: number;
-    sort: {
-      sort_by: string;
-      ascending: boolean;
-    };
-    filters: {
-      geography: {
-        zip: string;
-        radius: number;
-      };
-      organization: {
-        ntee_major_codes: Array<string>;
-      };
-    };
-  };
   results: {
     // tslint:disable-next-line:no-any
     data: Array<any>;
@@ -69,20 +55,19 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   root: {},
   toggleContainer: {
     height: 56,
-    padding: `${theme.spacing.unit}px ${theme.spacing.unit * 2}px`,
+    padding: 0,
     display: 'flex',
     justifyContent: 'space-evenly',
-    margin: `${theme.spacing.unit}px 0`,
+    margin: 0,
     maxWidth: '100%',
     flexBasis: '100%'
   },
   customButton: {
-    // border: '1px solid white',
     borderRadius: 0,
     margin: 'auto 0'
   },
   mainDiv: {
-    backgroundColor: '#f17820'
+    backgroundColor: '#ffffff',
   },
   toggleBtn: {
     padding: 0,
@@ -153,8 +138,7 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
   }
 });
 
-type PropsWithStyles = StateProps &
-  DispatchProps &
+type PropsWithStyles = StateProps & DispatchProps &
   WithTheme &
   WithStyles<
     | 'root'
@@ -188,257 +172,137 @@ const distance = [10, 25, 50, 100];
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    causes: [],
-    selected: 'organizations',
-    expanded: false,
-    text: '',
-    body: {
-      search_terms: '',
-      from: 0,
-      size: 25,
-      sort: {
-        sort_by: '',
-        ascending: true
-      },
-      filters: {
-        geography: {
-          zip: '',
-          radius: 10
-        },
-        organization: {
-          ntee_major_codes: []
-        }
-      }
-    },
+    selected: 'organization',
     results: {
       data: [],
       err: ''
     }
   };
-  unique = 1;
-  handleMoreOption = () => {
-    this.setState({
-      expanded: !this.state.expanded
-    });
-  };
 
   // tslint:disable-next-line:no-any
   handleChange = (name: string) => (event: any) => {
+    const { onUpdateSearchCauses, onUpdateSearchRadius } = this.props;
+
     if (name === 'ntee_major_codes') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          filters: {
-            ...prevState.body.filters,
-            organization: {
-              ...prevState.body.filters.organization,
-              ntee_major_codes: event.target.value
-            }
-          }
-        }
-      }));
+      onUpdateSearchCauses(event.target.value);
     } else if (name === 'radius') {
-      this.setState(prevState => ({
-        ...prevState,
-        body: {
-          ...prevState.body,
-          filters: {
-            ...prevState.body.filters,
-            geography: {
-              ...prevState.body.filters.geography,
-              radius: event.target.value
-            }
-          }
-        }
-      }));
-    } else if (name === 'search_terms') {
-      this.setState({
-        text: event.target.value
-      });
+      onUpdateSearchRadius(event.target.value);
     }
   };
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
-    this.setState({ selected: e.target.id });
+    this.setState({ selected: e.target.value });
   };
-
-  getOrganizationData = (body: any) => {
-    axios
-      .post('http://localhost:8000/api/externalApi', { data: body, token: sessionStorage.getItem('UserObj') })
-      .then(res => {
-        let re = {
-          data: res.data,
-          err: ''
-        };
-        this.setState({ results: re });
-      })
-      // tslint:disable-next-line:no-any
-      .catch((err: any) => {
-        let res = {
-          data: [],
-          err: 'Not found'
-        };
-        this.setState({ results: res });
-        console.log(err);
-      }); // tslint:disable-line:no-console
-  };
-
-  onSubmit = () => {
-    const { body, text } = this.state;
-    this.setState(
-      prevState => ({ ...prevState, body: { ...prevState.body, search_terms: text } }), // tslint:disable-next-line:align
-      () => {
-        body.search_terms = this.state.text;
-
-        //give state some time to set before using it
-        console.log(body);
-        this.getOrganizationData(body);
-      }
-    );
-  };
-
-  getCausesWithCode = () => {
-    return new Promise((resolve, reject) => {
-      axios.get('http://localhost:8000/api/causes').then((causes: any) => {
-        this.setState({ causes: causes.data });
-        console.log('Data------->', causes.data);
-        resolve('done');
-      });
-    });
-  };
-
-  componentDidMount = () => {
-    this.getCausesWithCode().then(() => {
-      this.getOrganizationData(this.state.body);
-    });
+  componentWillMount = () => {
+    const { onFetchCauses, onFetchOrganizations, body } = this.props;
+    // redux8: this kicks off the api call action
+    // i added the test string because it kept saying it expected an argument, but i don't need test there otherwise
+    onFetchCauses('test')
+    onFetchOrganizations(body)
   };
 
   render() {
-    const { classes } = this.props;
-    const { body, results, text, causes } = this.state;
+    const { classes, causes, body } = this.props;
+    console.log('body', body);
+    const {  
+      results, 
+    } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
           <Grid container spacing={24} direction="column" style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}>
             <Grid container alignItems="center" direction="row" justify="space-evenly">
-              <Grid item xs>
-                <FormControl className={classes.formControl}>
-                  <InputBase
-                    name="search_terms"
-                    value={text}
-                    onChange={this.handleChange('search_terms')}
-                    fullWidth
-                    placeholder="Search"
-                    classes={{ input: classes.inputInput }}
-                  />
-                  <Button onClick={this.onSubmit} color="secondary" variant="contained">
-                    Search
-                  </Button>
-                </FormControl>
-              </Grid>
-
-              <Grid item xs>
+              <Grid item xs md={2}>
                 <div className={classes.toggleContainer}>
-                  <ToggleButtonGroup className={classes.toggleGroup} exclusive onClick={this.handleToggle}>
-                    <ToggleButton
-                      id="event"
-                      value="event"
-                      style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'events' ? classes.activeBtn : classes.toggleBtn}
+                  <FormControl className={classes.formControl}>
+                    <Select
+                      value={this.state.selected}
+                      onChange={this.handleToggle}
+                      disableUnderline
                     >
-                      <span id="events" className={classes.customButton}>
-                        Events
-                      </span>
-                    </ToggleButton>
-                    <ToggleButton
-                      value="organization"
-                      id="organization"
-                      style={{ padding: '0 30px' }}
-                      className={this.state.selected === 'organizations' ? classes.activeBtn : classes.toggleBtn}
-                    >
-                      <span id="organizations" className={classes.customButton}>
-                        Organizations
-                      </span>
-                    </ToggleButton>
-                  </ToggleButtonGroup>
+                      <MenuItem value={'organization'}>Organizations</MenuItem>
+                      <MenuItem value={'event'}>Events</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
               </Grid>
-            </Grid>
-          </Grid>
-          <ExpansionPanel expanded={this.state.expanded} onChange={this.handleMoreOption}>
-            <ExpansionPanelSummary
-              expandIcon={<ExpandMoreIcon />}
-              style={{ width: '80%', margin: '0 auto', maxWidth: 1000 }}
-            >
-              <Typography className={classes.heading}>More Options</Typography>
-            </ExpansionPanelSummary>
-            <ExpansionPanelDetails className={classes.moreOptionPanel}>
-              <Grid item md={12} container alignItems="center">
-                <Grid item md className={classes.gridItem}>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="causes">
-                      <Typography>Causes</Typography>
-                    </InputLabel>
-                    <Select
-                      multiple
-                      value={body.filters.organization.ntee_major_codes}
-                      onChange={this.handleChange('ntee_major_codes')}
-                      input={<Input id="select-multiple-checkbox" />}
-                      renderValue={selected => selected && [selected].join(', ')}
-                      MenuProps={MenuProps}
-                    >
-                      {causes.length > 0
-                        ? causes.map(c => (
+              <Grid item xs={6}>
+                <Grid item md={12} container alignItems="center">
+                  <Grid item md className={classes.gridItem}>
+                    <FormControl className={classes.formControl}>
+                      <Select
+                        multiple
+                        value={body.filters.organization.ntee_major_codes}
+                        onChange={this.handleChange('ntee_major_codes')}
+                        input={<Input id="select-multiple-checkbox" />}
+                        renderValue={selected => selected && [selected].join(', ')}
+                        MenuProps={MenuProps}
+                      >
+                        {causes.map((c: any) => (
                             <MenuItem key={c.Casues_ID} value={c.CauseName}>
                               <Checkbox
-                                checked={body.filters.organization.ntee_major_codes.indexOf(c.ntee_code) > -1}
+                                checked={body.filters.organization.ntee_major_codes.indexOf(c.Casues_ID) > -1}
                               />
                               <Typography>
                                 <ListItemText primary={c.CauseName} />
                               </Typography>
                             </MenuItem>
                           ))
-                        : ''}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item md={2} className={classes.gridItem}>
-                  <FormControl className={classes.formControl}>
-                    <InputLabel htmlFor="distance">
-                      <Typography>Distance</Typography>
-                    </InputLabel>
-                    <Select
-                      fullWidth
-                      value={body.filters.geography.radius}
-                      onChange={this.handleChange('radius')}
-                      inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
-                    >
-                      {distance.map(d => (
-                        <MenuItem key={d} value={d}>
-                          <Typography>{d} Miles</Typography>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                        }
+                      </Select>
+                      <FormHelperText>Causes</FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={2} className={classes.gridItem}>
+                    <FormControl className={classes.formControl}>
+                      <Select
+                        fullWidth
+                        value={body.filters.geography.radius}
+                        onChange={this.handleChange('radius')}
+                        inputProps={{ name: 'radius', id: 'distance', style: { color: 'white' } }}
+                      >
+                        {distance.map(d => (
+                          <MenuItem key={d} value={d}>
+                            <Typography>{d} Miles</Typography>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      <FormHelperText>Distance</FormHelperText>
+                    </FormControl>
+                  </Grid>
                 </Grid>
               </Grid>
-            </ExpansionPanelDetails>
-          </ExpansionPanel>
+            </Grid>
+          </Grid>
         </div>
         <div className={classes.spacerDiv} />
         <div className={classes.displayDiv}>
           {this.state.selected === 'event' ? (
             <DisplayEventCards />
           ) : (
-            <DisplayOrgCards orgs={results.data} err={results.err} />
+            <DisplayOrgCards orgs={this.props.organizations} err={results.err} />
           )}
         </div>
       </div>
     );
   }
 }
+
 type StyledProps = StateProps & DispatchProps & StyledComponentProps<string>;
 export const Home: React.ComponentType<StyledProps> = withTheme()(withStyles(styles)(InternalHome));
-export default Home;
+export default connect(
+  (state: SearchState): StateProps => ({
+    body: state.searchReducer.body,
+    organizations: state.searchReducer.organizations,
+    // redux6: the state variable here is mapped to searchstate from index in the reducer folder
+    // this state is passed up to the causes prop
+    causes: state.searchReducer.causes
+  }),
+  { 
+    onFetchOrganizations: fetchOrganizations, 
+    onFetchCauses: fetchCauses, 
+    onUpdateSearchRadius: updateSearchRadius,
+    onUpdateSearchCauses: updateSearchCauses
+  }
+)(Home);
