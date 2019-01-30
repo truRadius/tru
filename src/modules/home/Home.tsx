@@ -43,7 +43,7 @@ interface DispatchProps {
 }
 
 interface InternalState {
-  selected: string;
+  resultsType: string;
   results: {
     // tslint:disable-next-line:no-any
     data: Array<any>;
@@ -172,7 +172,7 @@ const distance = [10, 25, 50, 100];
 
 class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   state: InternalState = {
-    selected: 'organization',
+    resultsType: 'organization',
     results: {
       data: [],
       err: ''
@@ -192,7 +192,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
-    this.setState({ selected: e.target.value });
+    this.setState({ resultsType: e.target.value });
   };
   componentWillMount = () => {
     const { onFetchCauses, onFetchOrganizations, body } = this.props;
@@ -204,10 +204,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
 
   render() {
     const { classes, causes, body } = this.props;
-    console.log('body', body);
-    const {  
-      results, 
-    } = this.state;
+    const { results, resultsType } = this.state;
     return (
       <div>
         <div className={classes.mainDiv}>
@@ -217,7 +214,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                 <div className={classes.toggleContainer}>
                   <FormControl className={classes.formControl}>
                     <Select
-                      value={this.state.selected}
+                      value={resultsType}
                       onChange={this.handleToggle}
                       disableUnderline
                     >
@@ -236,13 +233,22 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                         value={body.filters.organization.ntee_major_codes}
                         onChange={this.handleChange('ntee_major_codes')}
                         input={<Input id="select-multiple-checkbox" />}
-                        renderValue={selected => selected && [selected].join(', ')}
+                        renderValue={
+                          (selected: string[]) => {
+                            const newArr: string[] = [];
+                            selected.map((s: any) => {
+                              let cause = causes.find(c => c.ntee_code === s);
+                              newArr.push(cause ? cause.CauseName : '');
+                            })
+                            return newArr.join('; ');
+                          }
+                        }
                         MenuProps={MenuProps}
                       >
                         {causes.map((c: any) => (
-                            <MenuItem key={c.Casues_ID} value={c.CauseName}>
+                            <MenuItem key={c.Casues_ID} value={c.ntee_code}>
                               <Checkbox
-                                checked={body.filters.organization.ntee_major_codes.indexOf(c.Casues_ID) > -1}
+                                checked={body.filters.organization.ntee_major_codes.indexOf(c.ntee_code) > -1}
                               />
                               <Typography>
                                 <ListItemText primary={c.CauseName} />
@@ -278,7 +284,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
         </div>
         <div className={classes.spacerDiv} />
         <div className={classes.displayDiv}>
-          {this.state.selected === 'event' ? (
+          {resultsType === 'event' ? (
             <DisplayEventCards />
           ) : (
             <DisplayOrgCards orgs={this.props.organizations} err={results.err} />

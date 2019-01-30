@@ -16,7 +16,11 @@ import {
   Grid,
   FormControl,
   InputBase,
-  Tooltip
+  Tooltip,
+  Button,
+  InputAdornment,
+  MuiThemeProvider,
+  createMuiTheme,
 } from '@material-ui/core';
 import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -29,6 +33,7 @@ import { updateSearchTerms, fetchOrganizations } from 'src/actions/searchActions
 import { connect } from 'react-redux';
 import { SearchState } from 'src/reducers';
 import { SearchBody } from 'src/api/searchBody';
+import SearchIcon from '@material-ui/icons/Search';
 
 const logo = require('../logo.png');
 
@@ -126,6 +131,14 @@ const styles = (theme: Theme): { [key: string]: CSSProperties } => ({
     width: '80%',
     margin: '0 auto',
     maxWidth: 1000
+  }
+});
+
+const themeAlt = createMuiTheme({
+  palette: {
+    primary: {
+      main: '#ffffff'
+    }
   }
 });
 
@@ -256,6 +269,15 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
                         placeholder="Search"
                         classes={{ input: classes.inputInput }}
                         onChange={this.handleChange}
+                        endAdornment={
+                          <InputAdornment position="start">
+                            <MuiThemeProvider theme={themeAlt}>
+                              <Button color="primary" className={classes.button} type="submit">
+                                <SearchIcon style={{ color: 'white' }} />
+                              </Button>
+                            </MuiThemeProvider>
+                          </InputAdornment>
+                        }
                       />
                     </FormControl>
                   </form>
