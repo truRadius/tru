@@ -240,7 +240,7 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                         MenuProps={MenuProps}
                       >
                         {causes.map((c: any) => (
-                            <MenuItem key={c.Casues_ID} value={c.CauseName}>
+                            <MenuItem key={c.Casues_ID} value={c.ntee_code}>
                               <Checkbox
                                 checked={body.filters.organization.ntee_major_codes.indexOf(c.Casues_ID) > -1}
                               />
