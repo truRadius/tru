@@ -22,14 +22,12 @@ export const fetchOrganizations = (body: any) => (dispatch: any) => {
 // I don't really understand the dispatch, it comes from thunk and is middleware
 // tslint:disable-next-line:no-any
 export const fetchCauses = (test: string) => (dispatch: any) => {
-  return new Promise((resolve, reject) => {
-    axios.get('http://localhost:8000/api/causes')
-    // tslint:disable-next-line:no-any
-    .then((causes: any) => dispatch({
-      type: FETCH_CAUSES,
-      payload: causes.data
-    }));
-  });
+  axios.get('http://localhost:8000/api/causes')
+  // tslint:disable-next-line:no-any
+  .then((causes: any) => dispatch({
+    type: FETCH_CAUSES,
+    payload: causes.data
+  }));
 };
 
 // tslint:disable-next-line:no-any

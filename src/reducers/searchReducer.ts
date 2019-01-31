@@ -4,6 +4,7 @@ import {
   UPDATE_SEARCH_TERMS,
   UPDATE_SEARCH_RADIUS,
   UPDATE_SEARCH_CAUSES,
+  FETCH_USER
 } from 'src/actions/types';
 
 const initialState = {
@@ -62,6 +63,20 @@ export default function(state: any = initialState, action: any) {
             geography: {
               ...state.body.filters.geography,
               radius: action.payload
+            }
+          }
+        }
+      };
+    case FETCH_USER:
+      return {
+        ...state,
+        body: {
+          ...state.body,
+          filters: {
+            ...state.body.filters,
+            geography: {
+              ...state.body.filters.geography,
+              zip: action.payload.Zip
             }
           }
         }

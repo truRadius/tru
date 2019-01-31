@@ -100,8 +100,6 @@ class InternalOrgCards extends React.PureComponent<PropsWithStyles, InternalStat
   };
   render() {
     const { classes, orgs, err } = this.props;
-    // const {data} = this.props.orgs
-    console.log(orgs, err);
     return (
       <div>
         {err !== '' ? (

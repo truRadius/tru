@@ -25,6 +25,7 @@ import { fetchOrganizations, fetchCauses, updateSearchRadius, updateSearchCauses
 import { SearchState } from 'src/reducers';
 import { Causes } from 'src/api/causes';
 import { SearchBody } from 'src/api/searchBody';
+import { fetchUser } from 'src/actions/userActions';
 // import axios from 'axios';
 
 interface StateProps {
@@ -40,6 +41,7 @@ interface DispatchProps {
   onFetchCauses: typeof fetchCauses;
   onUpdateSearchRadius: typeof updateSearchRadius;
   onUpdateSearchCauses: typeof updateSearchCauses;
+  onFetchUser: typeof fetchUser;
 }
 
 interface InternalState {
@@ -194,10 +196,11 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
   handleToggle = (e: any) => {
     this.setState({ resultsType: e.target.value });
   };
-  componentWillMount = () => {
-    const { onFetchCauses, onFetchOrganizations, body } = this.props;
+  componentDidMount = () => {
+    const { onFetchUser, onFetchCauses, onFetchOrganizations, body } = this.props;
     // redux8: this kicks off the api call action
     // i added the test string because it kept saying it expected an argument, but i don't need test there otherwise
+    onFetchUser('test')
     onFetchCauses('test')
     onFetchOrganizations(body)
   };
@@ -309,6 +312,7 @@ export default connect(
     onFetchOrganizations: fetchOrganizations, 
     onFetchCauses: fetchCauses, 
     onUpdateSearchRadius: updateSearchRadius,
-    onUpdateSearchCauses: updateSearchCauses
+    onUpdateSearchCauses: updateSearchCauses,
+    onFetchUser: fetchUser
   }
 )(Home);
