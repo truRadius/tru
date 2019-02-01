@@ -1,5 +1,5 @@
 export interface Causes {
   Causes_ID: number;
   CauseName: string;
-  ntee_code: number;
+  ntee_code: string;
 }

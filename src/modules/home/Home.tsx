@@ -1,4 +1,3 @@
-/* tslint:disable */
 import * as React from 'react';
 import {
   StyledComponentProps,
@@ -21,15 +20,15 @@ import { CSSProperties } from '@material-ui/core/styles/withStyles';
 import { DisplayEventCards } from './DisplayEventCards';
 import { DisplayOrgCards } from './DisplayOrgCards';
 import { connect } from 'react-redux';
-import { fetchOrganizations, fetchCauses, updateSearchRadius, updateSearchCauses } from 'src/actions/searchActions';
+import { fetchOrganizations, updateSearchRadius, updateSearchCauses } from 'src/actions/searchActions';
 import { SearchState } from 'src/reducers';
 import { Causes } from 'src/api/causes';
 import { SearchBody } from 'src/api/searchBody';
-import { fetchUser } from 'src/actions/userActions';
 // import axios from 'axios';
 
 interface StateProps {
   body: SearchBody;
+  // tslint:disable-next-line:no-any
   organizations: any;
   // redux5: added the cause prop here. Defined the type in the api folder. I need to do the same for organizations
   // connected this cause to the state in the searchReducer at the bottom
@@ -38,10 +37,8 @@ interface StateProps {
 interface DispatchProps {
   onFetchOrganizations: typeof fetchOrganizations;
   // redux7: actions go here and defined at the bottom as well
-  onFetchCauses: typeof fetchCauses;
   onUpdateSearchRadius: typeof updateSearchRadius;
   onUpdateSearchCauses: typeof updateSearchCauses;
-  onFetchUser: typeof fetchUser;
 }
 
 interface InternalState {
@@ -190,20 +187,18 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
     } else if (name === 'radius') {
       onUpdateSearchRadius(event.target.value);
     }
-  };
+  }
 
   // tslint:disable-next-line:no-any
   handleToggle = (e: any) => {
     this.setState({ resultsType: e.target.value });
-  };
+  }
+
   componentDidMount = () => {
-    const { onFetchUser, onFetchCauses, onFetchOrganizations, body } = this.props;
+    const { onFetchOrganizations, body } = this.props;
     // redux8: this kicks off the api call action
-    // i added the test string because it kept saying it expected an argument, but i don't need test there otherwise
-    onFetchUser('test')
-    onFetchCauses('test')
-    onFetchOrganizations(body)
-  };
+    onFetchOrganizations(body);
+  }
 
   render() {
     const { classes, causes, body } = this.props;
@@ -239,17 +234,17 @@ class InternalHome extends React.PureComponent<PropsWithStyles, InternalState> {
                         renderValue={
                           (selected: string[]) => {
                             const newArr: string[] = [];
-                            selected.map((s: any) => {
+                            selected.map((s: string) => {
                               let cause = causes.find(c => c.ntee_code === s);
                               newArr.push(cause ? cause.CauseName : '');
-                            })
+                            });
                             return newArr.join('; ');
                           }
                         }
                         MenuProps={MenuProps}
                       >
-                        {causes.map((c: any) => (
-                            <MenuItem key={c.Casues_ID} value={c.ntee_code}>
+                        {causes.map((c: Causes) => (
+                            <MenuItem key={c.Causes_ID} value={c.ntee_code}>
                               <Checkbox
                                 checked={body.filters.organization.ntee_major_codes.indexOf(c.ntee_code) > -1}
                               />
@@ -309,10 +304,8 @@ export default connect(
     causes: state.searchReducer.causes
   }),
   { 
-    onFetchOrganizations: fetchOrganizations, 
-    onFetchCauses: fetchCauses, 
+    onFetchOrganizations: fetchOrganizations,
     onUpdateSearchRadius: updateSearchRadius,
     onUpdateSearchCauses: updateSearchCauses,
-    onFetchUser: fetchUser
   }
 )(Home);

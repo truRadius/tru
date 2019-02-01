@@ -1,10 +1,5 @@
 import { 
-  FETCH_ORGANIZATIONS, 
-  FETCH_CAUSES, 
-  UPDATE_SEARCH_TERMS,
-  UPDATE_SEARCH_RADIUS,
-  UPDATE_SEARCH_CAUSES,
-  FETCH_USER
+  Actions
 } from 'src/actions/types';
 
 const initialState = {
@@ -33,19 +28,19 @@ const initialState = {
 // tslint:disable-next-line:no-any
 export default function(state: any = initialState, action: any) {
   switch (action.type) {
-    case FETCH_ORGANIZATIONS:
+    case Actions.FETCH_ORGANIZATIONS:
       return {
         ...state,
         organizations: action.payload
       };
       // redux3: imported FETCH_CAUSES and added a case to listen for the dispatch in searchActions
       // action.payload is the payload that got dispatched in searchActions
-    case FETCH_CAUSES:
+    case Actions.FETCH_CAUSES:
       return {
         ...state,
         causes: action.payload
       };
-    case UPDATE_SEARCH_TERMS:
+    case Actions.UPDATE_SEARCH_TERMS:
       return {
         ...state,
         body: {
@@ -53,7 +48,7 @@ export default function(state: any = initialState, action: any) {
           search_terms: action.payload
         }
       };
-    case UPDATE_SEARCH_RADIUS:
+    case Actions.UPDATE_SEARCH_RADIUS:
       return {
         ...state,
         body: {
@@ -67,7 +62,7 @@ export default function(state: any = initialState, action: any) {
           }
         }
       };
-    case FETCH_USER:
+    case Actions.FETCH_USER_SUCCESS:
       return {
         ...state,
         body: {
@@ -77,11 +72,15 @@ export default function(state: any = initialState, action: any) {
             geography: {
               ...state.body.filters.geography,
               zip: action.payload.Zip
+            },
+            organization: {
+              ...state.body.filters.organization,
+              ntee_major_codes: action.payload.causes
             }
           }
         }
       };
-    case UPDATE_SEARCH_CAUSES:
+    case Actions.UPDATE_SEARCH_CAUSES:
       return {
         ...state,
         body: {

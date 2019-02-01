@@ -13,7 +13,7 @@ module.exports.getSingleAccount = (req, res, next) => {
           list.push(cause.CauseName);
         });
         account.causes = list;
-        res.status(200).json(account);
+        res.status(200).send(account);
       });
     })
     .catch(err => {
