@@ -272,7 +272,7 @@ class InternalNavBar extends React.PureComponent<PropsWithStyles> {
                         endAdornment={
                           <InputAdornment position="start">
                             <MuiThemeProvider theme={themeAlt}>
-                              <Button color="primary" className={classes.button} type="submit">
+                              <Button color="primary" className={classes.button} onClick={this.onSubmit}>
                                 <SearchIcon style={{ color: 'white' }} />
                               </Button>
                             </MuiThemeProvider>
